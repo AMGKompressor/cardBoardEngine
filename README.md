@@ -29,7 +29,7 @@ cmake --build build
 
 Run from the build folder (shaders/textures are copied next to the exe automatically).
 
-## Windows — guys please do this to have it run
+## Windows — (Build and Run)
 
 1. Install **Visual Studio 2022** (Desktop C++) and **CMake**.
 2. Copy course **`lib/`** into `cardBoardEngine/lib/` (see `lib/README.md`).
