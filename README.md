@@ -31,6 +31,10 @@ Run from the build folder (shaders/textures are copied next to the exe automatic
 
 ## Windows — (Build and Run)
 
+> **LNK2019 errors in `TGP` / `Phantom Raider` / `TGP_debug.exe`?**  
+> You merged files into the wrong Visual Studio project. Use **CMake below** first, or read **[docs/WINDOWS_VISUAL_STUDIO.md](docs/WINDOWS_VISUAL_STUDIO.md)**.  
+> Do **not** mix this engine with the old course `Initialise` / `DrawSprite` / `AnimatedSprite` API.
+
 1. Install **Visual Studio 2022** (Desktop C++) and **CMake**.
 2. Copy course **`lib/`** into `cardBoardEngine/lib/` (see `lib/README.md`).
 3. Configure **Win32**:
