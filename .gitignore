@@ -8,9 +8,37 @@ temp/
 *.exe
 *.obj
 *.dylib
+*.pdb
+*.dll
 .idea/
 
 # Team copies SDL/GLEW from COMP710 Studio 5 — see lib/README.md (not stored in git)
 lib/SDL2-2.0.22/
 lib/SDL2_image-2.6.1/
+lib/SDL2_ttf-2.22.0/
 lib/glew-2.1.0/
+lib/FMOD/
+lib/imgui/
+
+# Visual Studio
+.vs/
+*.ipch
+ipch/
+*.vcxproj.user
+*.sln.docstates
+
+# Local Windows bundle (source + vcxproj only; not the 1.5GB zip)
+windowsBuild.zip
+windowsBuild/**/.git/
+windowsBuild/**/temp/
+windowsBuild/**/out/
+windowsBuild/**/game/*
+!windowsBuild/**/game/.gitkeep
+
+# Same lib paths under windowsBuild (peers copy from Studio 5)
+windowsBuild/**/lib/SDL2-2.0.22/
+windowsBuild/**/lib/SDL2_image-2.6.1/
+windowsBuild/**/lib/SDL2_ttf-2.22.0/
+windowsBuild/**/lib/glew-2.1.0/
+windowsBuild/**/lib/FMOD/
+windowsBuild/**/lib/imgui/

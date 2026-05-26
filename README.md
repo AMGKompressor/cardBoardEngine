@@ -31,6 +31,8 @@ Run from the build folder (shaders/textures are copied next to the exe automatic
 
 ## Windows — build and run
 
+**Prefer opening a `.vcxproj` in Visual Studio?** Use branch **`visual-studio`** and follow `windowsBuild/README.md` (course `lib/` still required).
+
 1. Install **Visual Studio** with **Desktop development with C++**, plus **CMake**.
 2. Copy course **`lib/`** into `cardBoardEngine/lib/` (see `lib/README.md`).
 3. Configure **Win32**:
