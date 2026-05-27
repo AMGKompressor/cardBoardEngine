@@ -27,5 +27,6 @@ windowsBuild/**/temp/
 windowsBuild/**/out/
 windowsBuild/**/game/*
 !windowsBuild/**/game/.gitkeep
+!windowsBuild/**/game/*.dll
 
 # Same lib paths under windowsBuild (peers copy from Studio 5)
