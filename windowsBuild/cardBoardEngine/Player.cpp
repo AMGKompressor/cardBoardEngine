@@ -54,7 +54,7 @@ namespace CardBoard
 		mHitboxHalfH = mConfig.hitboxHalfH;
 		mFlashlightOn = false;
 
-		mSprite = renderer.createSprite("textures/board8x8.png");
+		mSprite = renderer.createSprite("../assets/textures/board8x8.png");
 		if (mSprite == nullptr)
 		{
 			return false;
@@ -69,7 +69,7 @@ namespace CardBoard
 		mHitboxHalfW = static_cast<float>(mSprite->getWidth()) * 0.5f;
 		mHitboxHalfH = static_cast<float>(mSprite->getHeight()) * 0.5f;
 
-		mHitboxDebugSprite = renderer.createSprite("textures/board8x8.png");
+		mHitboxDebugSprite = renderer.createSprite("../assets/textures/board8x8.png");
 		if (mHitboxDebugSprite != nullptr)
 		{
 			mHitboxDebugSprite->setScale(sunekuScale);

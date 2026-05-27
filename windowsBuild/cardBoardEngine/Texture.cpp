@@ -34,6 +34,7 @@ bool Texture::initialize(const char* filename)
 	SDL_Surface* loaded = IMG_Load(filename);
 	if (loaded == nullptr)
 	{
+		LogManager::getInstance().log(filename);
 		LogManager::getInstance().log("Texture failed to load!");
 		return false;
 	}

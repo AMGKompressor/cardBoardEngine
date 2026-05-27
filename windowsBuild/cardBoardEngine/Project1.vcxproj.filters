@@ -19,14 +19,14 @@
     <Filter Include="Header Files\Game Engine Headers">
       <UniqueIdentifier>{a35441cc-4c68-4893-9d56-7d39760709f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\ImGui Headers">
-      <UniqueIdentifier>{7df38c3a-de3b-40b8-a8ea-fc2bcf93728e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\ImGui Source">
-      <UniqueIdentifier>{92c21eb7-66b0-492f-a26e-8a08d646c2ae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Idk what these files are">
       <UniqueIdentifier>{c1109d38-8998-4c40-b433-3d61fe45c776}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IMGUI">
+      <UniqueIdentifier>{f2d93d2b-0284-4422-895d-0152cbdea8f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IMGUI">
+      <UniqueIdentifier>{f171334a-c241-4f21-adfa-79d24cb5665e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -69,27 +69,6 @@
     <ClCompile Include="XboxController.cpp">
       <Filter>Source Files\Game Engine Source</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui.cpp">
-      <Filter>Source Files\ImGui Source</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_demo.cpp">
-      <Filter>Source Files\ImGui Source</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_draw.cpp">
-      <Filter>Source Files\ImGui Source</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_impl_opengl3.cpp">
-      <Filter>Source Files\ImGui Source</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_impl_sdl2.cpp">
-      <Filter>Source Files\ImGui Source</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_tables.cpp">
-      <Filter>Source Files\ImGui Source</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_widgets.cpp">
-      <Filter>Source Files\ImGui Source</Filter>
-    </ClCompile>
     <ClCompile Include="AnimatedSprite.cpp">
       <Filter>Source Files\Game Engine Source</Filter>
     </ClCompile>
@@ -110,6 +89,27 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_demo.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_draw.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_impl_sdl2.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_tables.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_widgets.cpp">
+      <Filter>Source Files\IMGUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,33 +149,6 @@
     <ClInclude Include="XboxController.h">
       <Filter>Header Files\Game Engine Headers</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui\imstb_truetype.h">
-      <Filter>Header Files\ImGui Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imconfig.h">
-      <Filter>Header Files\ImGui Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui.h">
-      <Filter>Header Files\ImGui Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui_impl_opengl3.h">
-      <Filter>Header Files\ImGui Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui_impl_opengl3_loader.h">
-      <Filter>Header Files\ImGui Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui_impl_sdl2.h">
-      <Filter>Header Files\ImGui Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui_internal.h">
-      <Filter>Header Files\ImGui Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imstb_rectpack.h">
-      <Filter>Header Files\ImGui Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imstb_textedit.h">
-      <Filter>Header Files\ImGui Headers</Filter>
-    </ClInclude>
     <ClInclude Include="AnimatedSprite.h">
       <Filter>Header Files\Game Engine Headers</Filter>
     </ClInclude>
@@ -188,25 +161,10 @@
     <ClInclude Include="BasicMapLayout.h">
       <Filter>Header Files\Idk what these files are</Filter>
     </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\begin_code.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
     <ClInclude Include="CardBoardApp.h">
       <Filter>Header Files\Idk what these files are</Filter>
     </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\close_code.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
     <ClInclude Include="Collision2D.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\glew-2.1.0\include\eglew.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\glew-2.1.0\include\glew.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\glew-2.1.0\include\glxew.h">
       <Filter>Header Files\Idk what these files are</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">
@@ -218,278 +176,33 @@
     <ClInclude Include="PlayerConfig.h">
       <Filter>Header Files\Idk what these files are</Filter>
     </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_assert.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_atomic.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_audio.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_bits.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_blendmode.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_clipboard.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_config.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_config_android.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_config_iphoneos.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_config_macosx.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_config_minimal.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_config_pandora.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_config_psp.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_config_windows.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_config_winrt.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_config_wiz.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_copying.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_cpuinfo.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_egl.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_endian.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_error.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_events.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_filesystem.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_gamecontroller.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_gesture.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_haptic.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_hidapi.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_hints.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2_image-2.6.1\include\SDL_image.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_joystick.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_keyboard.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_keycode.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_loadso.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_locale.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_log.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_main.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_messagebox.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_metal.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_misc.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_mouse.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_mutex.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_name.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_opengl.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_opengl_glext.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_opengles.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_opengles2.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_opengles2_gl2.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_opengles2_gl2ext.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_opengles2_gl2platform.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_opengles2_khrplatform.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_pixels.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_platform.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_power.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_quit.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_rect.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_render.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_revision.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_rwops.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_scancode.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_sensor.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_shape.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_stdinc.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_surface.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_system.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_syswm.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test_assert.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test_common.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test_compare.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test_crc32.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test_font.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test_fuzzer.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test_harness.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test_images.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test_log.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test_md5.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test_memory.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_test_random.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_thread.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_timer.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_touch.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2_ttf-2.22.0\include\SDL_ttf.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
     <ClInclude Include="lib\SDL_ttf-x86\include\SDL_ttf.h">
       <Filter>Header Files\Idk what these files are</Filter>
     </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_types.h">
-      <Filter>Header Files\Idk what these files are</Filter>
+    <ClInclude Include="lib\imgui\imstb_truetype.h">
+      <Filter>Header Files\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_version.h">
-      <Filter>Header Files\Idk what these files are</Filter>
+    <ClInclude Include="lib\imgui\imconfig.h">
+      <Filter>Header Files\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_video.h">
-      <Filter>Header Files\Idk what these files are</Filter>
+    <ClInclude Include="lib\imgui\imgui.h">
+      <Filter>Header Files\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="lib\SDL2-2.0.22\include\SDL_vulkan.h">
-      <Filter>Header Files\Idk what these files are</Filter>
+    <ClInclude Include="lib\imgui\imgui_impl_opengl3_loader.h">
+      <Filter>Header Files\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="lib\glew-2.1.0\include\wglew.h">
-      <Filter>Header Files\Idk what these files are</Filter>
+    <ClInclude Include="lib\imgui\imgui_impl_sdl2.h">
+      <Filter>Header Files\IMGUI</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="lib\SDL2_ttf-2.22.0\lib\x86\SDL2_ttf.lib" />
-    <Library Include="lib\FMOD\lib\x86\fmod_vc.lib" />
-    <Library Include="lib\FMOD\lib\x86\fmodL_vc.lib" />
+    <ClInclude Include="lib\imgui\imgui_internal.h">
+      <Filter>Header Files\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_rectpack.h">
+      <Filter>Header Files\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_textedit.h">
+      <Filter>Header Files\IMGUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\line.frag" />
@@ -498,8 +211,6 @@
     <None Include="assets\shaders\sprite.vert" />
     <None Include="assets\shaders\vision_mask.frag" />
     <None Include="assets\shaders\vision_mask.vert" />
-    <None Include="game\shaders\sprite.frag" />
-    <None Include="game\shaders\sprite.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\board8x8.png">
