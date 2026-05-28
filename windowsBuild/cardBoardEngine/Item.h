@@ -1,7 +1,9 @@
 
 
 enum ItemType {
-
+	Basic,
+	Battery,
+	Weapon
 };
 
 class Player;
@@ -14,9 +16,10 @@ public:
 	virtual ~Item();
 	ItemType getType();
 	bool Initialise(Renderer& renderer);
-	void setPosition(float x, float y);
+	void Draw(Renderer& renderer);
 	bool isInPlayerPickupRange(Player& player);
 protected:
+	bool isPickedUp;
 	Sprite* m_pSprite;
 	ItemType m_type;
 	float m_posX;

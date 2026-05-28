@@ -46,6 +46,9 @@
     <Filter Include="Source Files\CardBoardApp\New">
       <UniqueIdentifier>{2ba89fc0-40b5-4802-825d-85eb9ac5cc12}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\CardboardApp\Items">
+      <UniqueIdentifier>{52aeb112-1657-4cf3-bcc8-e4074ac61017}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -140,6 +143,9 @@
     </ClCompile>
     <ClCompile Include="SceneCardBoard.cpp">
       <Filter>Source Files\CardBoardApp\New</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Source Files\CardBoardApp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="SceneCardBoard.h">
       <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Header Files\CardboardApp\Items</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,7 @@ class Sprite;
 class Player;
 class Map;
 class InputSystem;
+class Item;
 
 class SceneCardBoard : public Scene
 {
@@ -38,6 +39,7 @@ protected:
     Player* m_pPlayer;
     Map* m_pMap;
     InputSystem* m_pInputSystem;
+    Item* m_pItem;
 
     float mCameraX;
     float mCameraY;
