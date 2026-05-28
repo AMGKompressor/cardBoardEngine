@@ -29,36 +29,19 @@ cmake --build build
 
 Run from the build folder (shaders/textures are copied next to the exe automatically).
 
-## Windows — (Build and Run)
+## Windows — build and run
 
-> **LNK2019 errors in `TGP` / `Phantom Raider` / `TGP_debug.exe`?**  
-> You merged files into the wrong Visual Studio project. Use **CMake below** first, or read **[docs/WINDOWS_VISUAL_STUDIO.md](docs/WINDOWS_VISUAL_STUDIO.md)**.  
-> Do **not** mix this engine with the old course `Initialise` / `DrawSprite` / `AnimatedSprite` API.
+**Prefer opening a `.vcxproj` in Visual Studio?** Use branch **`visual-studio`** and follow `windowsBuild/README.md` (course `lib/` still required).
 
-1. Install **Visual Studio** (2019, 2022, or newer) with **Desktop development with C++**, plus **CMake**.
+1. Install **Visual Studio** with **Desktop development with C++**, plus **CMake**.
 2. Copy course **`lib/`** into `cardBoardEngine/lib/` (see `lib/README.md`).
-3. Configure **Win32** — use the generator name for **your** Visual Studio version:
+3. Configure **Win32**:
 
 ```bat
 cd path\to\cardBoardEngine
-cmake -G
-```
-
-That prints available generators. Pick the newest **Visual Studio …** entry (examples):
-
-| Visual Studio installed | CMake `-G` name (examples) |
-|-------------------------|----------------------------|
-| 2022 | `"Visual Studio 17 2022"` |
-| 2025 / newer | `"Visual Studio 18 2025"` (or whatever `cmake -G` shows) |
-
-If unsure, run `cmake -G` with no other args, copy the exact name, then:
-
-```bat
-cmake -G "Visual Studio 18 2025" -A Win32 -B build
+cmake -G "Visual Studio 17 2022" -A Win32 -B build
 cmake --build build --config Release
 ```
-
-**Newer VS is fine** — you do not need to downgrade to 2022. Still use **`-A Win32`** (32-bit) for the course `lib/` layout.
 
 4. Run from the output folder with DLLs present:
 
@@ -68,12 +51,6 @@ cardboard.exe
 ```
 
 Put `SDL2.dll`, `SDL2_image.dll`, and `glew32.dll` next to `cardboard.exe` (from the course `lib` folders).
-
-### Pre-built Windows zip for teammates
-
-Do **not** push multi‑GB zips to git (GitHub limit **100 MB** per file).
-
-Package only `cardboard.exe`, the three DLLs, `shaders\`, and `textures\` — see **[docs/WINDOWS_RELEASE_ZIP.md](docs/WINDOWS_RELEASE_ZIP.md)**. Upload that small zip via **GitHub Releases** or file share.
 
 ## Controls
 

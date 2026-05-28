@@ -1,0 +1,18 @@
+build/
+cmake-build-*/
+out/
+temp/
+.DS_Store
+*.dSYM/
+*.o
+*.exe
+*.obj
+*.dylib
+.idea/
+
+# Team copies SDL/GLEW from COMP710 Studio 5 — see lib/README.md (not stored in git)
+
+# Visual Studio
+.vs/
+*.ipch
+ipch/
