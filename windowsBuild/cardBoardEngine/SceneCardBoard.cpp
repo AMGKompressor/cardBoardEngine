@@ -75,7 +75,7 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 	updateCamera();
 	m_pRenderer->setCamera(mCameraX, mCameraY);
 
-	LogManager::getInstance().log("cardBoard engine started (WASD, Shift sprint, LMB toggle flashlight, H debug).");
+	LogManager::getInstance().log("cardBoard engine started (WASD, Shift sprint, LMB flashlight toggle, hold Space stun beam, H debug).");
 	return true;
 }
 
@@ -120,6 +120,7 @@ void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 	SDL_PumpEvents();
 	const Uint8* keys = SDL_GetKeyboardState(nullptr);
 	const bool sprintHeld = keys[SDL_SCANCODE_LSHIFT] != 0u || keys[SDL_SCANCODE_RSHIFT] != 0u;
+	const bool stunHeld = keys[SDL_SCANCODE_SPACE] != 0u;
 
 	m_pPlayer->update(
 		deltaTime,
@@ -130,7 +131,8 @@ void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 		keys[SDL_SCANCODE_A] != 0,
 		keys[SDL_SCANCODE_S] != 0,
 		keys[SDL_SCANCODE_D] != 0,
-		sprintHeld);
+		sprintHeld,
+		stunHeld);
 
 	updateCamera();
 	m_pRenderer->setCamera(mCameraX, mCameraY);
@@ -140,11 +142,14 @@ void SceneCardBoard::Draw(Renderer& renderer) {
 	m_pMap->drawFloor(*m_pRenderer);
 	m_pMap->drawWalls(*m_pRenderer);
 
-	//m_pPlayer->drawFlashlightMask(*m_pRenderer, *m_pMap, mCameraX, mCameraY);
+	m_pPlayer->drawFlashlightMask(*m_pRenderer, *m_pMap, mCameraX, mCameraY);
 
 	m_pPlayer->drawNoisePulses(*m_pRenderer);
 	m_pPlayer->drawSprite(*m_pRenderer);
 	m_pPlayer->drawHitboxDebug(*m_pRenderer);
+
+	m_pPlayer->drawFlashlightMeter(*m_pRenderer, mCameraX, mCameraY);
+
 	m_pItem->Draw(renderer);
 
 	//Didnt need this for renderering, adding it lead to flickering.
