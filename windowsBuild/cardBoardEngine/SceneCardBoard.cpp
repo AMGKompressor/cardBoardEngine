@@ -8,6 +8,7 @@
 #include "logmanager.h"
 #include "renderer.h"
 #include "sprite.h"
+#include "Item.h"
 
 #include "InputSystem.h"
 #include "game.h"
@@ -24,6 +25,7 @@ SceneCardBoard::SceneCardBoard()
 	, mLastTime {0}
 	, m_pInputSystem{ 0 }
 	, mLooping {true}
+	, m_pItem{0}
 {
 
 }
@@ -33,7 +35,12 @@ SceneCardBoard::~SceneCardBoard() {
 	m_pPlayer = nullptr;
 	delete m_pMap;
 	m_pMap = nullptr;
+	delete m_pItem;
+	m_pItem = 0;
+
+	//Dont delete m_pRenderer since the Game file owns it. we simply remove the pointer to it;
 	m_pRenderer = nullptr;
+
 	delete m_pInputSystem;
 	m_pInputSystem = nullptr;
 }
@@ -41,6 +48,13 @@ SceneCardBoard::~SceneCardBoard() {
 
 bool SceneCardBoard::Initialise(Renderer& renderer) {
 	m_pRenderer = &renderer;
+	
+	m_pItem = new Item();
+	if (!m_pItem->Initialise(*m_pRenderer))
+	{
+		LogManager::getInstance().log("Item failed to init.");
+		return false;
+	}
 
 	m_pMap = new Map();
 	m_pMap->loadBasicTutorial();
@@ -125,10 +139,15 @@ void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 void SceneCardBoard::Draw(Renderer& renderer) {
 	m_pMap->drawFloor(*m_pRenderer);
 	m_pMap->drawWalls(*m_pRenderer);
-	m_pPlayer->drawFlashlightMask(*m_pRenderer, *m_pMap, mCameraX, mCameraY);
+
+	//m_pPlayer->drawFlashlightMask(*m_pRenderer, *m_pMap, mCameraX, mCameraY);
+
 	m_pPlayer->drawNoisePulses(*m_pRenderer);
 	m_pPlayer->drawSprite(*m_pRenderer);
 	m_pPlayer->drawHitboxDebug(*m_pRenderer);
+	m_pItem->Draw(renderer);
+
+	//Didnt need this for renderering, adding it lead to flickering.
 	//m_pRenderer->present();
 }
 
