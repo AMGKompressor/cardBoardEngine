@@ -33,7 +33,6 @@ SceneCardBoard::~SceneCardBoard() {
 	m_pPlayer = nullptr;
 	delete m_pMap;
 	m_pMap = nullptr;
-	delete m_pRenderer;
 	m_pRenderer = nullptr;
 	delete m_pInputSystem;
 	m_pInputSystem = nullptr;
@@ -56,6 +55,7 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 		LogManager::getInstance().log("cardBoard: player init failed.");
 		return false;
 	}
+	m_pPlayer->toggleFlashlight();
 
 	mLastTime = SDL_GetPerformanceCounter();
 	updateCamera();
@@ -123,14 +123,13 @@ void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 }
 
 void SceneCardBoard::Draw(Renderer& renderer) {
-	m_pRenderer->clear();
 	m_pMap->drawFloor(*m_pRenderer);
 	m_pMap->drawWalls(*m_pRenderer);
 	m_pPlayer->drawFlashlightMask(*m_pRenderer, *m_pMap, mCameraX, mCameraY);
 	m_pPlayer->drawNoisePulses(*m_pRenderer);
 	m_pPlayer->drawSprite(*m_pRenderer);
 	m_pPlayer->drawHitboxDebug(*m_pRenderer);
-	m_pRenderer->present();
+	//m_pRenderer->present();
 }
 
 void SceneCardBoard::DebugDraw() {

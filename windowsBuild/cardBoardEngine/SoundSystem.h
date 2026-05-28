@@ -10,6 +10,8 @@
 class SoundSystem
 {
 public:
+	SoundSystem();
+	~SoundSystem();
 	static SoundSystem& GetInstance();
 	static void DestroyInstance();
 
@@ -30,8 +32,7 @@ public:
 	void SetMasterVolume(float volume);
 
 private:
-	SoundSystem();
-	~SoundSystem();
+	
 
 	SoundSystem(const SoundSystem&);
 	SoundSystem& operator=(const SoundSystem&);

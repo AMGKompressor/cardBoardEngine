@@ -7,6 +7,7 @@ class Renderer;
 class Sprite;
 class Scene;
 class InputSystem;
+class SoundSystem;
 
 #include <vector>
 
@@ -62,6 +63,7 @@ protected:
 
 	bool m_bShowDebugWindow;
 	InputSystem* m_pInputSystem;
+	SoundSystem* m_pSoundSystem;
 
 	std::vector<Scene*> m_scenes;
 	int m_iCurrentScene;

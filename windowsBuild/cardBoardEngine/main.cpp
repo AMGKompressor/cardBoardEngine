@@ -1,25 +1,24 @@
 // cardBoard engine demo entry point
 
 #include "CardBoardApp.h"
+#include "Game.h"
 #include "logmanager.h"
 
 int main(int argc, char* argv[])
 {
-	(void)argc;
-	(void)argv;
 
-	CardBoard::CardBoardApp& app = CardBoard::CardBoardApp::getInstance();
-	if (!app.initialize())
+	Game& gameInstance = Game::GetInstance();
+	if (!gameInstance.initialise())
 	{
 		LogManager::getInstance().log("cardBoard initialize failed.");
 		return 1;
 	}
 
-	while (app.doGameLoop())
+	while (gameInstance.DoGameLoop())
 	{
 	}
 
-	CardBoard::CardBoardApp::destroyInstance();
+	Game::DestroyInstance();
 	LogManager::destroyInstance();
 	return 0;
 }

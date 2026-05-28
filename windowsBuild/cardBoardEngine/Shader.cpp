@@ -64,9 +64,20 @@ bool Shader::load(const char* vertexFile, const char* pixelFile)
 
 void Shader::unload()
 {
-	glDeleteProgram(mShaderProgram);
-	glDeleteShader(mVertexShader);
-	glDeleteShader(mPixelShader);
+	if (mShaderProgram != 0) {
+		glDeleteProgram(mShaderProgram);
+		mShaderProgram = 0;
+	}
+	if (mVertexShader != 0) {
+		glDeleteShader(mVertexShader);
+		mVertexShader = 0;
+	}
+
+	if (mPixelShader != 0) {
+		glDeleteShader(mPixelShader);
+		mPixelShader = 0;
+	}
+
 }
 
 void Shader::setActive()

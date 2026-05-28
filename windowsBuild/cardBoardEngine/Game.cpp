@@ -70,6 +70,8 @@ bool Game::initialise()
 	int bbWidth = 1280;
 	int bbHeight = 720;
 
+	ImGui::CreateContext();
+
 	m_pRenderer = new Renderer();
 	if (!m_pRenderer->initialize(true, bbWidth, bbHeight))
 	{
