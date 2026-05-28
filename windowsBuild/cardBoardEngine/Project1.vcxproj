@@ -165,6 +165,7 @@
     <ClCompile Include="Player_1.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneCardBoard.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SoundSystem.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -177,6 +178,7 @@
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.h" />
     <ClInclude Include="BasicMapLayout.h" />
+    <ClInclude Include="BasicMapLayout_1.h" />
     <ClInclude Include="CardBoardApp.h" />
     <ClInclude Include="Collision2D.h" />
     <ClInclude Include="Collision2D_1.h" />
@@ -201,6 +203,7 @@
     <ClInclude Include="Player_1.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneCardBoard.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SoundSystem.h" />
     <ClInclude Include="Sprite.h" />

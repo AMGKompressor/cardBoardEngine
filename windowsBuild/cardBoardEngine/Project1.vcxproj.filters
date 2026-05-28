@@ -138,6 +138,9 @@
     <ClCompile Include="Player_1.cpp">
       <Filter>Source Files\CardBoardApp\New</Filter>
     </ClCompile>
+    <ClCompile Include="SceneCardBoard.cpp">
+      <Filter>Source Files\CardBoardApp\New</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -240,6 +243,12 @@
       <Filter>Header Files\CardboardApp\New</Filter>
     </ClInclude>
     <ClInclude Include="PlayerConfig_1.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicMapLayout_1.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneCardBoard.h">
       <Filter>Header Files\CardboardApp\New</Filter>
     </ClInclude>
   </ItemGroup>
