@@ -57,6 +57,19 @@ class Sprite;
 
 		void drawNoisePulses(Renderer& renderer) const;
 
+		// SANITY
+		void drawSanityMeter(Renderer& renderer, float cameraX, float cameraY);
+		bool noSanity(float deltaTime);
+		void adjustSanity(float deltaTime);
+		float sanityRatio();
+		bool getDarkStatus() { return inDark; }
+		float getSanityPercentage() { return sanityPercentage; }
+
+		// HEALTH
+		void drawHealthMeter(Renderer& renderer, float cameraX, float cameraY);
+		void adjustHealth(float deltaTime);
+		float healthRatio();
+
 		float x() const { return mX; }
 		float y() const { return mY; }
 		float facingDeg() const { return mFacingDeg; }
@@ -103,4 +116,9 @@ class Sprite;
 
 		std::vector<NoisePulse> mWalkNoisePulses;
 		std::vector<NoisePulse> mSprintNoisePulses;
+
+		float playerHealth;
+		bool inDark = false;
+		float sanityPercentage;
+		
 	};

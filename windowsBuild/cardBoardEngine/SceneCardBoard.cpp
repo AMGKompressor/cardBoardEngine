@@ -134,6 +134,14 @@ void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 		sprintHeld,
 		stunHeld);
 
+	if (inputSystem.GetMouseButtonState(1) == BS_RELEASED)
+		
+	{
+		m_pPlayer->toggleFlashlight();
+	}
+
+	
+
 	updateCamera();
 	m_pRenderer->setCamera(mCameraX, mCameraY);
 }
@@ -149,6 +157,13 @@ void SceneCardBoard::Draw(Renderer& renderer) {
 	m_pPlayer->drawHitboxDebug(*m_pRenderer);
 
 	m_pPlayer->drawFlashlightMeter(*m_pRenderer, mCameraX, mCameraY);
+	
+	if (m_pPlayer->getDarkStatus() || m_pPlayer->getSanityPercentage() <= 9.0f)
+	{
+		m_pPlayer->drawSanityMeter(*m_pRenderer, mCameraX, mCameraY);
+	}
+
+	m_pPlayer->drawHealthMeter(*m_pRenderer, mCameraX, mCameraY);
 
 	m_pItem->Draw(renderer);
 

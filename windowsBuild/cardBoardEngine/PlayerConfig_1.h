@@ -11,6 +11,31 @@ struct FlashlightConfig
 	float ambientFeather = 14.0f;
 };
 
+struct SanityMeterConfig
+{
+	float maxCharge = 10.0f;
+	float drainPerSecond = .5f;
+	float rechargePerSecond = 0.4f;
+	
+
+	float screenOffsetX = 10.0f;
+	float screenOffsetY = 10.0f;
+	float width = 60.0f;
+	float height = 8.0f;
+	float border = 2.0f;
+};
+
+struct HealthMeterConfig
+{
+	float maxCharge = 100.0f;
+	float decay = 0.85f;
+
+	float screenOffsetX = 10.0f;
+	float screenOffsetY = 20.0f;
+	float width = 100.0f;
+	float height = 12.0f;
+	float border = 2.0f;
+};
 struct FlashlightMeterConfig
 {
 	float maxChargeSeconds = 10.0f;
@@ -66,6 +91,9 @@ struct PlayerConfig
 
 	FlashlightMeterConfig flashlightMeter;
 	FlashlightStunConfig flashlightStun;
+
+	SanityMeterConfig sanityMeter;
+	HealthMeterConfig healthMeter;
 
 	FootstepConfig footstep;
 };

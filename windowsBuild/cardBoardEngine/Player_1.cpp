@@ -51,6 +51,9 @@
 
 		mFlashlightChargeSeconds = mConfig.flashlightMeter.maxChargeSeconds;
 
+		sanityPercentage = mConfig.sanityMeter.maxCharge;
+		playerHealth = mConfig.healthMeter.maxCharge;
+
 		mSprite = renderer.createSprite("../assets/textures/board8x8.png");
 		if (mSprite == nullptr)
 		{
@@ -98,14 +101,17 @@
 
 	void Player::toggleFlashlight()
 	{
+
 		if (mFlashlightOn)
 		{
 			mFlashlightOn = false;
+			inDark = true;
 			return;
 		}
 
 		if (mFlashlightChargeSeconds >= mConfig.flashlightMeter.minChargeToToggleOn)
 		{
+			inDark = false;
 			mFlashlightOn = true;
 		}
 	}
@@ -361,9 +367,9 @@
 				meter.maxChargeSeconds,
 				mFlashlightChargeSeconds + meter.rechargePerSecond * deltaTime);
 		}
+
+		adjustSanity(deltaTime);
 	}
-
-
 
 	void Player::drawSprite(Renderer& renderer) const
 	{
@@ -475,7 +481,6 @@
 			0.95f);
 	}
 
-
 	void Player::drawNoisePulses(Renderer& renderer) const
 	{
 		if (!mShowHitboxDebug)
@@ -524,4 +529,160 @@
 				0.2f,
 				alpha);
 		}
+	}
+
+	void Player::drawSanityMeter(Renderer& renderer, float cameraX, float cameraY)
+	{
+		const SanityMeterConfig& meter = mConfig.sanityMeter;
+		if (meter.width <= 2.0f || meter.height <= 2.0f)
+		{
+			return;
+		}
+
+		const float left = mX - (meter.width * 0.5f);
+		const float top = mY - 80.0f;
+
+		const float centerX = left + meter.width * 0.5f;
+		const float centerY = top + meter.height * 0.5f;
+
+		renderer.drawWorldAxisAlignedQuad(
+			centerX,
+			centerY,
+			meter.width * 0.5f,
+			meter.height * 0.5f,
+			0.05f,
+			0.05f,
+			0.05f,
+			0.85f);
+
+		const float ratio = sanityRatio();
+		const float innerHeight = std::max(1.0f, meter.height - meter.border * 2.0f);
+		const float innerWidthMax = std::max(1.0f, meter.width - meter.border * 2.0f);
+		const float innerWidth = std::max(1.0f, innerWidthMax * ratio);
+		const float innerLeft = left + meter.border;
+		const float innerCenterX = innerLeft + innerWidth * 0.5f;
+		const float innerCenterY = top + meter.height * 0.5f;
+
+		const float red = (ratio < 0.35f) ? 0.95f : 0.20f;
+		const float green = (ratio < 0.35f) ? 0.25f : 0.90f;
+		const float blue = 0.20f;
+
+		renderer.drawWorldAxisAlignedQuad(
+			innerCenterX,
+			innerCenterY,
+			innerWidth * 0.5f,
+			innerHeight * 0.5f,
+			red,
+			green,
+			blue,
+			0.95f);
+	}
+	bool Player::noSanity(float deltaTime)
+	{
+		if (sanityPercentage <= 0.1f)
+		{
+			adjustHealth(deltaTime);
+			return true;
+		}
+		return false;
+	}
+
+	void Player::adjustSanity(float deltaTime)
+	{
+		if (inDark)
+		{
+			sanityPercentage = std::max(
+				0.0f,
+				sanityPercentage -
+				mConfig.sanityMeter.drainPerSecond * deltaTime);
+		}
+		else
+		{
+			sanityPercentage = std::min(
+				mConfig.sanityMeter.maxCharge,
+				sanityPercentage +
+				mConfig.sanityMeter.rechargePerSecond * deltaTime);
+		}
+
+		noSanity(deltaTime);
+		printf("%.2f\n", playerHealth);
+	}
+
+	float Player::sanityRatio()
+	{
+		const float maxCharge = mConfig.sanityMeter.maxCharge;
+		if (maxCharge <= 0.0f)
+		{
+			return 0.0f;
+		}
+		
+		
+		return std::min(1.0f, std::max(0.0f, sanityPercentage / maxCharge));
+
+	}
+
+	void Player::drawHealthMeter(Renderer& renderer, float cameraX, float cameraY)
+	{
+		const HealthMeterConfig& meter = mConfig.healthMeter;
+		if (meter.width <= 2.0f || meter.height <= 2.0f)
+		{
+			return;
+		}
+
+		const float left = mX - (meter.width * 0.5f);
+		const float top = mY - 100.0f;
+
+		const float centerX = left + meter.width * 0.5f;
+		const float centerY = top + meter.height * 0.5f;
+
+		renderer.drawWorldAxisAlignedQuad(
+			centerX,
+			centerY,
+			meter.width * 0.5f,
+			meter.height * 0.5f,
+			0.05f,
+			0.05f,
+			0.05f,
+			0.85f);
+
+		const float ratio = healthRatio();
+		const float innerHeight = std::max(1.0f, meter.height - meter.border * 2.0f);
+		const float innerWidthMax = std::max(1.0f, meter.width - meter.border * 2.0f);
+		const float innerWidth = std::max(1.0f, innerWidthMax * ratio);
+		const float innerLeft = left + meter.border;
+		const float innerCenterX = innerLeft + innerWidth * 0.5f;
+		const float innerCenterY = top + meter.height * 0.5f;
+
+		const float red = (ratio < 0.35f) ? 0.95f : 0.20f;
+		const float green = (ratio < 0.35f) ? 0.25f : 0.90f;
+		const float blue = 0.20f;
+
+		renderer.drawWorldAxisAlignedQuad(
+			innerCenterX,
+			innerCenterY,
+			innerWidth * 0.5f,
+			innerHeight * 0.5f,
+			red,
+			green,
+			blue,
+			0.95f);
+	}
+
+	void Player::adjustHealth(float deltaTime)
+	{
+		playerHealth = std::max(
+			0.0f,
+			playerHealth -
+			mConfig.healthMeter.decay * deltaTime);
+	}
+
+	float Player::healthRatio()
+	{
+		const float maxCharge = mConfig.healthMeter.maxCharge;
+		if (maxCharge <= 0.0f)
+		{
+			return 0.0f;
+		}
+
+		return std::min(1.0f, std::max(0.0f, playerHealth / maxCharge));
 	}
