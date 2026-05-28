@@ -13,6 +13,28 @@ namespace CardBoard
 		float ambientFeather = 14.0f;
 	};
 
+	struct FlashlightMeterConfig
+	{
+		float maxChargeSeconds = 10.0f;
+		float drainPerSecond = 1.0f;
+		float rechargePerSecond = 0.75f;
+		float minChargeToToggleOn = 0.25f;
+
+		float screenOffsetX = 20.0f;
+		float screenOffsetY = 20.0f;
+		float width = 180.0f;
+		float height = 16.0f;
+		float border = 2.0f;
+	};
+
+	struct FlashlightStunConfig
+	{
+		float extraDrainPerSecond = 3.2f;
+		float beamHalfAngleMultiplier = 1.35f;
+		float beamRangeMultiplier = 1.35f;
+		float coneFeatherMultiplier = 0.9f;
+	};
+
 	struct FootstepConfig
 	{
 		float intervalWalk = 0.42f;
@@ -43,6 +65,8 @@ namespace CardBoard
 		float desiredSpriteBoxSize = 96.0f;
 
 		FlashlightConfig flashlight;
+		FlashlightMeterConfig flashlightMeter;
+		FlashlightStunConfig flashlightStun;
 		FootstepConfig footstep;
 	};
 }
