@@ -69,7 +69,7 @@ namespace CardBoard
 		updateCamera();
 		mRenderer->setCamera(mCameraX, mCameraY);
 
-		LogManager::getInstance().log("cardBoard engine started (WASD, Shift sprint, LMB toggle flashlight, H debug).");
+		LogManager::getInstance().log("cardBoard engine started (WASD, Shift sprint, LMB flashlight toggle, hold Space stun beam, H debug).");
 		return true;
 	}
 
@@ -117,6 +117,7 @@ namespace CardBoard
 		const Uint8* keys = SDL_GetKeyboardState(nullptr);
 		const bool sprintHeld =
 			keys[SDL_SCANCODE_LSHIFT] != 0u || keys[SDL_SCANCODE_RSHIFT] != 0u;
+		const bool stunHeld = keys[SDL_SCANCODE_SPACE] != 0u;
 
 		mPlayer->update(
 			deltaTime,
@@ -127,7 +128,8 @@ namespace CardBoard
 			keys[SDL_SCANCODE_A] != 0,
 			keys[SDL_SCANCODE_S] != 0,
 			keys[SDL_SCANCODE_D] != 0,
-			sprintHeld);
+			sprintHeld,
+			stunHeld);
 
 		updateCamera();
 		mRenderer->setCamera(mCameraX, mCameraY);
@@ -142,6 +144,7 @@ namespace CardBoard
 		mPlayer->drawNoisePulses(*mRenderer);
 		mPlayer->drawSprite(*mRenderer);
 		mPlayer->drawHitboxDebug(*mRenderer);
+		mPlayer->drawFlashlightMeter(*mRenderer, mCameraX, mCameraY);
 		mRenderer->present();
 	}
 

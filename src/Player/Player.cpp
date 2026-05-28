@@ -53,6 +53,7 @@ namespace CardBoard
 		mHitboxHalfW = mConfig.hitboxHalfW;
 		mHitboxHalfH = mConfig.hitboxHalfH;
 		mFlashlightOn = false;
+		mFlashlightChargeSeconds = mConfig.flashlightMeter.maxChargeSeconds;
 
 		mSprite = renderer.createSprite("textures/board8x8.png");
 		if (mSprite == nullptr)
@@ -101,7 +102,26 @@ namespace CardBoard
 
 	void Player::toggleFlashlight()
 	{
-		mFlashlightOn = !mFlashlightOn;
+		if (mFlashlightOn)
+		{
+			mFlashlightOn = false;
+			return;
+		}
+
+		if (mFlashlightChargeSeconds >= mConfig.flashlightMeter.minChargeToToggleOn)
+		{
+			mFlashlightOn = true;
+		}
+	}
+
+	float Player::flashlightChargeRatio() const
+	{
+		const float maxCharge = mConfig.flashlightMeter.maxChargeSeconds;
+		if (maxCharge <= 0.0f)
+		{
+			return 0.0f;
+		}
+		return std::min(1.0f, std::max(0.0f, mFlashlightChargeSeconds / maxCharge));
 	}
 
 	void Player::emitNoisePulse(float x, float y, bool loud)
@@ -200,7 +220,8 @@ namespace CardBoard
 		bool a,
 		bool s,
 		bool d,
-		bool sprintHeld)
+		bool sprintHeld,
+		bool stunHeld)
 	{
 		(void)cameraX;
 		(void)cameraY;
@@ -320,6 +341,30 @@ namespace CardBoard
 			mHitboxDebugSprite->setX(static_cast<int>(mX));
 			mHitboxDebugSprite->setY(static_cast<int>(mY));
 		}
+
+		mFlashlightStunActive = (mFlashlightOn && stunHeld);
+
+		const FlashlightMeterConfig& meter = mConfig.flashlightMeter;
+		const FlashlightStunConfig& stun = mConfig.flashlightStun;
+		const float drainPerSecond = meter.drainPerSecond
+			+ (mFlashlightStunActive ? stun.extraDrainPerSecond : 0.0f);
+		if (mFlashlightOn)
+		{
+			mFlashlightChargeSeconds = std::max(
+				0.0f,
+				mFlashlightChargeSeconds - drainPerSecond * deltaTime);
+			if (mFlashlightChargeSeconds <= 0.0f)
+			{
+				mFlashlightOn = false;
+				mFlashlightStunActive = false;
+			}
+		}
+		else
+		{
+			mFlashlightChargeSeconds = std::min(
+				meter.maxChargeSeconds,
+				mFlashlightChargeSeconds + meter.rechargePerSecond * deltaTime);
+		}
 	}
 
 	void Player::drawSprite(Renderer& renderer) const
@@ -346,14 +391,21 @@ namespace CardBoard
 		}
 
 		const FlashlightConfig& fl = mConfig.flashlight;
+		const FlashlightStunConfig& stun = mConfig.flashlightStun;
+		const bool stunVisual = mFlashlightOn && mFlashlightStunActive;
+		const float halfAngle = stunVisual ? fl.halfAngleDeg * stun.beamHalfAngleMultiplier : fl.halfAngleDeg;
+		const float beamRange = stunVisual ? fl.beamRange * stun.beamRangeMultiplier : fl.beamRange;
+		const float featherDeg = stunVisual
+			? std::max(0.5f, fl.featherDeg * stun.coneFeatherMultiplier)
+			: fl.featherDeg;
 		renderer.drawFlashlightMask(
 			mX,
 			mY,
 			mFacingDeg,
 			mFlashlightOn,
-			fl.halfAngleDeg,
-			fl.beamRange,
-			fl.featherDeg,
+			halfAngle,
+			beamRange,
+			featherDeg,
 			fl.ambientRadius,
 			fl.ambientFeather,
 			fl.maskAlpha,
@@ -361,6 +413,66 @@ namespace CardBoard
 			cameraY,
 			map.wireFlat(),
 			map.segmentCount());
+	}
+
+	FlashlightStunQuery Player::flashlightStunQuery() const
+	{
+		FlashlightStunQuery query;
+		query.active = mFlashlightOn && mFlashlightStunActive;
+		query.originX = mX;
+		query.originY = mY;
+		query.facingDeg = mFacingDeg;
+		query.halfAngleDeg = mConfig.flashlight.halfAngleDeg
+			* mConfig.flashlightStun.beamHalfAngleMultiplier;
+		query.range = mConfig.flashlight.beamRange
+			* mConfig.flashlightStun.beamRangeMultiplier;
+		return query;
+	}
+
+	void Player::drawFlashlightMeter(Renderer& renderer, float cameraX, float cameraY) const
+	{
+		const FlashlightMeterConfig& meter = mConfig.flashlightMeter;
+		if (meter.width <= 2.0f || meter.height <= 2.0f)
+		{
+			return;
+		}
+
+		const float left = cameraX + meter.screenOffsetX;
+		const float top = cameraY + meter.screenOffsetY;
+		const float centerX = left + meter.width * 0.5f;
+		const float centerY = top + meter.height * 0.5f;
+
+		renderer.drawWorldAxisAlignedQuad(
+			centerX,
+			centerY,
+			meter.width * 0.5f,
+			meter.height * 0.5f,
+			0.05f,
+			0.05f,
+			0.05f,
+			0.85f);
+
+		const float ratio = flashlightChargeRatio();
+		const float innerHeight = std::max(1.0f, meter.height - meter.border * 2.0f);
+		const float innerWidthMax = std::max(1.0f, meter.width - meter.border * 2.0f);
+		const float innerWidth = std::max(1.0f, innerWidthMax * ratio);
+		const float innerLeft = left + meter.border;
+		const float innerCenterX = innerLeft + innerWidth * 0.5f;
+		const float innerCenterY = top + meter.height * 0.5f;
+
+		const float red = (ratio < 0.35f) ? 0.95f : 0.20f;
+		const float green = (ratio < 0.35f) ? 0.25f : 0.90f;
+		const float blue = 0.20f;
+
+		renderer.drawWorldAxisAlignedQuad(
+			innerCenterX,
+			innerCenterY,
+			innerWidth * 0.5f,
+			innerHeight * 0.5f,
+			red,
+			green,
+			blue,
+			0.95f);
 	}
 
 	void Player::drawNoisePulses(Renderer& renderer) const
