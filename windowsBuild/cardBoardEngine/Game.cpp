@@ -11,7 +11,10 @@
 
 #include "SoundSystem.h"
 
+#include "SceneCardBoard.h"
+
 #include <iostream>
+
 
 Game* Game::sm_pInstance = 0;
 
@@ -45,6 +48,9 @@ Game::~Game()
 	delete m_pInputSystem;
 	m_pInputSystem = 0;
 
+	delete m_pSoundSystem;
+	m_pSoundSystem = 0;
+
 	for (Scene* scene : m_scenes)
 	{
 		delete scene;
@@ -61,8 +67,8 @@ void Game::Quit()
 
 bool Game::initialise()
 {
-	int bbWidth = 1350;
-	int bbHeight = 1000;
+	int bbWidth = 1280;
+	int bbHeight = 720;
 
 	m_pRenderer = new Renderer();
 	if (!m_pRenderer->initialize(true, bbWidth, bbHeight))
@@ -79,22 +85,26 @@ bool Game::initialise()
 	m_pRenderer->setClearColor(0, 0, 0);
 
 	m_pInputSystem = new InputSystem();
+
 	if (!m_pInputSystem->Initialise())
 	{
 		LogManager::getInstance().log("InputSystem failed to initialise!");
 		return false;
 	}
-
-
-	//m_iCurrentScene = 0;
-	
-	if (!SoundSystem::GetInstance().Initialise())
-	{
-		LogManager::getInstance().log("SoundSystem failed to Initialise");
-		return false;
-	}
 	
 	SoundSystem::GetInstance().SetMasterVolume(0.9f);
+
+
+
+	Scene* pCardBoardScene = new SceneCardBoard();
+	if (!pCardBoardScene->Initialise(*m_pRenderer)) {
+		LogManager::getInstance().log("Failed to init CardBoard Scene");
+		return false;
+	}
+	m_scenes.push_back(pCardBoardScene);
+
+	m_iCurrentScene = 0;
+
 
 	return true;
 }
@@ -143,9 +153,7 @@ void Game::Process(float deltaTime)
 
 	// TODO: Add game eobjects to process here!
 
-	SoundSystem::GetInstance().Update();
-
-	//m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
+	m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
 }
 
 void Game::Draw(Renderer& renderer)
@@ -155,8 +163,7 @@ void Game::Draw(Renderer& renderer)
 	renderer.clear();
 
 	// TODO: Add game objects to draw here!
-	DebugDraw();
-	//m_scenes[m_iCurrentScene]->Draw(renderer);
+    m_scenes[m_iCurrentScene]->Draw(renderer);
 
 	renderer.present();
 }
@@ -189,7 +196,7 @@ void Game::DebugDraw
 			Quit();
 		}
 		ImGui::SliderInt("Active scene", &m_iCurrentScene, 0, m_scenes.size() - 1, "%d");
-		//m_scenes[m_iCurrentScene]->DebugDraw();
+		m_scenes[m_iCurrentScene]->DebugDraw();
 		ImGui::End();
 	}
 }
@@ -233,7 +240,7 @@ void Game::InitialiseScene(int scene, Renderer& renderer)
 {
 	if (scene >= 0 && scene < (int)m_scenes.size())
 	{
-		//m_scenes[scene]->Initialise(renderer);
+		m_scenes[scene]->Initialise(renderer);
 		m_iCurrentScene = scene;
 	}
 }
