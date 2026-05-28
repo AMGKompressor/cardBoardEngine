@@ -146,6 +146,7 @@
     <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="CardBoardApp.cpp" />
     <ClCompile Include="Collision2D.cpp" />
+    <ClCompile Include="Collision2D_1.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
@@ -158,8 +159,10 @@
     <ClCompile Include="logmanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Map_1.cpp" />
     <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Player_1.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -176,6 +179,7 @@
     <ClInclude Include="BasicMapLayout.h" />
     <ClInclude Include="CardBoardApp.h" />
     <ClInclude Include="Collision2D.h" />
+    <ClInclude Include="Collision2D_1.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputSystem.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
@@ -189,9 +193,12 @@
     <ClInclude Include="lib\SDL_ttf-x86\include\SDL_ttf.h" />
     <ClInclude Include="logmanager.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Map_1.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerConfig.h" />
+    <ClInclude Include="PlayerConfig_1.h" />
+    <ClInclude Include="Player_1.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />

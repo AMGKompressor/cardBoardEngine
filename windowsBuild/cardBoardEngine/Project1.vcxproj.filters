@@ -28,6 +28,24 @@
     <Filter Include="Source Files\IMGUI">
       <UniqueIdentifier>{f171334a-c241-4f21-adfa-79d24cb5665e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\CardboardApp">
+      <UniqueIdentifier>{4161d84f-6bd7-4b68-ba36-2edbd6059cf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CardboardApp\Legacy">
+      <UniqueIdentifier>{29dcee2f-9628-4c41-b768-115694fc62ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CardboardApp\New">
+      <UniqueIdentifier>{ce324254-ee5b-4167-af06-52f6774ff9ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CardBoardApp">
+      <UniqueIdentifier>{78204e33-6624-428a-ab50-97c3e3b5b9ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CardBoardApp\Legacy">
+      <UniqueIdentifier>{280d89af-3db1-4e49-8a8a-cf1a9791cf8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CardBoardApp\New">
+      <UniqueIdentifier>{2ba89fc0-40b5-4802-825d-85eb9ac5cc12}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -78,18 +96,6 @@
     <ClCompile Include="SoundSystem.cpp">
       <Filter>Source Files\Game Engine Source</Filter>
     </ClCompile>
-    <ClCompile Include="CardBoardApp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="lib\imgui\imgui.cpp">
       <Filter>Source Files\IMGUI</Filter>
     </ClCompile>
@@ -110,6 +116,27 @@
     </ClCompile>
     <ClCompile Include="lib\imgui\imgui_widgets.cpp">
       <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CardBoardApp.cpp">
+      <Filter>Source Files\CardBoardApp\Legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision2D.cpp">
+      <Filter>Source Files\CardBoardApp\Legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Source Files\CardBoardApp\Legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\CardBoardApp\Legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision2D_1.cpp">
+      <Filter>Source Files\CardBoardApp\New</Filter>
+    </ClCompile>
+    <ClCompile Include="Map_1.cpp">
+      <Filter>Source Files\CardBoardApp\New</Filter>
+    </ClCompile>
+    <ClCompile Include="Player_1.cpp">
+      <Filter>Source Files\CardBoardApp\New</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -158,24 +185,6 @@
     <ClInclude Include="SoundSystem.h">
       <Filter>Header Files\Game Engine Headers</Filter>
     </ClInclude>
-    <ClInclude Include="BasicMapLayout.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="CardBoardApp.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision2D.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerConfig.h">
-      <Filter>Header Files\Idk what these files are</Filter>
-    </ClInclude>
     <ClInclude Include="lib\SDL_ttf-x86\include\SDL_ttf.h">
       <Filter>Header Files\Idk what these files are</Filter>
     </ClInclude>
@@ -202,6 +211,36 @@
     </ClInclude>
     <ClInclude Include="lib\imgui\imstb_textedit.h">
       <Filter>Header Files\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicMapLayout.h">
+      <Filter>Header Files\CardboardApp\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="CardBoardApp.h">
+      <Filter>Header Files\CardboardApp\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision2D.h">
+      <Filter>Header Files\CardboardApp\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Header Files\CardboardApp\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files\CardboardApp\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerConfig.h">
+      <Filter>Header Files\CardboardApp\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision2D_1.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="Map_1.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="Player_1.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerConfig_1.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
