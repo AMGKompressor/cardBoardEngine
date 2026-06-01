@@ -69,10 +69,23 @@ struct FootstepConfig
 	float pulseDuration = 0.55f;
 };
 
+struct StaminaMeterConfig
+{
+	float maxStamina = 100.0f;
+	float drainPerSecond = 15.0f;
+	float rechargePerSecond = 4.0f;
+	float screenOffsetX = 10.0f;
+	float screenOffsetY = 15.0f;
+	float width = 80.0f;
+	float height = 8.0f;
+	float border = 2.0f;
+
+};
+
 struct PlayerConfig
 {
 	float walkSpeed = 130.0f;
-	float sprintSpeed = 300.0f;
+	float sprintSpeed = 500.0f;
 	float speedRampUpPerSec = 260.0f;
 	float speedRampDownPerSec = 320.0f;
 
@@ -96,4 +109,6 @@ struct PlayerConfig
 	HealthMeterConfig healthMeter;
 
 	FootstepConfig footstep;
+
+	StaminaMeterConfig staminaMeter;
 };

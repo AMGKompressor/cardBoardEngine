@@ -17,7 +17,7 @@ public:
 
 	bool initialise(Renderer& renderer, Player* player, PlayerConfig* config);
 	void process(float deltaTime);
-	void draw(Renderer& renderer);
+	void draw(Renderer& renderer, float cameraX, float cameraY);
 
 	// SANITY
 	void drawSanityMeter(Renderer& renderer, float cameraX, float cameraY);
@@ -29,6 +29,12 @@ public:
 	void drawHealthMeter(Renderer& renderer, float cameraX, float cameraY);
 	void adjustHealth(float deltaTime);
 	float healthRatio();
+
+	// STAMINA
+	void drawStaminaMeter(Renderer& renderer, float cameraX, float cameraY);
+	void adjustStamina(float deltaTime);
+	float staminaRatio();
+
 protected:
 	
 private:

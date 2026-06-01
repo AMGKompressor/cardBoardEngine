@@ -59,6 +59,7 @@ class Sprite;
 
 		bool getDarkStatus() { return inDark; }
 		float getSanityPercentage() { return sanityPercentage; }
+		float getStaminaPercentage() { return staminaPercentage;  }
 
 		float x() const { return mX; }
 		float y() const { return mY; }
@@ -114,4 +115,10 @@ class Sprite;
 		float playerHealth;
 		bool inDark = false;
 		float sanityPercentage;
+
+		float staminaPercentage;
+		bool isRunning;
+
+	protected:
+		
 	};

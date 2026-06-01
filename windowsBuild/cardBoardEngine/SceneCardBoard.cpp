@@ -144,8 +144,8 @@ void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 	{
 		m_pPlayer->toggleFlashlight();
 	}
-	//  CHECK THIS LATER
 	m_pUI->adjustSanity(deltaTime);
+	m_pUI->adjustStamina(deltaTime);
 
 	updateCamera();
 	m_pRenderer->setCamera(mCameraX, mCameraY);
@@ -155,7 +155,7 @@ void SceneCardBoard::Draw(Renderer& renderer) {
 	m_pMap->drawFloor(*m_pRenderer);
 	m_pMap->drawWalls(*m_pRenderer);
 
-	m_pPlayer->drawFlashlightMask(*m_pRenderer, *m_pMap, mCameraX, mCameraY);
+	//m_pPlayer->drawFlashlightMask(*m_pRenderer, *m_pMap, mCameraX, mCameraY);
 
 	m_pPlayer->drawNoisePulses(*m_pRenderer);
 	m_pPlayer->drawSprite(*m_pRenderer);
@@ -163,12 +163,7 @@ void SceneCardBoard::Draw(Renderer& renderer) {
 
 	m_pPlayer->drawFlashlightMeter(*m_pRenderer, mCameraX, mCameraY);
 	
-	if (m_pPlayer->getDarkStatus() || m_pPlayer->getSanityPercentage() <= 9.0f)
-	{
-		m_pUI->drawSanityMeter(*m_pRenderer, mCameraX, mCameraY);
-	}
-
-	m_pUI->drawHealthMeter(*m_pRenderer, mCameraX, mCameraY);
+	m_pUI->draw(*m_pRenderer, mCameraX, mCameraY);
 
 	m_pItem->Draw(renderer);
 
@@ -177,6 +172,6 @@ void SceneCardBoard::Draw(Renderer& renderer) {
 }
 
 void SceneCardBoard::DebugDraw() {
-	;
+	
 }
 

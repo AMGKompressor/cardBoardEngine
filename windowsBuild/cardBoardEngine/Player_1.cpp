@@ -53,6 +53,8 @@
 
 		sanityPercentage = mConfig->sanityMeter.maxCharge;
 		playerHealth = mConfig->healthMeter.maxCharge;
+		staminaPercentage = mConfig->staminaMeter.maxStamina;
+		isRunning = false;
 
 		mSprite = renderer.createSprite("../assets/textures/board8x8.png");
 		if (mSprite == nullptr)
@@ -246,7 +248,16 @@
 
 		const bool moveInput = (dx != 0.0f || dy != 0.0f);
 		const float targetSpeed =
-			(moveInput && sprintHeld) ? mConfig->sprintSpeed : mConfig->walkSpeed;
+			(moveInput && sprintHeld && (staminaPercentage >= 15.0f)) ? mConfig->sprintSpeed : mConfig->walkSpeed;
+
+		if (sprintHeld)
+		{
+			isRunning = true;
+		}
+		else
+		{
+			isRunning = false;
+		}
 
 		if (mMoveSpeed < targetSpeed)
 		{
