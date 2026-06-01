@@ -37,22 +37,22 @@
 			renderer.drawWorldLineLoop(xy, segments, cr, cg, cb, ca);
 		}
 
-	bool Player::initialize(Renderer& renderer, const PlayerConfig& config, float spawnX, float spawnY)
+	bool Player::initialize(Renderer& renderer, PlayerConfig* config, float spawnX, float spawnY)
 	{
 		shutdown();
 		mConfig = config;
 		mX = spawnX;
 		mY = spawnY;
 		mFacingDeg = 0.0f;
-		mMoveSpeed = mConfig.walkSpeed;
-		mHitboxHalfW = mConfig.hitboxHalfW;
-		mHitboxHalfH = mConfig.hitboxHalfH;
+		mMoveSpeed = mConfig->walkSpeed;
+		mHitboxHalfW = mConfig->hitboxHalfW;
+		mHitboxHalfH = mConfig->hitboxHalfH;
 		mFlashlightOn = false;
 
-		mFlashlightChargeSeconds = mConfig.flashlightMeter.maxChargeSeconds;
+		mFlashlightChargeSeconds = mConfig->flashlightMeter.maxChargeSeconds;
 
-		sanityPercentage = mConfig.sanityMeter.maxCharge;
-		playerHealth = mConfig.healthMeter.maxCharge;
+		sanityPercentage = mConfig->sanityMeter.maxCharge;
+		playerHealth = mConfig->healthMeter.maxCharge;
 
 		mSprite = renderer.createSprite("../assets/textures/board8x8.png");
 		if (mSprite == nullptr)
@@ -61,11 +61,11 @@
 		}
 
 		const float sunekuScale =
-			mConfig.desiredSpriteBoxSize / static_cast<float>(mSprite->getWidth());
+			mConfig->desiredSpriteBoxSize / static_cast<float>(mSprite->getWidth());
 		mSprite->setScale(sunekuScale);
-		mSprite->setRedTint(mConfig.bodyTintR);
-		mSprite->setGreenTint(mConfig.bodyTintG);
-		mSprite->setBlueTint(mConfig.bodyTintB);
+		mSprite->setRedTint(mConfig->bodyTintR);
+		mSprite->setGreenTint(mConfig->bodyTintG);
+		mSprite->setBlueTint(mConfig->bodyTintB);
 		mHitboxHalfW = static_cast<float>(mSprite->getWidth()) * 0.5f;
 		mHitboxHalfH = static_cast<float>(mSprite->getHeight()) * 0.5f;
 
@@ -109,7 +109,7 @@
 			return;
 		}
 
-		if (mFlashlightChargeSeconds >= mConfig.flashlightMeter.minChargeToToggleOn)
+		if (mFlashlightChargeSeconds >= mConfig->flashlightMeter.minChargeToToggleOn)
 		{
 			inDark = false;
 			mFlashlightOn = true;
@@ -118,7 +118,7 @@
 
 	float Player::flashlightChargeRatio() const
 	{
-		const float maxCharge = mConfig.flashlightMeter.maxChargeSeconds;
+		const float maxCharge = mConfig->flashlightMeter.maxChargeSeconds;
 		if (maxCharge <= 0.0f)
 		{
 			return 0.0f;
@@ -133,7 +133,7 @@
 		pulse.cx = x;
 		pulse.cy = y;
 		pulse.maxRadius =
-			loud ? mConfig.footstep.sprintNoiseRadius : mConfig.footstep.walkNoiseRadius;
+			loud ? mConfig->footstep.sprintNoiseRadius : mConfig->footstep.walkNoiseRadius;
 		if (loud)
 		{
 			mSprintNoisePulses.push_back(pulse);
@@ -146,7 +146,7 @@
 
 	void Player::advanceNoisePulses(float deltaTime)
 	{
-		const float duration = mConfig.footstep.pulseDuration;
+		const float duration = mConfig->footstep.pulseDuration;
 		for (NoisePulse& pulse : mWalkNoisePulses)
 		{
 			pulse.age += deltaTime;
@@ -188,12 +188,12 @@
 		}
 
 		const float targetDeg =
-			-std::atan2(dy, dx) * 57.2957795f + mConfig.spriteFacingOffsetDeg;
+			-std::atan2(dy, dx) * 57.2957795f + mConfig->spriteFacingOffsetDeg;
 
-		const float maxStep = mConfig.turnRateDegPerSec * deltaTime;
+		const float maxStep = mConfig->turnRateDegPerSec * deltaTime;
 		const float delta = shortestAngleDeltaDegrees(mFacingDeg, targetDeg);
 
-		if (std::fabs(delta) <= maxStep || std::fabs(delta) <= mConfig.aimSnapDegrees)
+		if (std::fabs(delta) <= maxStep || std::fabs(delta) <= mConfig->aimSnapDegrees)
 		{
 			mFacingDeg = targetDeg;
 		}
@@ -246,19 +246,19 @@
 
 		const bool moveInput = (dx != 0.0f || dy != 0.0f);
 		const float targetSpeed =
-			(moveInput && sprintHeld) ? mConfig.sprintSpeed : mConfig.walkSpeed;
+			(moveInput && sprintHeld) ? mConfig->sprintSpeed : mConfig->walkSpeed;
 
 		if (mMoveSpeed < targetSpeed)
 		{
 			mMoveSpeed = std::min(
 				targetSpeed,
-				mMoveSpeed + mConfig.speedRampUpPerSec * deltaTime);
+				mMoveSpeed + mConfig->speedRampUpPerSec * deltaTime);
 		}
 		else if (mMoveSpeed > targetSpeed)
 		{
 			mMoveSpeed = std::max(
 				targetSpeed,
-				mMoveSpeed - mConfig.speedRampDownPerSec * deltaTime);
+				mMoveSpeed - mConfig->speedRampDownPerSec * deltaTime);
 		}
 
 		const float nextX = mX + dx * mMoveSpeed * deltaTime;
@@ -299,7 +299,7 @@
 			}
 
 			const float stepInterval =
-				sprintHeld ? mConfig.footstep.intervalSprint : mConfig.footstep.intervalWalk;
+				sprintHeld ? mConfig->footstep.intervalSprint : mConfig->footstep.intervalWalk;
 			mFootstepCooldown -= deltaTime;
 			if (mFootstepCooldown <= 0.0f)
 			{
@@ -308,7 +308,7 @@
 					if (mSprintPulseCooldown <= 0.0f)
 					{
 						emitNoisePulse(mX, mY, true);
-						mSprintPulseCooldown = mConfig.footstep.sprintPulseInterval;
+						mSprintPulseCooldown = mConfig->footstep.sprintPulseInterval;
 					}
 				}
 				else
@@ -316,7 +316,7 @@
 					if (mWalkPulseCooldown <= 0.0f)
 					{
 						emitNoisePulse(mX, mY, false);
-						mWalkPulseCooldown = mConfig.footstep.walkPulseInterval;
+						mWalkPulseCooldown = mConfig->footstep.walkPulseInterval;
 					}
 					mSprintPulseCooldown = 0.0f;
 				}
@@ -346,8 +346,8 @@
 
 		mFlashlightStunActive = (mFlashlightOn && stunHeld);
 
-		const FlashlightMeterConfig& meter = mConfig.flashlightMeter;
-		const FlashlightStunConfig& stun = mConfig.flashlightStun;
+		const FlashlightMeterConfig& meter = mConfig->flashlightMeter;
+		const FlashlightStunConfig& stun = mConfig->flashlightStun;
 		const float drainPerSecond = meter.drainPerSecond
 			+ (mFlashlightStunActive ? stun.extraDrainPerSecond : 0.0f);
 		if (mFlashlightOn)
@@ -368,7 +368,7 @@
 				mFlashlightChargeSeconds + meter.rechargePerSecond * deltaTime);
 		}
 
-		adjustSanity(deltaTime);
+		
 	}
 
 	void Player::drawSprite(Renderer& renderer) const
@@ -394,9 +394,9 @@
 			return;
 		}
 
-		const FlashlightConfig& fl = mConfig.flashlight;
+		const FlashlightConfig& fl = mConfig->flashlight;
 
-		const FlashlightStunConfig& stun = mConfig.flashlightStun;
+		const FlashlightStunConfig& stun = mConfig->flashlightStun;
 		const bool stunVisual = mFlashlightOn && mFlashlightStunActive;
 		const float halfAngle = stunVisual ? fl.halfAngleDeg * stun.beamHalfAngleMultiplier : fl.halfAngleDeg;
 		const float beamRange = stunVisual ? fl.beamRange * stun.beamRangeMultiplier : fl.beamRange;
@@ -428,16 +428,16 @@
 		query.originX = mX;
 		query.originY = mY;
 		query.facingDeg = mFacingDeg;
-		query.halfAngleDeg = mConfig.flashlight.halfAngleDeg
-			* mConfig.flashlightStun.beamHalfAngleMultiplier;
-		query.range = mConfig.flashlight.beamRange
-			* mConfig.flashlightStun.beamRangeMultiplier;
+		query.halfAngleDeg = mConfig->flashlight.halfAngleDeg
+			* mConfig->flashlightStun.beamHalfAngleMultiplier;
+		query.range = mConfig->flashlight.beamRange
+			* mConfig->flashlightStun.beamRangeMultiplier;
 		return query;
 	}
 
 	void Player::drawFlashlightMeter(Renderer& renderer, float cameraX, float cameraY) const
 	{
-		const FlashlightMeterConfig& meter = mConfig.flashlightMeter;
+		const FlashlightMeterConfig& meter = mConfig->flashlightMeter;
 		if (meter.width <= 2.0f || meter.height <= 2.0f)
 		{
 			return;
@@ -488,7 +488,7 @@
 			return;
 		}
 
-		const float duration = mConfig.footstep.pulseDuration;
+		const float duration = mConfig->footstep.pulseDuration;
 		for (const NoisePulse& pulse : mWalkNoisePulses)
 		{
 			if (pulse.maxRadius <= 1.0f)
@@ -531,158 +531,3 @@
 		}
 	}
 
-	void Player::drawSanityMeter(Renderer& renderer, float cameraX, float cameraY)
-	{
-		const SanityMeterConfig& meter = mConfig.sanityMeter;
-		if (meter.width <= 2.0f || meter.height <= 2.0f)
-		{
-			return;
-		}
-
-		const float left = mX - (meter.width * 0.5f);
-		const float top = mY - 80.0f;
-
-		const float centerX = left + meter.width * 0.5f;
-		const float centerY = top + meter.height * 0.5f;
-
-		renderer.drawWorldAxisAlignedQuad(
-			centerX,
-			centerY,
-			meter.width * 0.5f,
-			meter.height * 0.5f,
-			0.05f,
-			0.05f,
-			0.05f,
-			0.85f);
-
-		const float ratio = sanityRatio();
-		const float innerHeight = std::max(1.0f, meter.height - meter.border * 2.0f);
-		const float innerWidthMax = std::max(1.0f, meter.width - meter.border * 2.0f);
-		const float innerWidth = std::max(1.0f, innerWidthMax * ratio);
-		const float innerLeft = left + meter.border;
-		const float innerCenterX = innerLeft + innerWidth * 0.5f;
-		const float innerCenterY = top + meter.height * 0.5f;
-
-		const float red = (ratio < 0.35f) ? 0.95f : 0.20f;
-		const float green = (ratio < 0.35f) ? 0.25f : 0.90f;
-		const float blue = 0.20f;
-
-		renderer.drawWorldAxisAlignedQuad(
-			innerCenterX,
-			innerCenterY,
-			innerWidth * 0.5f,
-			innerHeight * 0.5f,
-			red,
-			green,
-			blue,
-			0.95f);
-	}
-	bool Player::noSanity(float deltaTime)
-	{
-		if (sanityPercentage <= 0.1f)
-		{
-			adjustHealth(deltaTime);
-			return true;
-		}
-		return false;
-	}
-
-	void Player::adjustSanity(float deltaTime)
-	{
-		if (inDark)
-		{
-			sanityPercentage = std::max(
-				0.0f,
-				sanityPercentage -
-				mConfig.sanityMeter.drainPerSecond * deltaTime);
-		}
-		else
-		{
-			sanityPercentage = std::min(
-				mConfig.sanityMeter.maxCharge,
-				sanityPercentage +
-				mConfig.sanityMeter.rechargePerSecond * deltaTime);
-		}
-
-		noSanity(deltaTime);
-		printf("%.2f\n", playerHealth);
-	}
-
-	float Player::sanityRatio()
-	{
-		const float maxCharge = mConfig.sanityMeter.maxCharge;
-		if (maxCharge <= 0.0f)
-		{
-			return 0.0f;
-		}
-		
-		
-		return std::min(1.0f, std::max(0.0f, sanityPercentage / maxCharge));
-
-	}
-
-	void Player::drawHealthMeter(Renderer& renderer, float cameraX, float cameraY)
-	{
-		const HealthMeterConfig& meter = mConfig.healthMeter;
-		if (meter.width <= 2.0f || meter.height <= 2.0f)
-		{
-			return;
-		}
-
-		const float left = mX - (meter.width * 0.5f);
-		const float top = mY - 100.0f;
-
-		const float centerX = left + meter.width * 0.5f;
-		const float centerY = top + meter.height * 0.5f;
-
-		renderer.drawWorldAxisAlignedQuad(
-			centerX,
-			centerY,
-			meter.width * 0.5f,
-			meter.height * 0.5f,
-			0.05f,
-			0.05f,
-			0.05f,
-			0.85f);
-
-		const float ratio = healthRatio();
-		const float innerHeight = std::max(1.0f, meter.height - meter.border * 2.0f);
-		const float innerWidthMax = std::max(1.0f, meter.width - meter.border * 2.0f);
-		const float innerWidth = std::max(1.0f, innerWidthMax * ratio);
-		const float innerLeft = left + meter.border;
-		const float innerCenterX = innerLeft + innerWidth * 0.5f;
-		const float innerCenterY = top + meter.height * 0.5f;
-
-		const float red = (ratio < 0.35f) ? 0.95f : 0.20f;
-		const float green = (ratio < 0.35f) ? 0.25f : 0.90f;
-		const float blue = 0.20f;
-
-		renderer.drawWorldAxisAlignedQuad(
-			innerCenterX,
-			innerCenterY,
-			innerWidth * 0.5f,
-			innerHeight * 0.5f,
-			red,
-			green,
-			blue,
-			0.95f);
-	}
-
-	void Player::adjustHealth(float deltaTime)
-	{
-		playerHealth = std::max(
-			0.0f,
-			playerHealth -
-			mConfig.healthMeter.decay * deltaTime);
-	}
-
-	float Player::healthRatio()
-	{
-		const float maxCharge = mConfig.healthMeter.maxCharge;
-		if (maxCharge <= 0.0f)
-		{
-			return 0.0f;
-		}
-
-		return std::min(1.0f, std::max(0.0f, playerHealth / maxCharge));
-	}

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "UI.h"
 #include "scene.h"
 #include "Player_1.h"
 #include "Map_1.h"
@@ -11,6 +12,8 @@ class Player;
 class Map;
 class InputSystem;
 class Item;
+class UI;
+class PlayerConfig;
 
 class SceneCardBoard : public Scene
 {
@@ -40,6 +43,8 @@ protected:
     Map* m_pMap;
     InputSystem* m_pInputSystem;
     Item* m_pItem;
+    UI* m_pUI;
+    PlayerConfig* m_pPlayerConfig;
 
     float mCameraX;
     float mCameraY;

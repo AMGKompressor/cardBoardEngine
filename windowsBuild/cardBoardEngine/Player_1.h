@@ -31,7 +31,7 @@ class Sprite;
 	class Player
 	{
 	public:
-		bool initialize(Renderer& renderer, const PlayerConfig& config, float spawnX, float spawnY);
+		bool initialize(Renderer& renderer, PlayerConfig* config, float spawnX, float spawnY);
 		void shutdown();
 
 		void update(
@@ -57,18 +57,8 @@ class Sprite;
 
 		void drawNoisePulses(Renderer& renderer) const;
 
-		// SANITY
-		void drawSanityMeter(Renderer& renderer, float cameraX, float cameraY);
-		bool noSanity(float deltaTime);
-		void adjustSanity(float deltaTime);
-		float sanityRatio();
 		bool getDarkStatus() { return inDark; }
 		float getSanityPercentage() { return sanityPercentage; }
-
-		// HEALTH
-		void drawHealthMeter(Renderer& renderer, float cameraX, float cameraY);
-		void adjustHealth(float deltaTime);
-		float healthRatio();
 
 		float x() const { return mX; }
 		float y() const { return mY; }
@@ -91,12 +81,10 @@ class Sprite;
 		void emitNoisePulse(float x, float y, bool loud);
 		void advanceNoisePulses(float deltaTime);
 
-		PlayerConfig mConfig;
+		PlayerConfig* mConfig;
 		Sprite* mSprite = nullptr;
 		Sprite* mHitboxDebugSprite = nullptr;
 
-		float mX = 0.0f;
-		float mY = 0.0f;
 		float mFacingDeg = 0.0f;
 		float mMoveSpeed = 0.0f;
 		float mHitboxHalfW = 48.0f;
@@ -117,8 +105,13 @@ class Sprite;
 		std::vector<NoisePulse> mWalkNoisePulses;
 		std::vector<NoisePulse> mSprintNoisePulses;
 
+		
+		
+	public:
+		// MEMBER DATA
+		float mX = 0.0f;
+		float mY = 0.0f;
 		float playerHealth;
 		bool inDark = false;
 		float sanityPercentage;
-		
 	};

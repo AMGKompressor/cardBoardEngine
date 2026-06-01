@@ -147,6 +147,9 @@
     <ClCompile Include="Item.cpp">
       <Filter>Source Files\CardBoardApp</Filter>
     </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>Source Files\CardBoardApp\New</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -259,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="Item.h">
       <Filter>Header Files\CardboardApp\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

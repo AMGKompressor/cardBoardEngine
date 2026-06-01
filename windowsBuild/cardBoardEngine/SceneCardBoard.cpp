@@ -10,6 +10,8 @@
 #include "sprite.h"
 #include "Item.h"
 
+#include "UI.h"
+
 #include "InputSystem.h"
 #include "game.h"
 
@@ -60,15 +62,18 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 	m_pMap->loadBasicTutorial();
 
 	m_pPlayer = new Player();
-	PlayerConfig config;
+	m_pPlayerConfig = new PlayerConfig;
 	const float spawnX = (BasicMapLayout::kEntryWest + BasicMapLayout::kEntryEast) * 0.5f;
 	const float spawnY = 900.0f;
 
-	if (!m_pPlayer->initialize(*m_pRenderer, config, spawnX, spawnY))
+	if (!m_pPlayer->initialize(*m_pRenderer, m_pPlayerConfig, spawnX, spawnY))
 	{
 		LogManager::getInstance().log("cardBoard: player init failed.");
 		return false;
 	}
+
+	m_pUI = new UI();
+	m_pUI->initialise(*m_pRenderer, m_pPlayer, m_pPlayerConfig);
 	m_pPlayer->toggleFlashlight();
 
 	mLastTime = SDL_GetPerformanceCounter();
@@ -139,8 +144,8 @@ void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 	{
 		m_pPlayer->toggleFlashlight();
 	}
-
-	
+	//  CHECK THIS LATER
+	m_pUI->adjustSanity(deltaTime);
 
 	updateCamera();
 	m_pRenderer->setCamera(mCameraX, mCameraY);
@@ -160,10 +165,10 @@ void SceneCardBoard::Draw(Renderer& renderer) {
 	
 	if (m_pPlayer->getDarkStatus() || m_pPlayer->getSanityPercentage() <= 9.0f)
 	{
-		m_pPlayer->drawSanityMeter(*m_pRenderer, mCameraX, mCameraY);
+		m_pUI->drawSanityMeter(*m_pRenderer, mCameraX, mCameraY);
 	}
 
-	m_pPlayer->drawHealthMeter(*m_pRenderer, mCameraX, mCameraY);
+	m_pUI->drawHealthMeter(*m_pRenderer, mCameraX, mCameraY);
 
 	m_pItem->Draw(renderer);
 
