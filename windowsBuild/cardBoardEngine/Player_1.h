@@ -7,6 +7,7 @@
 
 class Renderer;
 class Sprite;
+class MouseCursor;
 
 	class Map;
 
@@ -120,5 +121,5 @@ class Sprite;
 		bool isRunning;
 
 	protected:
-		
+		MouseCursor* cursor;
 	};

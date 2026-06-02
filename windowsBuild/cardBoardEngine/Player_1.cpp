@@ -5,6 +5,7 @@
 
 #include "renderer.h"
 #include "sprite.h"
+#include "MouseCursor.h"
 
 #include <SDL.h>
 
@@ -61,6 +62,9 @@
 		{
 			return false;
 		}
+
+		cursor = new MouseCursor();
+		cursor->Initialise(renderer);
 
 		const float sunekuScale =
 			mConfig->desiredSpriteBoxSize / static_cast<float>(mSprite->getWidth());
@@ -174,6 +178,7 @@
 
 	void Player::updateFacingTowardMouse(float deltaTime, float cameraX, float cameraY)
 	{
+
 		int mouseX = 0;
 		int mouseY = 0;
 		SDL_GetMouseState(&mouseX, &mouseY);
@@ -213,6 +218,8 @@
 		{
 			mHitboxDebugSprite->setAngle(mFacingDeg);
 		}
+
+		cursor->Process(deltaTime, worldMouseX, worldMouseY);
 	}
 
 	void Player::update(
@@ -370,6 +377,7 @@
 			{
 				mFlashlightOn = false;
 				mFlashlightStunActive = false;
+				inDark = true;
 			}
 		}
 		else
@@ -386,6 +394,8 @@
 		{
 			mSprite->draw(renderer);
 		}
+
+		cursor->Draw(renderer);
 	}
 
 	void Player::drawHitboxDebug(Renderer& renderer) const

@@ -162,6 +162,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Map_1.cpp" />
     <ClCompile Include="Matrix4.cpp" />
+    <ClCompile Include="MouseCursor.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Player_1.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="Map_1.h" />
     <ClInclude Include="Matrix4.h" />
+    <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerConfig.h" />
     <ClInclude Include="PlayerConfig_1.h" />
@@ -227,6 +229,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\board8x8.png" />
+    <Image Include="assets\textures\cursor.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="assets\textures\README.txt" />

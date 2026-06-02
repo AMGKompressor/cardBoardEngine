@@ -150,6 +150,9 @@
     <ClCompile Include="UI.cpp">
       <Filter>Source Files\CardBoardApp\New</Filter>
     </ClCompile>
+    <ClCompile Include="MouseCursor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -266,6 +269,9 @@
     <ClInclude Include="UI.h">
       <Filter>Header Files\CardboardApp\New</Filter>
     </ClInclude>
+    <ClInclude Include="MouseCursor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\line.frag" />
@@ -277,6 +283,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\board8x8.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\cursor.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
