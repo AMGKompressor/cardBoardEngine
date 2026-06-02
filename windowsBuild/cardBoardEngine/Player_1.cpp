@@ -378,8 +378,6 @@
 				meter.maxChargeSeconds,
 				mFlashlightChargeSeconds + meter.rechargePerSecond * deltaTime);
 		}
-
-		
 	}
 
 	void Player::drawSprite(Renderer& renderer) const
@@ -407,6 +405,9 @@
 
 		const FlashlightConfig& fl = mConfig->flashlight;
 
+		const float sanityRatio = std::max(0.1f, std::min(1.0f, sanityPercentage / mConfig->sanityMeter.maxCharge));
+		const float scaledAmbientRadius = std::max(72.0f, fl.ambientRadius * sanityRatio);
+
 		const FlashlightStunConfig& stun = mConfig->flashlightStun;
 		const bool stunVisual = mFlashlightOn && mFlashlightStunActive;
 		const float halfAngle = stunVisual ? fl.halfAngleDeg * stun.beamHalfAngleMultiplier : fl.halfAngleDeg;
@@ -423,7 +424,7 @@
 			halfAngle,
 			beamRange,
 			featherDeg,
-			fl.ambientRadius,
+			scaledAmbientRadius,
 			fl.ambientFeather,
 			fl.maskAlpha,
 			cameraX,

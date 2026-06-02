@@ -155,7 +155,7 @@ void SceneCardBoard::Draw(Renderer& renderer) {
 	m_pMap->drawFloor(*m_pRenderer);
 	m_pMap->drawWalls(*m_pRenderer);
 
-	//m_pPlayer->drawFlashlightMask(*m_pRenderer, *m_pMap, mCameraX, mCameraY);
+	m_pPlayer->drawFlashlightMask(*m_pRenderer, *m_pMap, mCameraX, mCameraY);
 
 	m_pPlayer->drawNoisePulses(*m_pRenderer);
 	m_pPlayer->drawSprite(*m_pRenderer);

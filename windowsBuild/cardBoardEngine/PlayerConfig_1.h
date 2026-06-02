@@ -5,10 +5,10 @@ struct FlashlightConfig
 {
 	float halfAngleDeg = 22.0f;
 	float beamRange = 460.0f;
-	float featherDeg = 4.0f;
+	float featherDeg = 10.0f;
 	float maskAlpha = 0.98f;
-	float ambientRadius = 72.0f;
-	float ambientFeather = 14.0f;
+	float ambientRadius = 200.0f;
+	float ambientFeather = 56.0f;
 };
 
 struct SanityMeterConfig
@@ -16,7 +16,6 @@ struct SanityMeterConfig
 	float maxCharge = 10.0f;
 	float drainPerSecond = .5f;
 	float rechargePerSecond = 0.4f;
-	
 
 	float screenOffsetX = 10.0f;
 	float screenOffsetY = 10.0f;
