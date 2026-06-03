@@ -1,0 +1,336 @@
+#include "SceneCardBoard.h"
+
+#include "Map_1.h"
+#include "BasicMapLayout_1.h"
+#include "Player_1.h"
+#include "PlayerConfig_1.h"
+
+#include "logmanager.h"
+#include "renderer.h"
+#include "sprite.h"
+#include "Item.h"
+
+#include "UI.h"
+#include "EnemyManager.h"
+
+#include "InputSystem.h"
+#include "vector2.h"
+#include "game.h"
+
+#include "imgui.h"
+
+#include <SDL.h>
+
+SceneCardBoard::SceneCardBoard()
+	: m_pRenderer {0}
+	, m_pMap{0}
+	, m_pPlayer{0}
+	, m_pSceneCardBoard {0}
+	, mCameraX {0.0f}
+	, mCameraY {0.0f}
+	, mLastTime {0}
+	, m_pInputSystem{ 0 }
+	, mLooping {true}
+	, m_pEnemies{0}
+	, mCollectedItems{0}
+{
+
+}
+
+SceneCardBoard::~SceneCardBoard() {
+	delete m_pPlayer;
+	m_pPlayer = nullptr;
+	delete m_pMap;
+	m_pMap = nullptr;
+	clearBatteries();
+
+	delete m_pEnemies;
+	m_pEnemies = nullptr;
+
+	//Dont delete m_pRenderer since the Game file owns it. we simply remove the pointer to it;
+	m_pRenderer = nullptr;
+
+	delete m_pInputSystem;
+	m_pInputSystem = nullptr;
+}
+
+
+bool SceneCardBoard::Initialise(Renderer& renderer) {
+	m_pRenderer = &renderer;
+	
+	const float spawnX = (BasicMapLayout::kEntryWest + BasicMapLayout::kEntryEast) * 0.5f;
+	const float spawnY = 900.0f;
+
+	m_pMap = new Map();
+	m_pMap->loadBasicTutorial();
+
+	m_pPlayer = new Player();
+	m_pPlayerConfig = new PlayerConfig;
+
+	if (!m_pPlayer->initialize(*m_pRenderer, m_pPlayerConfig, spawnX, spawnY))
+	{
+		LogManager::getInstance().log("cardBoard: player init failed.");
+		return false;
+	}
+
+	m_pUI = new UI();
+	m_pUI->initialise(*m_pRenderer, m_pPlayer, m_pPlayerConfig);
+
+	m_pEnemies = new EnemyManager();
+	m_pEnemies->syncHearingFromPlayerConfig(*m_pPlayerConfig);
+	if (!m_pEnemies->initialize(*m_pRenderer))
+	{
+		LogManager::getInstance().log("EnemyManager failed to init.");
+		return false;
+	}
+	m_pEnemies->buildNavigation(*m_pMap);
+
+	if (!spawnBatteries(renderer))
+	{
+		LogManager::getInstance().log("Failed to spawn batteries.");
+		return false;
+	}
+
+	m_pPlayer->toggleFlashlight();
+
+	mLastTime = SDL_GetPerformanceCounter();
+	updateCamera();
+	m_pRenderer->setCamera(mCameraX, mCameraY);
+
+	LogManager::getInstance().log(
+		"cardBoard started — Find batteries (green pulse), click to refill flashlight.");
+	return true;
+}
+
+void SceneCardBoard::clearBatteries()
+{
+	for (Item* battery : m_batteries)
+	{
+		delete battery;
+	}
+	m_batteries.clear();
+}
+
+// Spawn flashlight refill pickups at fixed map positions.
+bool SceneCardBoard::spawnBatteries(Renderer& renderer)
+{
+	clearBatteries();
+
+	for (const BasicMapLayout::BatterySpawns::Point& spawn : BasicMapLayout::BatterySpawns::kList)
+	{
+		Item* battery = new Item();
+		if (!battery->Initialise(renderer, ItemType::Battery))
+		{
+			delete battery;
+			clearBatteries();
+			return false;
+		}
+		battery->setWorldPosition(spawn.x, spawn.y);
+		m_batteries.push_back(battery);
+	}
+
+	return true;
+}
+
+// LMB: try each battery until one accepts pickup in range.
+bool SceneCardBoard::tryClickPickupBattery(
+	Player& player,
+	float worldMouseX,
+	float worldMouseY)
+{
+	for (Item* battery : m_batteries)
+	{
+		if (battery == nullptr)
+		{
+			continue;
+		}
+		if (battery->tryClickPickup(player, worldMouseX, worldMouseY))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void SceneCardBoard::updateCamera() {
+	if (m_pRenderer == nullptr || m_pPlayer == nullptr || m_pMap == nullptr)
+	{
+		return;
+	}
+
+	const float viewW = static_cast<float>(m_pRenderer->getWidth());
+	const float viewH = static_cast<float>(m_pRenderer->getHeight());
+
+	float maxCamX = m_pMap->width() - viewW;
+	float maxCamY = m_pMap->height() - viewH;
+	if (maxCamX < 0.0f) { maxCamX = 0.0f; }
+	if (maxCamY < 0.0f) { maxCamY = 0.0f; }
+
+	mCameraX = m_pPlayer->x() - viewW * 0.5f;
+	mCameraY = m_pPlayer->y() - viewH * 0.5f;
+
+	if (mCameraX < 0.0f) { mCameraX = 0.0f; }
+	if (mCameraY < 0.0f) { mCameraY = 0.0f; }
+	if (mCameraX > maxCamX) { mCameraX = maxCamX; }
+	if (mCameraY > maxCamY) { mCameraY = maxCamY; }
+}
+
+void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
+
+	if (inputSystem.GetKeyState(SDL_SCANCODE_ESCAPE) == BS_PRESSED) {
+		Game::GetInstance().Quit();
+		return;
+	}
+
+	if (deltaTime < 0.0f)
+	{
+		deltaTime = 0.0f;
+	}
+	else if (deltaTime > 0.1f)
+	{
+		deltaTime = 0.1f;
+	}
+	SDL_PumpEvents();
+	const Uint8* keys = SDL_GetKeyboardState(nullptr);
+	const bool sprintHeld = keys[SDL_SCANCODE_LSHIFT] != 0u || keys[SDL_SCANCODE_RSHIFT] != 0u;
+	const bool stunHeld = keys[SDL_SCANCODE_SPACE] != 0u;
+
+	m_pPlayer->update(
+		deltaTime,
+		*m_pMap,
+		mCameraX,
+		mCameraY,
+		keys[SDL_SCANCODE_W] != 0,
+		keys[SDL_SCANCODE_A] != 0,
+		keys[SDL_SCANCODE_S] != 0,
+		keys[SDL_SCANCODE_D] != 0,
+		sprintHeld,
+		stunHeld);
+
+	if (inputSystem.GetMouseButtonState(1) == BS_RELEASED)
+	{
+		const Vector2& mouse = inputSystem.GetMousePosition();
+		const float worldMouseX = mCameraX + mouse.x;
+		const float worldMouseY = mCameraY + mouse.y;
+
+		const bool pickedUpItem = tryClickPickupBattery(*m_pPlayer, worldMouseX, worldMouseY);
+		if (pickedUpItem)
+		{
+			++mCollectedItems;
+		}
+
+		if (!pickedUpItem)
+		{
+			m_pPlayer->toggleFlashlight();
+		}
+	}
+
+	if (inputSystem.GetKeyState(SDL_SCANCODE_H) == BS_PRESSED)
+	{
+		m_pPlayer->setShowHitboxDebug(!m_pPlayer->showHitboxDebug());
+		if (m_pPlayer->showHitboxDebug())
+		{
+			LogManager::getInstance().log(
+				"Debug overlay ON (H): hitbox, green nav nodes, yellow enemy BFS paths.");
+		}
+		else
+		{
+			LogManager::getInstance().log("Debug overlay OFF (H).");
+		}
+	}
+
+	if (m_pEnemies != nullptr)
+	{
+		m_pEnemies->update(deltaTime, *m_pMap, *m_pPlayer, m_batteries);
+	}
+
+	m_pUI->adjustSanity(deltaTime);
+	m_pUI->adjustStamina(deltaTime);
+
+	updateCamera();
+	m_pRenderer->setCamera(mCameraX, mCameraY);
+}
+
+void SceneCardBoard::Draw(Renderer& renderer) {
+	m_pMap->drawFloor(*m_pRenderer);
+	m_pMap->drawWalls(*m_pRenderer);
+
+	const bool navDebug = m_pPlayer != nullptr && m_pPlayer->showHitboxDebug();
+	if (navDebug && m_pEnemies != nullptr && m_pRenderer != nullptr)
+	{
+		m_pEnemies->drawNavDebug(
+			*m_pRenderer,
+			mCameraX,
+			mCameraY,
+			static_cast<float>(m_pRenderer->getWidth()),
+			static_cast<float>(m_pRenderer->getHeight()));
+	}
+
+	if (m_pEnemies != nullptr)
+	{
+		m_pEnemies->draw(*m_pRenderer);
+	}
+
+	if (navDebug && m_pEnemies != nullptr && m_pRenderer != nullptr)
+	{
+		m_pEnemies->drawPathDebug(*m_pRenderer);
+	}
+
+	m_pPlayer->drawFlashlightMask(*m_pRenderer, *m_pMap, mCameraX, mCameraY);
+
+	m_pPlayer->drawNoisePulses(*m_pRenderer);
+	m_pPlayer->drawSprite(*m_pRenderer);
+	m_pPlayer->drawHitboxDebug(*m_pRenderer);
+
+	m_pPlayer->drawFlashlightMeter(*m_pRenderer, mCameraX, mCameraY);
+	
+	m_pUI->draw(*m_pRenderer, mCameraX, mCameraY);
+
+	for (Item* battery : m_batteries)
+	{
+		if (battery != nullptr)
+		{
+			battery->Draw(renderer);
+		}
+	}
+
+	//Didnt need this for renderering, adding it lead to flickering.
+	//m_pRenderer->present();
+}
+
+void SceneCardBoard::DebugDraw() {
+	int remaining = 0;
+	int stolen = 0;
+	for (Item* battery : m_batteries)
+	{
+		if (battery == nullptr)
+		{
+			continue;
+		}
+		if (battery->isCollected())
+		{
+			continue;
+		}
+		if (battery->isStolen())
+		{
+			++stolen;
+		}
+		else
+		{
+			++remaining;
+		}
+	}
+	ImGui::Text("Batteries collected: %d", mCollectedItems);
+	ImGui::Text("Batteries remaining: %d (stolen: %d)", remaining, stolen);
+	if (m_pPlayer != nullptr)
+	{
+		ImGui::Text(
+			"H — world debug: %s (green=BFS nodes, yellow=paths, cyan=next waypoint)",
+			m_pPlayer->showHitboxDebug() ? "ON" : "off");
+	}
+	if (m_pEnemies != nullptr)
+	{
+		m_pEnemies->debugDraw();
+	}
+}
+
