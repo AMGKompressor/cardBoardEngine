@@ -123,15 +123,6 @@
     <ClCompile Include="CardBoardApp.cpp">
       <Filter>Source Files\CardBoardApp\Legacy</Filter>
     </ClCompile>
-    <ClCompile Include="Collision2D.cpp">
-      <Filter>Source Files\CardBoardApp\Legacy</Filter>
-    </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Source Files\CardBoardApp\Legacy</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files\CardBoardApp\Legacy</Filter>
-    </ClCompile>
     <ClCompile Include="Collision2D_1.cpp">
       <Filter>Source Files\CardBoardApp\New</Filter>
     </ClCompile>

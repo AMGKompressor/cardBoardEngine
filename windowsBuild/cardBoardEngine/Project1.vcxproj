@@ -145,7 +145,6 @@
   <ItemGroup>
     <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="CardBoardApp.cpp" />
-    <ClCompile Include="Collision2D.cpp" />
     <ClCompile Include="Collision2D_1.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputSystem.cpp" />
@@ -159,11 +158,9 @@
     <ClCompile Include="lib\imgui\imgui_widgets.cpp" />
     <ClCompile Include="logmanager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Map.cpp" />
     <ClCompile Include="Map_1.cpp" />
     <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Player_1.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />

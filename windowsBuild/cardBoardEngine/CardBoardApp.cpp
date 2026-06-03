@@ -1,9 +1,9 @@
 #include "CardBoardApp.h"
 
-#include "Map.h"
-#include "BasicMapLayout.h"
-#include "Player.h"
-#include "PlayerConfig.h"
+#include "Map_1.h"
+#include "BasicMapLayout_1.h"
+#include "Player_1.h"
+#include "PlayerConfig_1.h"
 
 #include "logmanager.h"
 #include "renderer.h"
@@ -52,13 +52,13 @@ namespace CardBoard
 		}
 
 		mMap = new Map();
-		mMap->loadBasicTutorial();
+		mMap->generate();
 
 		mPlayer = new Player();
 		PlayerConfig config;
-		const float spawnX =
-			(BasicMapLayout::kEntryWest + BasicMapLayout::kEntryEast) * 0.5f;
-		const float spawnY = 900.0f;
+		const float spawnX = mMap->width() * 0.5f;
+		const float spawnY = mMap->height() * 0.5f;
+
 		if (!mPlayer->initialize(*mRenderer, config, spawnX, spawnY))
 		{
 			LogManager::getInstance().log("cardBoard: player init failed.");

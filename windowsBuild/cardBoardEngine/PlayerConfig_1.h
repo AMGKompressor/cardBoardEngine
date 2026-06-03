@@ -37,7 +37,7 @@ struct HealthMeterConfig
 };
 struct FlashlightMeterConfig
 {
-	float maxChargeSeconds = 10.0f;
+	float maxChargeSeconds = 20.0f;
 	float drainPerSecond = 1.0f;
 	float rechargePerSecond = 0.75f;
 	float minChargeToToggleOn = 0.25f;

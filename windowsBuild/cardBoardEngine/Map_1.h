@@ -2,6 +2,7 @@
 #pragma once
 
 #include "BasicMapLayout_1.h"
+#include "Room.h"
 
 #include <array>
 #include <vector>
@@ -11,10 +12,18 @@ class Renderer;
 class Map
 {
 public:
-	static constexpr float kDefaultWidth = 2560.0f;
-	static constexpr float kDefaultHeight = 1920.0f;
 
-	void loadBasicTutorial();
+	Map();
+	~Map();
+
+	// Map Size 4x4 = 16 rooms
+	static constexpr int kGridCols = 4;
+	static constexpr int kGridRows = 4;
+
+	static constexpr float kDefaultWidth = Room::kRoomSize * kGridCols;
+	static constexpr float kDefaultHeight = Room::kRoomSize * kGridRows;
+
+	void generate();
 
 	float width() const { return mWidth; }
 	float height() const { return mHeight; }
@@ -42,12 +51,17 @@ public:
 	void drawFloor(Renderer& renderer) const;
 
 private:
+	void bake();
+
 	template <std::size_t N>
 	void setWallsFromLayout(const std::array<WallSegment, N>& walls);
 
 	float mWidth = kDefaultWidth;
 	float mHeight = kDefaultHeight;
-	std::array<float, 256> mWireFlat{};
+	std::vector<float> mWireFlat;
 	int mSegmentCount = 0;
+
 	mutable std::vector<bool> mPrevWallTouch;
+
+	std::vector<Room> mRooms;
 };

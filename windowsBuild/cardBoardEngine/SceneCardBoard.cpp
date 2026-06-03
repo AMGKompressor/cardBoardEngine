@@ -59,7 +59,7 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 	}
 
 	m_pMap = new Map();
-	m_pMap->loadBasicTutorial();
+	m_pMap->generate();
 
 	m_pPlayer = new Player();
 	m_pPlayerConfig = new PlayerConfig;

@@ -3,13 +3,11 @@
 
 #include <cstdint>
 
-class Renderer;
+#include "Map_1.h"
+#include "Player_1.h"
 
-namespace CardBoard
-{
-	class Map;
-	class Player;
-}
+
+class Renderer;
 
 namespace CardBoard
 {
@@ -38,7 +36,7 @@ namespace CardBoard
 		static CardBoardApp* sInstance;
 
 		::Renderer* mRenderer = nullptr;
-		Map* mMap = nullptr;
+		::Map* mMap = nullptr;
 		Player* mPlayer = nullptr;
 
 		float mCameraX = 0.0f;
