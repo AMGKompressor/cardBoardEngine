@@ -555,3 +555,7 @@
 		}
 	}
 
+	void Player::refillFlashlightCharge()
+	{
+
+	}

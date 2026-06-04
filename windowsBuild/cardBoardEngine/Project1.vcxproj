@@ -145,6 +145,8 @@
   <ItemGroup>
     <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="Collision2D_1.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="Item.cpp" />
@@ -159,7 +161,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map_1.cpp" />
     <ClCompile Include="Matrix4.cpp" />
+    <ClCompile Include="Minimap.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
+    <ClCompile Include="NavGrid.cpp" />
     <ClCompile Include="Player_1.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Room.cpp" />
@@ -179,6 +183,9 @@
     <ClInclude Include="AnimatedSprite.h" />
     <ClInclude Include="BasicMapLayout_1.h" />
     <ClInclude Include="Collision2D_1.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyManager.h" />
+    <ClInclude Include="EnemyType.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputSystem.h" />
     <ClInclude Include="Item.h" />
@@ -194,7 +201,10 @@
     <ClInclude Include="logmanager.h" />
     <ClInclude Include="Map_1.h" />
     <ClInclude Include="Matrix4.h" />
+    <ClInclude Include="Minimap.h" />
+    <ClInclude Include="MinimapConfig.h" />
     <ClInclude Include="MouseCursor.h" />
+    <ClInclude Include="NavGrid.h" />
     <ClInclude Include="PlayerConfig_1.h" />
     <ClInclude Include="Player_1.h" />
     <ClInclude Include="Renderer.h" />

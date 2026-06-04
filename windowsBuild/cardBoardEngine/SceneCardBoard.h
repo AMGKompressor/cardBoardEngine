@@ -14,6 +14,8 @@ class InputSystem;
 class Item;
 class UI;
 class PlayerConfig;
+class EnemyManager;
+class Minimap;
 
 class SceneCardBoard : public Scene
 {
@@ -34,6 +36,10 @@ private:
 
     void updateCamera();
 
+    bool spawnBatteries(Renderer& renderer);
+    void clearBatteries();
+    bool tryClickPickupBattery(Player& player, float worldMouseX, float worldMouseY);
+
 public:
 
 protected:
@@ -51,6 +57,9 @@ protected:
     bool mLooping;
     std::int64_t mLastTime;
 
+    Minimap* m_pMinimap;
+    std::vector<Item*> m_batteries; // From BasicMapLayout::BatterySpawns
+    EnemyManager* m_pEnemies;
 private:
 
 };

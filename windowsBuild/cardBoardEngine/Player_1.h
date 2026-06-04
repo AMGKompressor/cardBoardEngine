@@ -73,6 +73,8 @@ class MouseCursor;
 		bool flashlightStunActive() const { return mFlashlightStunActive; }
 		FlashlightStunQuery flashlightStunQuery() const;
 
+		void refillFlashlightCharge();
+
 		bool showHitboxDebug() const { return mShowHitboxDebug; }
 		void setShowHitboxDebug(bool show) { mShowHitboxDebug = show; }
 

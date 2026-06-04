@@ -10,8 +10,11 @@
 #include "Item.h"
 
 #include "UI.h"
+#include "EnemyManager.h"
+#include "Minimap.h"
 
 #include "InputSystem.h"
+#include "Vector2.h"
 #include "game.h"
 
 #include <SDL.h>
@@ -73,6 +76,22 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 
 	m_pUI = new UI();
 	m_pUI->initialise(*m_pRenderer, m_pPlayer, m_pPlayerConfig);
+
+	m_pEnemies = new EnemyManager();
+	m_pEnemies->syncHearingFromPlayerConfig(*m_pPlayerConfig);
+	if (!m_pEnemies->initialize(*m_pRenderer))
+	{
+		LogManager::getInstance().log("EnemyManager failed to init.");
+		return false;
+	}
+	m_pEnemies->buildNavigation(*m_pMap);
+
+	if (!spawnBatteries(renderer))
+	{
+		LogManager::getInstance().log("Failed to spawn batteries.");
+		return false;
+	}
+
 	m_pPlayer->toggleFlashlight();
 
 	mLastTime = SDL_GetPerformanceCounter();
@@ -143,6 +162,26 @@ void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 	{
 		m_pPlayer->toggleFlashlight();
 	}
+
+	if (inputSystem.GetKeyState(SDL_SCANCODE_H) == BS_PRESSED)
+	{
+		m_pPlayer->setShowHitboxDebug(!m_pPlayer->showHitboxDebug());
+		if (m_pPlayer->showHitboxDebug())
+		{
+			LogManager::getInstance().log(
+				"Debug overlay ON (H): hitbox, green nav nodes, yellow enemy BFS paths.");
+		}
+		else
+		{
+			LogManager::getInstance().log("Debug overlay OFF (H).");
+		}
+	}
+
+	if (m_pEnemies != nullptr)
+	{
+		m_pEnemies->update(deltaTime, *m_pMap, *m_pPlayer, m_batteries);
+	}
+
 	m_pUI->adjustSanity(deltaTime);
 	m_pUI->adjustStamina(deltaTime);
 
@@ -153,6 +192,17 @@ void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 void SceneCardBoard::Draw(Renderer& renderer) {
 	m_pMap->drawFloor(*m_pRenderer);
 	m_pMap->drawWalls(*m_pRenderer);
+
+	const bool navDebug = m_pPlayer != nullptr && m_pPlayer->showHitboxDebug();
+	if (navDebug && m_pEnemies != nullptr && m_pRenderer != nullptr)
+	{
+		m_pEnemies->drawNavDebug(
+			*m_pRenderer,
+			mCameraX,
+			mCameraY,
+			static_cast<float>(m_pRenderer->getWidth()),
+			static_cast<float>(m_pRenderer->getHeight()));
+	}
 
 	m_pPlayer->drawFlashlightMask(*m_pRenderer, *m_pMap, mCameraX, mCameraY);
 
@@ -166,6 +216,16 @@ void SceneCardBoard::Draw(Renderer& renderer) {
 
 	m_pItem->Draw(renderer);
 
+	if (m_pEnemies != nullptr)
+	{
+		m_pEnemies->draw(*m_pRenderer);
+	}
+
+	if (navDebug && m_pEnemies != nullptr && m_pRenderer != nullptr)
+	{
+		m_pEnemies->drawPathDebug(*m_pRenderer);
+	}
+
 	//Didnt need this for renderering, adding it lead to flickering.
 	//m_pRenderer->present();
 }
@@ -174,3 +234,15 @@ void SceneCardBoard::DebugDraw() {
 	
 }
 
+bool SceneCardBoard::spawnBatteries(Renderer& renderer)
+{
+	return true;
+}
+void SceneCardBoard::clearBatteries()
+{
+
+}
+bool SceneCardBoard::tryClickPickupBattery(Player& player, float worldMouseX, float worldMouseY)
+{
+	return true;
+}
