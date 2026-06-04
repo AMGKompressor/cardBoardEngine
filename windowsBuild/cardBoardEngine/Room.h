@@ -1,46 +1,51 @@
 #pragma once
-
 #include "WallSegment.h"
 #include <vector>
-#include <cstdlib>
+#include <cstdint>
 
 class Renderer;
 
+// -----------------------------------------------------------------------------
+// Room
+// A fixed 640x640 cell. All rooms 1-4 are open on all 4 sides with the same
+// doorway gap (270..370). Each has unique internal walls. Room 5 is fully closed.
+// -----------------------------------------------------------------------------
 class Room
 {
 public:
-	enum DoorWayFlags : uint8_t
-	{
-		DOOR_NONE = 0,
-		DOOR_NORTH = 1 << 0,
-		DOOR_EAST = 1 << 1,
-		DOOR_SOUTH = 1 << 2,
-		DOOR_WEST = 1 << 3,
-	};
+    // Room type constants — used as index in Map::kLayout matrix
+    enum RoomType : uint8_t
+    {
+        ROOM_1 = 1,   // horizontal stub from West wall
+        ROOM_2 = 2,   // four inward stubs — pinwheel layout
+        ROOM_3 = 3,   // long vertical divider + West stub
+        ROOM_4 = 4,   // staggered horizontal chicane
+        ROOM_CLOSED = 5,   // fully sealed, no openings, no internal walls
+    };
 
-	static constexpr float kRoomSize = 640.0f;
-	static constexpr float kDoorWidth = 100.0f;
+    static constexpr float kRoomSize = 640.0f;
+    static constexpr float kDoorWidth = 100.0f;
 
-	explicit Room(uint8_t doorways);
+    explicit Room(uint8_t type);
 
-	void appendWallsToBuffer(std::vector<float>& outBuffer,
-		float offsetX, float offsetY) const;
+    Room(Room&&) noexcept;
+    Room& operator=(Room&&) noexcept;
 
-	int     wallCount()  const { return static_cast<int>(mWalls.size()); }
-	uint8_t getDoorways() const { return mDoorways; }
+    // Writes world-space wall data into outBuffer as [x0,y0,x1,y1, ...]
+    void appendWallsToBuffer(std::vector<float>& outBuffer,
+        float offsetX, float offsetY) const;
 
-	Room(Room&&) noexcept = default;
-	Room& operator=(Room&&) noexcept = default;
+    int     wallCount() const { return static_cast<int>(mWalls.size()); }
+    uint8_t type()      const { return mType; }
 
 private:
-	Room(const Room&) = delete;
-	Room& operator=(const Room&) = delete;
+    Room(const Room&) = delete;
+    Room& operator=(const Room&) = delete;
 
-	void makeWalls();
-	void addHor(float y, float xa, float xb);
-	void addVer(float x, float ya, float yb);
+    void makeWalls();
+    void addHor(float y, float xa, float xb);
+    void addVer(float x, float ya, float yb);
 
-	uint8_t                  mDoorways;
-	std::vector<WallSegment> mWalls;
+    uint8_t                  mType;
+    std::vector<WallSegment> mWalls;
 };
-

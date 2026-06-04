@@ -63,12 +63,14 @@
 			return false;
 		}
 
+		
+
 		cursor = new MouseCursor();
 		cursor->Initialise(renderer);
 
 		const float sunekuScale =
 			mConfig->desiredSpriteBoxSize / static_cast<float>(mSprite->getWidth());
-		mSprite->setScale(sunekuScale);
+		mSprite->setScale(sunekuScale-2.0f);
 		mSprite->setRedTint(mConfig->bodyTintR);
 		mSprite->setGreenTint(mConfig->bodyTintG);
 		mSprite->setBlueTint(mConfig->bodyTintB);

@@ -50,6 +50,13 @@ Map::~Map()
 //       setWallsFromLayout(WarehouseLayout::kWalls);
 //   }
 // -----------------------------------------------------------------------------
+const int Map::kLayout[kGridRows][kGridCols] =
+{
+	{ 1, 1, 2, 1, 5 },
+	{ 3, 4, 1, 2, 3 },
+	{ 5, 2, 4, 3, 5 },
+};
+
 void Map::generate()
 {
 	mRooms.clear();
@@ -59,13 +66,16 @@ void Map::generate()
 	{
 		for (int col = 0; col < kGridCols; ++col)
 		{
-			// Every room open East + West = horizontal corridor grid
-			mRooms.emplace_back(Room::DOOR_EAST | Room::DOOR_WEST);
+			mRooms.emplace_back(static_cast<uint8_t>(kLayout[row][col]));
 		}
 	}
 
+	mWidth = static_cast<float>(kGridCols) * Room::kRoomSize;
+	mHeight = static_cast<float>(kGridRows) * Room::kRoomSize;
+
 	bake();
 }
+
 
 void Map::bake()
 {

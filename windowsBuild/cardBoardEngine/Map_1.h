@@ -5,14 +5,19 @@
 
 class Renderer;
 
+
+
 class Map
 {
 public:
     Map();
     ~Map();
 
-    static constexpr int   kGridCols = 4;
-    static constexpr int   kGridRows = 4;
+    static constexpr int kGridCols = 5;
+    static constexpr int kGridRows = 3;
+    static const int kLayout[kGridRows][kGridCols];
+
+
     static constexpr float kDefaultWidth = Room::kRoomSize * kGridCols;   // 2560
     static constexpr float kDefaultHeight = Room::kRoomSize * kGridRows;   // 2560
 
