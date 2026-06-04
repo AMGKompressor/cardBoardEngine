@@ -24,6 +24,8 @@ set(ENGINE_SOURCES
   src/Collision2D.cpp
   src/Map/Map.cpp
   src/Player/Player.cpp
+  src/Enemy/Enemy.cpp
+  src/Enemy/EnemySpawner.cpp
 )
 
 add_executable(cardboard ${FRAMEWORK_SOURCES} ${ENGINE_SOURCES})
@@ -33,76 +35,29 @@ target_include_directories(cardboard PRIVATE
   "${CARDBOARD_ROOT}/src"
   "${CARDBOARD_ROOT}/src/Map"
   "${CARDBOARD_ROOT}/src/Player"
+  "${CARDBOARD_ROOT}/src/Enemy"
 )
 
-if(WIN32)
-  set(GP_INCLUDES
-    "${GP_LIB}/SDL2-2.0.22/include"
-    "${GP_LIB}/SDL2_image-2.6.1/include"
-    "${GP_LIB}/glew-2.1.0/include"
-  )
-  target_include_directories(cardboard BEFORE PRIVATE ${GP_INCLUDES})
-  target_link_directories(cardboard PRIVATE
-    "${GP_LIB}/SDL2-2.0.22/lib/x86"
-    "${GP_LIB}/SDL2_image-2.6.1/lib/x86"
-    "${GP_LIB}/glew-2.1.0/lib/x86"
-  )
-  target_link_libraries(cardboard PRIVATE
-    SDL2
-    SDL2main
-    SDL2_image
-    glew32
-    opengl32
-  )
-else()
-  if(APPLE)
-    execute_process(
-      COMMAND brew --prefix
-      OUTPUT_VARIABLE HOMEBREW_PREFIX
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-      ERROR_QUIET
-    )
-    if(HOMEBREW_PREFIX)
-      list(APPEND CMAKE_PREFIX_PATH "${HOMEBREW_PREFIX}")
-      list(APPEND CMAKE_PREFIX_PATH "${HOMEBREW_PREFIX}/opt/sdl2")
-      list(APPEND CMAKE_PREFIX_PATH "${HOMEBREW_PREFIX}/opt/sdl2_image")
-      list(APPEND CMAKE_PREFIX_PATH "${HOMEBREW_PREFIX}/opt/glew")
-    endif()
-  endif()
+set(GP_INCLUDES
+  "${GP_LIB}/SDL2-2.0.22/include"
+  "${GP_LIB}/SDL2_image-2.6.1/include"
+  "${GP_LIB}/glew-2.1.0/include"
+)
+target_include_directories(cardboard BEFORE PRIVATE ${GP_INCLUDES})
 
-  find_package(OpenGL REQUIRED)
-  find_package(SDL2 CONFIG REQUIRED)
+target_link_directories(cardboard PRIVATE
+  "${GP_LIB}/SDL2-2.0.22/lib/x86"
+  "${GP_LIB}/SDL2_image-2.6.1/lib/x86"
+  "${GP_LIB}/glew-2.1.0/lib/x86"
+)
 
-  set(_sdl2_image_linked FALSE)
-  find_package(SDL2_image CONFIG QUIET)
-  if(TARGET SDL2_image::SDL2_image)
-    set(_sdl2_image_linked TRUE)
-  endif()
-
-  if(NOT _sdl2_image_linked)
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(SDL2_IMAGE_PC REQUIRED IMPORTED_TARGET SDL2_image)
-  endif()
-
-  find_package(GLEW REQUIRED)
-
-  target_link_libraries(cardboard PRIVATE SDL2::SDL2)
-
-  if(TARGET SDL2_image::SDL2_image)
-    target_link_libraries(cardboard PRIVATE SDL2_image::SDL2_image)
-  else()
-    target_link_libraries(cardboard PRIVATE PkgConfig::SDL2_IMAGE)
-  endif()
-
-  if(TARGET GLEW::GLEW)
-    target_link_libraries(cardboard PRIVATE GLEW::GLEW)
-  else()
-    target_include_directories(cardboard PRIVATE ${GLEW_INCLUDE_DIRS})
-    target_link_libraries(cardboard PRIVATE ${GLEW_LIBRARIES})
-  endif()
-
-  target_link_libraries(cardboard PRIVATE OpenGL::GL)
-endif()
+target_link_libraries(cardboard PRIVATE
+  SDL2
+  SDL2main
+  SDL2_image
+  glew32
+  opengl32
+)
 
 if(MSVC)
   target_compile_options(cardboard PRIVATE /W3)

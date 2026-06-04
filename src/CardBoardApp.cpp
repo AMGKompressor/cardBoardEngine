@@ -4,6 +4,7 @@
 #include "Map/BasicMapLayout.h"
 #include "Player/Player.h"
 #include "Player/PlayerConfig.h"
+#include "Enemy/EnemySpawner.h"
 
 #include "logmanager.h"
 #include "renderer.h"
@@ -34,6 +35,8 @@ namespace CardBoard
 
 	CardBoardApp::~CardBoardApp()
 	{
+		delete mEnemySpawner;
+		mEnemySpawner = nullptr;
 		delete mPlayer;
 		mPlayer = nullptr;
 		delete mMap;
@@ -65,11 +68,18 @@ namespace CardBoard
 			return false;
 		}
 
+		mEnemySpawner = new EnemySpawner();
+		if (!mEnemySpawner->initialize(*mRenderer, *mMap))
+		{
+			LogManager::getInstance().log("cardBoard: enemy spawner init failed.");
+			return false;
+		}
+
 		mLastTime = SDL_GetPerformanceCounter();
 		updateCamera();
 		mRenderer->setCamera(mCameraX, mCameraY);
 
-		LogManager::getInstance().log("cardBoard engine started (WASD, Shift sprint, LMB flashlight toggle, hold Space stun beam, H debug).");
+		LogManager::getInstance().log("cardBoard engine started (WASD, Shift sprint, LMB flashlight toggle, hold Space stun beam, H debug, J enemy debug).");
 		return true;
 	}
 
@@ -131,6 +141,8 @@ namespace CardBoard
 			sprintHeld,
 			stunHeld);
 
+		mEnemySpawner->update(deltaTime, *mMap, *mPlayer);
+
 		updateCamera();
 		mRenderer->setCamera(mCameraX, mCameraY);
 	}
@@ -142,6 +154,8 @@ namespace CardBoard
 		mMap->drawWalls(*mRenderer);
 		mPlayer->drawFlashlightMask(*mRenderer, *mMap, mCameraX, mCameraY);
 		mPlayer->drawNoisePulses(*mRenderer);
+		mEnemySpawner->drawSprites(*mRenderer);
+		mEnemySpawner->drawDebug(*mRenderer);
 		mPlayer->drawSprite(*mRenderer);
 		mPlayer->drawHitboxDebug(*mRenderer);
 		mPlayer->drawFlashlightMeter(*mRenderer, mCameraX, mCameraY);
@@ -166,6 +180,10 @@ namespace CardBoard
 				else if (event.key.keysym.scancode == SDL_SCANCODE_H)
 				{
 					mPlayer->setShowHitboxDebug(!mPlayer->showHitboxDebug());
+				}
+				else if (event.key.keysym.scancode == SDL_SCANCODE_J)
+				{
+					mEnemySpawner->setShowDebug(!mEnemySpawner->showDebug());
 				}
 			}
 			else if (

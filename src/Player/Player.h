@@ -72,6 +72,12 @@ namespace CardBoard
 		const std::vector<NoisePulse>& walkNoisePulses() const { return mWalkNoisePulses; }
 		const std::vector<NoisePulse>& sprintNoisePulses() const { return mSprintNoisePulses; }
 
+		// health — read by HUD; written by enemies via applyDamage
+		float health() const { return mHealth; }
+		float maxHealth() const { return mMaxHealth; }
+		float healthRatio() const;
+		void  applyDamage(float amount);
+
 	private:
 		void emitNoisePulse(float x, float y, bool loud);
 		void advanceNoisePulses(float deltaTime);
@@ -95,6 +101,9 @@ namespace CardBoard
 		float mFootstepCooldown = 0.0f;
 		float mWalkPulseCooldown = 0.0f;
 		float mSprintPulseCooldown = 0.0f;
+
+		float mHealth = 100.0f;
+		float mMaxHealth = 100.0f;
 
 		std::vector<NoisePulse> mWalkNoisePulses;
 		std::vector<NoisePulse> mSprintNoisePulses;

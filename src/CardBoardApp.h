@@ -1,4 +1,4 @@
-// cardBoard — minimal runtime that wires Map + Player + renderer
+// cardBoard -- minimal runtime that wires Map + Player + EnemySpawner + renderer
 #pragma once
 
 #include <cstdint>
@@ -9,6 +9,7 @@ namespace CardBoard
 {
 	class Map;
 	class Player;
+	class EnemySpawner;
 }
 
 namespace CardBoard
@@ -40,10 +41,11 @@ namespace CardBoard
 		::Renderer* mRenderer = nullptr;
 		Map* mMap = nullptr;
 		Player* mPlayer = nullptr;
+		EnemySpawner* mEnemySpawner = nullptr;
 
-		float mCameraX = 0.0f;
-		float mCameraY = 0.0f;
-		bool mLooping = true;
+		float        mCameraX = 0.0f;
+		float        mCameraY = 0.0f;
+		bool         mLooping = true;
 		std::int64_t mLastTime = 0;
 	};
 }

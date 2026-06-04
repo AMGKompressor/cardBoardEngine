@@ -54,6 +54,7 @@ namespace CardBoard
 		mHitboxHalfH = mConfig.hitboxHalfH;
 		mFlashlightOn = false;
 		mFlashlightChargeSeconds = mConfig.flashlightMeter.maxChargeSeconds;
+		mHealth = mMaxHealth;
 
 		mSprite = renderer.createSprite("textures/board8x8.png");
 		if (mSprite == nullptr)
@@ -421,7 +422,10 @@ namespace CardBoard
 		query.active = mFlashlightOn && mFlashlightStunActive;
 		query.originX = mX;
 		query.originY = mY;
-		query.facingDeg = mFacingDeg;
+
+		// subtract the sprite offset so the cone matches the visual beam direction
+		query.facingDeg = mFacingDeg - mConfig.spriteFacingOffsetDeg;
+
 		query.halfAngleDeg = mConfig.flashlight.halfAngleDeg
 			* mConfig.flashlightStun.beamHalfAngleMultiplier;
 		query.range = mConfig.flashlight.beamRange
@@ -523,5 +527,19 @@ namespace CardBoard
 				0.2f,
 				alpha);
 		}
+	}
+
+	float Player::healthRatio() const
+	{
+		if (mMaxHealth <= 0.0f)
+		{
+			return 0.0f;
+		}
+		return std::min(1.0f, std::max(0.0f, mHealth / mMaxHealth));
+	}
+
+	void Player::applyDamage(float amount)
+	{
+		mHealth = std::max(0.0f, mHealth - amount);
 	}
 }
