@@ -2,6 +2,9 @@
 
 Standalone C++ engine — **not part of Boxu**. Clone this repo only; add `lib/` from COMP710 Studio 5 (see `lib/README.md`).
 
+> **Teammates on Windows / Visual Studio:** use git branch **`betaVersionV2-windows`** (not `main`).  
+> The full game, `game/textures/`, and `Project1.sln` are only on that branch. See **[BRANCH_SETUP.md](BRANCH_SETUP.md)**.
+
 Modular layout:
 
 | Module | Folder | Role |
