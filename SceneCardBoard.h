@@ -51,7 +51,7 @@ protected:
     std::vector<Item*> m_batteries; // From BasicMapLayout::BatterySpawns
     EnemyManager* m_pEnemies;
     UI* m_pUI;
-    Minimap* m_pMinimap;
+    Minimap* m_pMinimap; // HUD corner map — see MinimapConfig.h / Minimap.cpp
     int mCollectedItems;
     PlayerConfig* m_pPlayerConfig;
 

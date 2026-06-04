@@ -45,6 +45,7 @@ public:
 
 	const EnemyConfig& config() const { return mConfig; }
 
+	// Used by Minimap to read enemy world positions.
 	int enemyCount() const { return mEnemyCount; }
 	const Enemy* enemyAt(int index) const;
 

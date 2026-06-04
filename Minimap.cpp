@@ -1,5 +1,17 @@
-// Draws a screen-fixed panel: map walls (same data as collision), player dot,
-// enemy dots only within MinimapConfig::enemyRevealRadius of the player.
+// =============================================================================
+// Minimap.cpp — corner HUD that shows the full level layout.
+//
+// DRAW ORDER (back to front):
+//   1. Dark background rectangle
+//   2. Wall line segments (optional)
+//   3. Enemy dots (only if near player)
+//   4. Player dot (on top so you can find yourself)
+//   5. Green border frame
+//
+// INTEGRATION:
+//   SceneCardBoard::Draw → m_pMinimap->draw(..., m_pMap, m_pPlayer, m_pEnemies)
+//   Enemy positions come from EnemyManager::enemyAt(i).
+// =============================================================================
 
 #include "Minimap.h"
 
@@ -18,13 +30,14 @@
 
 namespace
 {
+	// Pixel position of the panel on screen + scale from world → minimap.
 	struct PanelLayout
 	{
 		float panelLeft = 0.0f;
 		float panelTop = 0.0f;
-		float mapOriginX = 0.0f;
+		float mapOriginX = 0.0f; // world (0,0) maps here after letterboxing
 		float mapOriginY = 0.0f;
-		float scale = 1.0f;
+		float scale = 1.0f;      // world pixels per minimap pixel
 	};
 
 	float distSq(float ax, float ay, float bx, float by)
@@ -34,6 +47,7 @@ namespace
 		return dx * dx + dy * dy;
 	}
 
+	// Place the panel on screen and compute uniform scale so the whole map fits.
 	PanelLayout buildLayout(
 		const MinimapConfig& config,
 		float mapWidth,
@@ -45,6 +59,7 @@ namespace
 	{
 		PanelLayout layout;
 
+		// HUD: add camera so the panel stays in the same screen corner when the view moves.
 		if (config.anchorTopRight)
 		{
 			layout.panelLeft =
@@ -61,6 +76,7 @@ namespace
 		const float innerH = std::max(8.0f, config.panelHeight - config.innerPadding * 2.0f);
 		if (mapWidth > 1.0f && mapHeight > 1.0f)
 		{
+			// Uniform scale: entire level visible, may letterbox inside the panel.
 			layout.scale = std::min(innerW / mapWidth, innerH / mapHeight);
 		}
 
@@ -74,6 +90,7 @@ namespace
 		return layout;
 	}
 
+	// Convert level coordinates (e.g. player at 700,900) to HUD draw coordinates.
 	void worldToPanel(
 		float worldX,
 		float worldY,
@@ -85,6 +102,7 @@ namespace
 		outY = layout.mapOriginY + worldY * layout.scale;
 	}
 
+	// Simple square blip (Renderer has no circle API).
 	void drawDot(
 		Renderer& renderer,
 		float centerX,
@@ -158,6 +176,7 @@ void Minimap::draw(
 	const float panelCenterX = layout.panelLeft + mConfig.panelWidth * 0.5f;
 	const float panelCenterY = layout.panelTop + mConfig.panelHeight * 0.5f;
 
+	// --- Layer 1: background ---
 	renderer.drawWorldAxisAlignedQuad(
 		panelCenterX,
 		panelCenterY,
@@ -168,6 +187,8 @@ void Minimap::draw(
 		mConfig.backgroundB,
 		mConfig.backgroundA);
 
+	// --- Layer 2: walls (same data as Map collision / flashlight) ---
+	// wireFlat layout per segment: [x0, y0, x1, y1, x0, y0, x1, y1, ...]
 	if (mConfig.drawWalls)
 	{
 		const float* wire = map.wireFlat();
@@ -202,6 +223,7 @@ void Minimap::draw(
 		}
 	}
 
+	// --- Layer 3: enemies within reveal radius ---
 	const float revealSq =
 		mConfig.enemyRevealRadius * mConfig.enemyRevealRadius;
 	const float playerX = player.x();
@@ -216,6 +238,7 @@ void Minimap::draw(
 			continue;
 		}
 
+		// Skip far enemies — change enemyRevealRadius in MinimapConfig.h to tune.
 		if (distSq(playerX, playerY, enemy->x(), enemy->y()) > revealSq)
 		{
 			continue;
@@ -240,6 +263,7 @@ void Minimap::draw(
 			mConfig.enemyA);
 	}
 
+	// --- Layer 4: player (always shown at real map position) ---
 	float playerDotX = 0.0f;
 	float playerDotY = 0.0f;
 	worldToPanel(playerX, playerY, layout, playerDotX, playerDotY);
@@ -253,6 +277,7 @@ void Minimap::draw(
 		mConfig.playerB,
 		mConfig.playerA);
 
+	// --- Layer 5: border outline ---
 	const float borderVerts[8] = {
 		layout.panelLeft,
 		layout.panelTop,
@@ -275,6 +300,7 @@ void Minimap::draw(
 
 void Minimap::debugDraw()
 {
+	// Shown in SceneCardBoard::DebugDraw when the ` ImGui window is open.
 	ImGui::Text("Minimap");
 	ImGui::Checkbox("enabled", &mConfig.enabled);
 	ImGui::SliderFloat("enemy reveal radius", &mConfig.enemyRevealRadius, 80.0f, 1200.0f);

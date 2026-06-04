@@ -81,7 +81,8 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 	m_pUI = new UI();
 	m_pUI->initialise(*m_pRenderer, m_pPlayer, m_pPlayerConfig);
 
-	m_pMinimap = new Minimap(); // see MinimapConfig.h for tuning
+	// Corner HUD map — settings in MinimapConfig.h, drawn in Draw(), ImGui in DebugDraw().
+	m_pMinimap = new Minimap();
 
 	m_pEnemies = new EnemyManager();
 	m_pEnemies->syncHearingFromPlayerConfig(*m_pPlayerConfig);
@@ -293,6 +294,7 @@ void SceneCardBoard::Draw(Renderer& renderer) {
 	
 	m_pUI->draw(*m_pRenderer, mCameraX, mCameraY);
 
+	// Minimap after UI so it sits on top; uses camera+offset to stay in screen corner.
 	if (m_pMinimap != nullptr && m_pMap != nullptr && m_pPlayer != nullptr && m_pEnemies != nullptr)
 	{
 		m_pMinimap->draw(

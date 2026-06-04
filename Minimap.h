@@ -1,6 +1,9 @@
 #pragma once
 
-// HUD minimap — tune via MinimapConfig.h; live sliders in ImGui (` window).
+// Minimap — small HUD map in the corner of the screen.
+//
+// Owned by SceneCardBoard (m_pMinimap). Settings live in MinimapConfig.h.
+// Draw is called from SceneCardBoard::Draw after the UI meters.
 
 #include "MinimapConfig.h"
 
@@ -15,6 +18,7 @@ public:
 	const MinimapConfig& config() const { return mConfig; }
 	MinimapConfig& config() { return mConfig; }
 
+	// Renders the panel using world-space quads/lines + camera offset (HUD style).
 	void draw(
 		Renderer& renderer,
 		float cameraX,
@@ -25,6 +29,7 @@ public:
 		const Player& player,
 		const EnemyManager& enemies) const;
 
+	// ImGui sliders in SceneCardBoard::DebugDraw (` key).
 	void debugDraw();
 
 private:
