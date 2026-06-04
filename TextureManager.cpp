@@ -100,10 +100,11 @@ namespace
 
 		if (!name.empty())
 		{
+			// Canonical repo layout: assets/textures/ at project root, exe in game/.
 			const std::string relativePaths[] = {
-				"textures/" + name,
-				"assets/textures/" + name,
 				"../assets/textures/" + name,
+				"assets/textures/" + name,
+				"textures/" + name,
 				"game/textures/" + name,
 			};
 

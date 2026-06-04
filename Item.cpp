@@ -87,7 +87,7 @@ bool Item::Initialise(Renderer& renderer, ItemType type) {
 
 	if (m_type == ItemType::Basic)
 	{
-		m_pSprite = renderer.createSprite("textures/item.png");
+		m_pSprite = renderer.createSprite("assets/textures/item.png");
 		if (m_pSprite == nullptr)
 		{
 			return false;

@@ -5,12 +5,15 @@ set "ROOT=%~2"
 if "%OUT%"=="" goto :usage
 if "%ROOT%"=="" goto :usage
 
-if not exist "%OUT%textures\" mkdir "%OUT%textures\"
-xcopy /Y /I "%ROOT%assets\textures\*.png" "%OUT%textures\"
-if errorlevel 1 (
-  echo Post-build ERROR: could not copy assets\textures\*.png to "%OUT%textures\"
+REM Primary art folder: %ROOT%assets\textures (loaded at runtime via ../assets/textures from game\)
+if not exist "%ROOT%assets\textures\board8x8.png" (
+  echo Post-build ERROR: missing %ROOT%assets\textures\ — pull the full repo / correct branch.
   exit /b 1
 )
+
+REM Optional mirror beside the exe (fallback if ../assets is unreachable)
+if not exist "%OUT%textures\" mkdir "%OUT%textures\"
+xcopy /Y /I "%ROOT%assets\textures\*.png" "%OUT%textures\"
 
 if not exist "%OUT%shaders\" mkdir "%OUT%shaders\"
 xcopy /Y /I "%ROOT%game\shaders\*.*" "%OUT%shaders\"

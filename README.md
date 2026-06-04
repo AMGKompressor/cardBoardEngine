@@ -73,11 +73,14 @@ Put `SDL2.dll`, `SDL2_image.dll`, and `glew32.dll` next to `cardboard.exe` (from
 
 Use branch **`betaVersionV2-windows`** (not `main`). Open `Project1.sln`, set configuration to **Debug | Win32** or **Release | Win32** — **not x64** (course `lib` is x86). Rebuild; post-build runs `scripts/win32_deploy_game_assets.cmd` to copy PNGs, shaders, and `SDL2.dll` / `SDL2_image.dll` into `game/`. Run **`game/Project1_debug.exe`** (F5).
 
+Sprites load from **`assets/textures/`** at the project root (same folder as in git). The exe in `game/` finds them via `../assets/textures/`.
+
 If you still see `Texture failed to load!`:
 
-1. Confirm **`game/textures/board8x8.png`** and **`game/SDL2_image.dll`** exist after build.
-2. Console should log `TextureManager exe dir: ...` — that folder must contain `textures/`.
-3. If the log mentions SDL_image, copy all DLLs from `lib/SDL2_image-2.6.1/lib/x86/` into `game/`.
+1. Confirm **`assets/textures/board8x8.png`** exists next to the repo root (not only under `game/`).
+2. Confirm **`game/SDL2_image.dll`** exists after build.
+3. Console: `TextureManager exe dir:` should end with `game\`; textures live one level up in `assets\textures\`.
+4. If the log mentions SDL_image, copy all DLLs from `lib/SDL2_image-2.6.1/lib/x86/` into `game/`.
 
 ## Controls
 
