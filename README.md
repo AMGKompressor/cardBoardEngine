@@ -66,6 +66,10 @@ cardboard.exe
 
 Put `SDL2.dll`, `SDL2_image.dll`, and `glew32.dll` next to `cardboard.exe` (from the course `lib` folders).
 
+### Visual Studio solution (`Project1.sln`)
+
+Use branch **`betaVersionV2-windows`** (not `main`). Open `Project1.sln`, set configuration to **Debug | Win32** or **Release | Win32** (course `lib` is x86). Build once — a post-build step copies `assets/textures/` and `game/shaders/` into `game/` next to the `.exe`. Run **`game/Project1_debug.exe`** (Debug) or **`game/Project1.exe`** (Release). If textures still fail, confirm `game/textures/board8x8.png` exists after build.
+
 ## Controls
 
 - **WASD** — move  

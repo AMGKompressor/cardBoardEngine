@@ -95,6 +95,13 @@
       <AdditionalLibraryDirectories>$(SolutionDir)lib\glew-2.1.0\lib\x86\;$(SolutionDir)lib\SDL2_image-2.6.1\lib\x86\;$(SolutionDir)lib\SDL2-2.0.22\lib\x86\;$(SolutionDir)lib\SDL2_ttf-2.22.0\lib\x86\;$(SolutionDir)lib\FMOD\lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;glew32.lib;opengl32.lib;SDL2_ttf.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>if not exist "$(OutDir)textures\" mkdir "$(OutDir)textures\"
+xcopy /Y /D "$(ProjectDir)assets\textures\*" "$(OutDir)textures\" &gt;nul
+if not exist "$(OutDir)shaders\" mkdir "$(OutDir)shaders\"
+xcopy /Y /D "$(ProjectDir)game\shaders\*" "$(OutDir)shaders\" &gt;nul</Command>
+      <Message>Copy textures and shaders next to the executable (game\)</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -113,6 +120,13 @@
       <AdditionalLibraryDirectories>$(SolutionDir)lib\glew-2.1.0\lib\x86\;$(SolutionDir)lib\SDL2_image-2.6.1\lib\x86\;$(SolutionDir)lib\SDL2-2.0.22\lib\x86\;$(SolutionDir)lib\SDL2_ttf-2.22.0\lib\x86\;$(SolutionDir)lib\FMOD\lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>if not exist "$(OutDir)textures\" mkdir "$(OutDir)textures\"
+xcopy /Y /D "$(ProjectDir)assets\textures\*" "$(OutDir)textures\" &gt;nul
+if not exist "$(OutDir)shaders\" mkdir "$(OutDir)shaders\"
+xcopy /Y /D "$(ProjectDir)game\shaders\*" "$(OutDir)shaders\" &gt;nul</Command>
+      <Message>Copy textures and shaders next to the executable (game\)</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -240,6 +254,7 @@
   <ItemGroup>
     <Image Include="assets\textures\board8x8.png" />
     <Image Include="assets\textures\cursor.png" />
+    <Image Include="assets\textures\item.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="assets\textures\README.txt" />

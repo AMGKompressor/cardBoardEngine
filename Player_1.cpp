@@ -57,7 +57,7 @@
 		staminaPercentage = mConfig->staminaMeter.maxStamina;
 		isRunning = false;
 
-		mSprite = renderer.createSprite("../assets/textures/board8x8.png");
+		mSprite = renderer.createSprite("textures/board8x8.png");
 		if (mSprite == nullptr)
 		{
 			return false;
@@ -75,7 +75,7 @@
 		mHitboxHalfW = static_cast<float>(mSprite->getWidth()) * 0.5f;
 		mHitboxHalfH = static_cast<float>(mSprite->getHeight()) * 0.5f;
 
-		mHitboxDebugSprite = renderer.createSprite("../assets/textures/board8x8.png");
+		mHitboxDebugSprite = renderer.createSprite("textures/board8x8.png");
 		if (mHitboxDebugSprite != nullptr)
 		{
 			mHitboxDebugSprite->setScale(sunekuScale);

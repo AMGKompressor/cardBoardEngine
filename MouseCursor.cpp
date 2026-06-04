@@ -17,7 +17,7 @@ MouseCursor::~MouseCursor()
 
 bool MouseCursor::Initialise(Renderer& renderer)
 {
-	cursor_sprite = renderer.createSprite("../assets/textures/cursor.png");
+	cursor_sprite = renderer.createSprite("textures/cursor.png");
 	cursorX = 200;
 	cursorY = 200;
 	cursor_sprite->setScale(0.05f);
