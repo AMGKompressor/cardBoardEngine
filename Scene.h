@@ -35,6 +35,7 @@ public:
 	virtual bool Initialise(Renderer& renderer) = 0;
 	virtual void Process(float deltaTime, InputSystem& inputSystem) = 0;
 	virtual void Draw(Renderer& renderer) = 0;
+	virtual void DrawHudOverlay() {}
 
 	virtual void DebugDraw() = 0;
 

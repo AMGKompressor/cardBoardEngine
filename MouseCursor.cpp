@@ -17,7 +17,7 @@ MouseCursor::~MouseCursor()
 
 bool MouseCursor::Initialise(Renderer& renderer)
 {
-	cursor_sprite = renderer.createSprite("assets/textures/cursor.png");
+	cursor_sprite = renderer.createSprite("/assets/textures/cursor.png");
 	if (cursor_sprite == nullptr)
 	{
 		return false;

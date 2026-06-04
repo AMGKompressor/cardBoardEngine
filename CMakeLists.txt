@@ -156,6 +156,7 @@ if(CARDBOARD_BUILD_FULL_GAME)
     Collision2D.cpp
     Collision2D_1.cpp
     InputSystem.cpp
+    Inventory.cpp
     Item.cpp
     Enemy.cpp
     EnemyManager.cpp

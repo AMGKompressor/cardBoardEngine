@@ -162,6 +162,7 @@
     <ClCompile Include="NavGrid.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputSystem.cpp" />
+    <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
@@ -205,6 +206,8 @@
     <ClInclude Include="EnemyType.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputSystem.h" />
+    <ClInclude Include="Inventory.h" />
+    <ClInclude Include="LootConfig.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />

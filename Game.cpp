@@ -58,6 +58,10 @@ Game::~Game()
 	m_scenes.clear();
 
 	SoundSystem::GetInstance().Shutdown();
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void Game::Quit()
@@ -78,6 +82,11 @@ bool Game::initialise()
 		LogManager::getInstance().log("Renderer failed to initialise!");
 		return false;
 	}
+
+	ImGui_ImplSDL2_InitForOpenGL(
+		m_pRenderer->sdlWindow(),
+		m_pRenderer->sdlGlContext());
+	ImGui_ImplOpenGL3_Init("#version 330");
 
 	bbWidth = m_pRenderer->getWidth();
 	bbHeight = m_pRenderer->getHeight();
@@ -166,6 +175,13 @@ void Game::Draw(Renderer& renderer)
 
 	// TODO: Add game objects to draw here!
     m_scenes[m_iCurrentScene]->Draw(renderer);
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
+	m_scenes[m_iCurrentScene]->DrawHudOverlay();
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	renderer.present();
 }

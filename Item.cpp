@@ -1,4 +1,17 @@
+// =============================================================================
+// Item.cpp — world pickup visuals
+//
+// LOOT ART SWAP:
+//   1. Drop PNGs in assets/textures/ (paths in LootConfig.h ::lootWorldSpritePath).
+//   2. Set LootConfig::kLootUseSprites = true.
+//   3. loadLootSprite() + drawLootVisual() handle the rest.
+//
+// PLACEHOLDER (current):
+//   drawLootPlaceholder() draws a colored floor triangle per LootTierInfo.
+// =============================================================================
+
 #include "Item.h"
+#include "LootConfig.h"
 #include "Renderer.h"
 #include "Player_1.h"
 #include "Sprite.h"
@@ -17,13 +30,60 @@ namespace
 		return dx * dx + dy * dy;
 	}
 
-	void drawGreyTriangleCap(
+	// Procedural floor triangle (remove when kLootUseSprites is true).
+	void drawFloorLootTriangle(
+		Renderer& renderer,
+		float centerX,
+		float centerY,
+		float halfWidth,
+		float height,
+		float r,
+		float g,
+		float b)
+	{
+		const float baseY = centerY + height * 0.38f;
+		const float tipY = centerY - height * 0.62f;
+
+		const float outer[6] = {
+			centerX - halfWidth, baseY,
+			centerX + halfWidth, baseY,
+			centerX, tipY
+		};
+		renderer.drawWorldLineLoop(outer, 3, r * 0.7f, g * 0.7f, b * 0.7f, 1.0f);
+
+		const float fillScale = 0.72f;
+		const float innerHalfW = halfWidth * fillScale;
+		const float innerBaseY = centerY + height * 0.30f;
+		const float innerTipY = centerY - height * 0.48f;
+		const float inner[6] = {
+			centerX - innerHalfW, innerBaseY,
+			centerX + innerHalfW, innerBaseY,
+			centerX, innerTipY
+		};
+		renderer.drawWorldLineLoop(inner, 3, r, g, b, 0.95f);
+
+		renderer.drawWorldAxisAlignedQuad(
+			centerX,
+			centerY + height * 0.05f,
+			halfWidth * 0.42f,
+			height * 0.22f,
+			r,
+			g,
+			b,
+			0.55f);
+	}
+
+	void drawColoredTriangle(
 		Renderer& renderer,
 		float tipX,
 		float tipY,
 		float baseX,
 		float baseHalfH,
-		bool tipPointsPositiveX)
+		float r,
+		float g,
+		float b,
+		float outlineA,
+		float fillA)
 	{
 		const float topY = tipY - baseHalfH;
 		const float botY = tipY + baseHalfH;
@@ -33,7 +93,7 @@ namespace
 			baseX, botY,
 			tipX, tipY
 		};
-		renderer.drawWorldLineLoop(xy, 3, 0.30f, 0.32f, 0.36f, 1.0f);
+		renderer.drawWorldLineLoop(xy, 3, r * 0.85f, g * 0.85f, b * 0.85f, outlineA);
 
 		const float capCenterX = (baseX + tipX) * 0.5f;
 		const float capHalfW = std::fabs(tipX - baseX) * 0.5f;
@@ -42,10 +102,10 @@ namespace
 			tipY,
 			capHalfW,
 			baseHalfH * 0.92f,
-			0.36f,
-			0.38f,
-			0.42f,
-			0.98f);
+			r,
+			g,
+			b,
+			fillA);
 	}
 }
 
@@ -55,6 +115,7 @@ Item::Item()
 	, mCollected {false}
 	, m_pSprite {0}
 	, m_type {ItemType::Battery}
+	, m_lootTier {LootTier::Grey}
 	, m_posX{0.0f}
 	, m_posY{0.0f}
 	, m_Value {0}
@@ -79,15 +140,71 @@ void Item::setWorldPosition(float x, float y) {
 	}
 }
 
+LootTier Item::lootTier() const
+{
+	return m_lootTier;
+}
+
+int Item::lootValue() const
+{
+	return m_Value;
+}
+
+bool Item::loadLootSprite(Renderer& renderer)
+{
+	delete m_pSprite;
+	m_pSprite = nullptr;
+
+	if (!kLootUseSprites)
+	{
+		return false;
+	}
+
+	m_pSprite = renderer.createSprite(lootWorldSpritePath(m_lootTier));
+	if (m_pSprite == nullptr)
+	{
+		return false;
+	}
+
+	m_pSprite->setScale(lootWorldSpriteScale(m_lootTier));
+	m_pSprite->setX(m_posX);
+	m_pSprite->setY(m_posY);
+	return true;
+}
+
+bool Item::initialiseLoot(Renderer& renderer, LootTier tier)
+{
+	m_type = ItemType::Loot;
+	m_lootTier = tier;
+	mStolen = false;
+	mCollected = false;
+	isPickedUp = false;
+
+	const LootTierInfo info = lootTierInfo(tier);
+	m_Value = info.value;
+	m_hitboxHalfW = 22.0f;
+	m_hitboxHalfH = 20.0f;
+
+	// Try sprite first; placeholder used in drawLootVisual() if this fails.
+	loadLootSprite(renderer);
+	return true;
+}
+
 bool Item::Initialise(Renderer& renderer, ItemType type) {
 	m_type = type;
 	mStolen = false;
 	mCollected = false;
 	isPickedUp = false;
 
+	if (m_type == ItemType::Loot)
+	{
+		return initialiseLoot(renderer, m_lootTier);
+	}
+
 	if (m_type == ItemType::Basic)
 	{
-		m_pSprite = renderer.createSprite("assets/textures/item.png");
+		// Generic pickup sprite — replace path here or add ItemType-specific paths.
+		m_pSprite = renderer.createSprite("/assets/textures/item.png");
 		if (m_pSprite == nullptr)
 		{
 			return false;
@@ -100,15 +217,46 @@ bool Item::Initialise(Renderer& renderer, ItemType type) {
 		return true;
 	}
 
+	// Battery: procedural drawBattery() — no sprite yet.
 	(void)renderer;
 	m_hitboxHalfW = 32.0f;
 	m_hitboxHalfH = 18.0f;
 	return true;
 }
 
-// Battery pickup: LMB in range refills flashlight (see tryClickPickup).
+void Item::drawLootPlaceholder(Renderer& renderer) const
+{
+	const LootTierInfo info = lootTierInfo(m_lootTier);
+	drawFloorLootTriangle(
+		renderer,
+		m_posX,
+		m_posY,
+		lootPlaceholderHalfWidth(),
+		lootPlaceholderHeight(),
+		info.r,
+		info.g,
+		info.b);
+}
+
+void Item::drawLootVisual(Renderer& renderer) const
+{
+	if (m_pSprite != nullptr)
+	{
+		m_pSprite->setX(m_posX);
+		m_pSprite->setY(m_posY);
+		m_pSprite->draw(renderer);
+		return;
+	}
+
+	drawLootPlaceholder(renderer);
+}
+
 void Item::drawBattery(Renderer& renderer) const
 {
+	// Battery uses procedural art. To use a sprite instead:
+	//   m_pSprite = renderer.createSprite("/assets/textures/battery.png");
+	//   then draw m_pSprite in Draw() and skip drawBattery().
+
 	const float bodyHalfW = 26.0f;
 	const float bodyHalfH = 12.0f;
 	const float blackHalfW = bodyHalfW * 0.75f;
@@ -122,7 +270,6 @@ void Item::drawBattery(Renderer& renderer) const
 	const float capHalfH = bodyHalfH * 0.55f;
 	const float capTipLen = 5.0f;
 
-	// Thin bright green outline hugging the battery (pulses)
 	const float outlineHalfW = bodyHalfW + capTipLen + 3.0f;
 	const float outlineHalfH = bodyHalfH + 3.0f;
 	const float pulseT = static_cast<float>(SDL_GetTicks()) * 0.001f;
@@ -167,22 +314,29 @@ void Item::drawBattery(Renderer& renderer) const
 		0.08f,
 		1.0f);
 
-	// Grey triangle caps flush with body ends (no gap)
-	drawGreyTriangleCap(
+	drawColoredTriangle(
 		renderer,
 		bodyRight + capTipLen,
 		m_posY,
 		bodyRight,
 		capHalfH,
-		true);
+		0.36f,
+		0.38f,
+		0.42f,
+		1.0f,
+		0.98f);
 
-	drawGreyTriangleCap(
+	drawColoredTriangle(
 		renderer,
 		bodyLeft - capTipLen,
 		m_posY,
 		bodyLeft,
 		capHalfH,
-		false);
+		0.30f,
+		0.32f,
+		0.36f,
+		1.0f,
+		0.98f);
 }
 
 void Item::Draw(Renderer& renderer) {
@@ -194,6 +348,12 @@ void Item::Draw(Renderer& renderer) {
 	if (m_type == ItemType::Battery)
 	{
 		drawBattery(renderer);
+		return;
+	}
+
+	if (m_type == ItemType::Loot)
+	{
+		drawLootVisual(renderer);
 		return;
 	}
 

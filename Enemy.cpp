@@ -165,7 +165,7 @@ bool Enemy::initialize(
 	pickWanderDirection(mWanderDirX, mWanderDirY);
 	mWanderTimer = 0.0f;
 
-	mSprite = renderer.createSprite("assets/textures/board8x8.png");
+	mSprite = renderer.createSprite("/assets/textures/board8x8.png");
 	if (mSprite == nullptr)
 	{
 		return false;

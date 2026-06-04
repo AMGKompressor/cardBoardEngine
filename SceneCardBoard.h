@@ -4,6 +4,8 @@
 #include "scene.h"
 #include "Player_1.h"
 #include "Map_1.h"
+#include "Inventory.h"
+#include "LootConfig.h"
 #include <cstdint>
 #include <vector>
 
@@ -27,6 +29,7 @@ public:
     virtual bool Initialise(Renderer& renderer);
     virtual void Process(float deltaTime, InputSystem& inputSystem);
     virtual void Draw(Renderer& renderer);
+    virtual void DrawHudOverlay() override;
     virtual void DebugDraw();
 
 protected:
@@ -38,7 +41,13 @@ private:
     void updateCamera();
     bool spawnBatteries(Renderer& renderer);
     void clearBatteries();
-    bool tryClickPickupBattery(Player& player, float worldMouseX, float worldMouseY);
+    bool spawnWorldLoot(Renderer& renderer);
+    void clearWorldLoot();
+    void buildWorldItemList(std::vector<Item*>& outItems) const;
+    bool tryPickupNearbyLoot();
+    bool tryPickupNearbyBattery();
+    bool tryDropSelectedLoot();
+    LootTier lootTierForSpawnIndex(int index) const;
 
 public:
 
@@ -48,10 +57,14 @@ protected:
     Player* m_pPlayer;
     Map* m_pMap;
     InputSystem* m_pInputSystem;
-    std::vector<Item*> m_batteries; // From BasicMapLayout::BatterySpawns
+    std::vector<Item*> m_batteries;
+    std::vector<Item*> m_worldLoot;
+    Inventory m_inventory;
+    int m_moneyCollected = 0;
+    int m_extractionGoal = kExtractionGoalDollars;
     EnemyManager* m_pEnemies;
     UI* m_pUI;
-    Minimap* m_pMinimap; // HUD corner map — see MinimapConfig.h / Minimap.cpp
+    Minimap* m_pMinimap;
     int mCollectedItems;
     PlayerConfig* m_pPlayerConfig;
 

@@ -90,20 +90,31 @@ namespace
 		candidates.push_back(path);
 	}
 
+	std::string stripLeadingSlashes(std::string path)
+	{
+		while (!path.empty() && (path.front() == '/' || path.front() == '\\'))
+		{
+			path.erase(path.begin());
+		}
+		return path;
+	}
+
 	std::string resolveTexturePath(const char* path)
 	{
 		ensureExeDirectoryCached();
 
-		const std::string name = fileNameFromPath(path);
+		const std::string stripped = stripLeadingSlashes(path);
+		const std::string name = fileNameFromPath(stripped.c_str());
 		std::vector<std::string> candidates;
 		pushCandidate(candidates, path);
+		pushCandidate(candidates, stripped);
 
 		if (!name.empty())
 		{
-			// Canonical repo layout: assets/textures/ at project root, exe in game/.
 			const std::string relativePaths[] = {
 				"../assets/textures/" + name,
 				"assets/textures/" + name,
+				"/assets/textures/" + name,
 				"textures/" + name,
 				"game/textures/" + name,
 			};

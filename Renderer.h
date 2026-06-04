@@ -28,6 +28,9 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 
+	SDL_Window* sdlWindow() const { return mWindow; }
+	SDL_GLContext sdlGlContext() const { return mGlContext; }
+
 	void setCamera(float worldOriginX, float worldOriginY);
 
 	Sprite* createSprite(const char* filename);

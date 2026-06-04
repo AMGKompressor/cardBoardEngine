@@ -107,4 +107,28 @@ namespace BasicMapLayout
 
 		constexpr int kCount = static_cast<int>(sizeof(kList) / sizeof(kList[0]));
 	}
+
+	// Loot triangles (tier chosen at spawn).
+	namespace LootSpawns
+	{
+		struct Point
+		{
+			float x = 0.0f;
+			float y = 0.0f;
+		};
+
+		// Inside playable rooms (south of y=720 divider, away from outer walls).
+		inline constexpr Point kList[] = {
+			{ 550.0f, 820.0f },
+			{ 750.0f, 950.0f },
+			{ 950.0f, 880.0f },
+			{ 1100.0f, 1020.0f },
+			{ 1280.0f, 900.0f },
+			{ 1500.0f, 780.0f },
+			{ 1750.0f, 900.0f },
+			{ 1950.0f, 820.0f },
+		};
+
+		constexpr int kCount = static_cast<int>(sizeof(kList) / sizeof(kList[0]));
+	}
 }
