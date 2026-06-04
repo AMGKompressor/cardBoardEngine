@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Game Engine Source">
+      <UniqueIdentifier>{c1860907-cb8f-472d-942b-33f6a10d21f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Engine Headers">
+      <UniqueIdentifier>{a35441cc-4c68-4893-9d56-7d39760709f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Idk what these files are">
+      <UniqueIdentifier>{c1109d38-8998-4c40-b433-3d61fe45c776}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IMGUI">
+      <UniqueIdentifier>{f2d93d2b-0284-4422-895d-0152cbdea8f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IMGUI">
+      <UniqueIdentifier>{f171334a-c241-4f21-adfa-79d24cb5665e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CardboardApp">
+      <UniqueIdentifier>{4161d84f-6bd7-4b68-ba36-2edbd6059cf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CardboardApp\Legacy">
+      <UniqueIdentifier>{29dcee2f-9628-4c41-b768-115694fc62ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CardboardApp\New">
+      <UniqueIdentifier>{ce324254-ee5b-4167-af06-52f6774ff9ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CardBoardApp">
+      <UniqueIdentifier>{78204e33-6624-428a-ab50-97c3e3b5b9ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CardBoardApp\Legacy">
+      <UniqueIdentifier>{280d89af-3db1-4e49-8a8a-cf1a9791cf8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CardBoardApp\New">
+      <UniqueIdentifier>{2ba89fc0-40b5-4802-825d-85eb9ac5cc12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CardboardApp\Items">
+      <UniqueIdentifier>{52aeb112-1657-4cf3-bcc8-e4074ac61017}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="logmanager.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexArray.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="XboxController.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatedSprite.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="InputSystem.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundSystem.cpp">
+      <Filter>Source Files\Game Engine Source</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_demo.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_draw.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_impl_sdl2.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_tables.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_widgets.cpp">
+      <Filter>Source Files\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CardBoardApp.cpp">
+      <Filter>Source Files\CardBoardApp\Legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision2D.cpp">
+      <Filter>Source Files\CardBoardApp\Legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Source Files\CardBoardApp\Legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\CardBoardApp\Legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision2D_1.cpp">
+      <Filter>Source Files\CardBoardApp\New</Filter>
+    </ClCompile>
+    <ClCompile Include="Map_1.cpp">
+      <Filter>Source Files\CardBoardApp\New</Filter>
+    </ClCompile>
+    <ClCompile Include="Player_1.cpp">
+      <Filter>Source Files\CardBoardApp\New</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneCardBoard.cpp">
+      <Filter>Source Files\CardBoardApp\New</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Source Files\CardBoardApp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="logmanager.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexArray.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="XboxController.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatedSprite.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="InputSystem.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSystem.h">
+      <Filter>Header Files\Game Engine Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\SDL_ttf-x86\include\SDL_ttf.h">
+      <Filter>Header Files\Idk what these files are</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_truetype.h">
+      <Filter>Header Files\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imconfig.h">
+      <Filter>Header Files\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui.h">
+      <Filter>Header Files\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_impl_opengl3_loader.h">
+      <Filter>Header Files\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_impl_sdl2.h">
+      <Filter>Header Files\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_internal.h">
+      <Filter>Header Files\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_rectpack.h">
+      <Filter>Header Files\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_textedit.h">
+      <Filter>Header Files\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicMapLayout.h">
+      <Filter>Header Files\CardboardApp\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="CardBoardApp.h">
+      <Filter>Header Files\CardboardApp\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision2D.h">
+      <Filter>Header Files\CardboardApp\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Header Files\CardboardApp\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files\CardboardApp\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerConfig.h">
+      <Filter>Header Files\CardboardApp\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision2D_1.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="Map_1.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="Player_1.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerConfig_1.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicMapLayout_1.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneCardBoard.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Header Files\CardboardApp\Items</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\line.frag" />
+    <None Include="assets\shaders\line.vert" />
+    <None Include="assets\shaders\sprite.frag" />
+    <None Include="assets\shaders\sprite.vert" />
+    <None Include="assets\shaders\vision_mask.frag" />
+    <None Include="assets\shaders\vision_mask.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\textures\board8x8.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="assets\textures\README.txt" />
+  </ItemGroup>
+</Project>
