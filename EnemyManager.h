@@ -6,6 +6,7 @@
 #include <vector>
 
 class Item;
+class Enemy;
 
 class Renderer;
 class Map;
@@ -43,6 +44,9 @@ public:
 	void debugDraw() const;
 
 	const EnemyConfig& config() const { return mConfig; }
+
+	int enemyCount() const { return mEnemyCount; }
+	const Enemy* enemyAt(int index) const;
 
 private:
 	EnemyConfig mConfig;

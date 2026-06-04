@@ -164,6 +164,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Map_1.cpp" />
+    <ClCompile Include="Minimap.cpp" />
     <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -207,6 +208,8 @@
     <ClInclude Include="logmanager.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Map_1.h" />
+    <ClInclude Include="Minimap.h" />
+    <ClInclude Include="MinimapConfig.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="Player.h" />

@@ -16,6 +16,7 @@ class Item;
 class UI;
 class PlayerConfig;
 class EnemyManager;
+class Minimap;
 
 class SceneCardBoard : public Scene
 {
@@ -50,6 +51,7 @@ protected:
     std::vector<Item*> m_batteries; // From BasicMapLayout::BatterySpawns
     EnemyManager* m_pEnemies;
     UI* m_pUI;
+    Minimap* m_pMinimap;
     int mCollectedItems;
     PlayerConfig* m_pPlayerConfig;
 

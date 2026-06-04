@@ -67,6 +67,15 @@ bool EnemyManager::buildNavigation(const Map& map)
 	return ok;
 }
 
+const Enemy* EnemyManager::enemyAt(int index) const
+{
+	if (mEnemies == nullptr || index < 0 || index >= mEnemyCount)
+	{
+		return nullptr;
+	}
+	return &mEnemies[index];
+}
+
 void EnemyManager::shutdown()
 {
 	delete[] mEnemies;

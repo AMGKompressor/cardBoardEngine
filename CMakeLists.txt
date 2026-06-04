@@ -163,6 +163,7 @@ if(CARDBOARD_BUILD_FULL_GAME)
     logmanager.cpp
     Map.cpp
     Map_1.cpp
+    Minimap.cpp
     Matrix4.cpp
     MouseCursor.cpp
     Player.cpp

@@ -12,6 +12,7 @@
 
 #include "UI.h"
 #include "EnemyManager.h"
+#include "Minimap.h"
 
 #include "InputSystem.h"
 #include "vector2.h"
@@ -32,6 +33,7 @@ SceneCardBoard::SceneCardBoard()
 	, m_pInputSystem{ 0 }
 	, mLooping {true}
 	, m_pEnemies{0}
+	, m_pMinimap{0}
 	, mCollectedItems{0}
 {
 
@@ -46,6 +48,9 @@ SceneCardBoard::~SceneCardBoard() {
 
 	delete m_pEnemies;
 	m_pEnemies = nullptr;
+
+	delete m_pMinimap;
+	m_pMinimap = nullptr;
 
 	//Dont delete m_pRenderer since the Game file owns it. we simply remove the pointer to it;
 	m_pRenderer = nullptr;
@@ -75,6 +80,8 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 
 	m_pUI = new UI();
 	m_pUI->initialise(*m_pRenderer, m_pPlayer, m_pPlayerConfig);
+
+	m_pMinimap = new Minimap(); // see MinimapConfig.h for tuning
 
 	m_pEnemies = new EnemyManager();
 	m_pEnemies->syncHearingFromPlayerConfig(*m_pPlayerConfig);
@@ -286,6 +293,19 @@ void SceneCardBoard::Draw(Renderer& renderer) {
 	
 	m_pUI->draw(*m_pRenderer, mCameraX, mCameraY);
 
+	if (m_pMinimap != nullptr && m_pMap != nullptr && m_pPlayer != nullptr && m_pEnemies != nullptr)
+	{
+		m_pMinimap->draw(
+			*m_pRenderer,
+			mCameraX,
+			mCameraY,
+			static_cast<float>(m_pRenderer->getWidth()),
+			static_cast<float>(m_pRenderer->getHeight()),
+			*m_pMap,
+			*m_pPlayer,
+			*m_pEnemies);
+	}
+
 	for (Item* battery : m_batteries)
 	{
 		if (battery != nullptr)
@@ -331,6 +351,10 @@ void SceneCardBoard::DebugDraw() {
 	if (m_pEnemies != nullptr)
 	{
 		m_pEnemies->debugDraw();
+	}
+	if (m_pMinimap != nullptr)
+	{
+		m_pMinimap->debugDraw();
 	}
 }
 
