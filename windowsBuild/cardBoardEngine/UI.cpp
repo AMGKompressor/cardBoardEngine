@@ -1,6 +1,5 @@
 #include "UI.h"
 #include "Player_1.h"
-#include "Player.h"
 #include "PlayerConfig_1.h"
 
 #include "renderer.h"

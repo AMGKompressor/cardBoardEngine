@@ -1,7 +1,6 @@
 #include "SceneCardBoard.h"
 
 #include "Map_1.h"
-#include "BasicMapLayout_1.h"
 #include "Player_1.h"
 #include "PlayerConfig_1.h"
 
@@ -63,8 +62,8 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 
 	m_pPlayer = new Player();
 	m_pPlayerConfig = new PlayerConfig;
-	const float spawnX = (BasicMapLayout::kEntryWest + BasicMapLayout::kEntryEast) * 0.5f;
-	const float spawnY = 900.0f;
+	const float spawnX = Room::kRoomSize * 0.5f;
+	const float spawnY = Room::kRoomSize * 0.5f;
 
 	if (!m_pPlayer->initialize(*m_pRenderer, m_pPlayerConfig, spawnX, spawnY))
 	{

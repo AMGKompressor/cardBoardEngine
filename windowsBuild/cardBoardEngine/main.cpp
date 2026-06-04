@@ -1,6 +1,5 @@
 // cardBoard engine demo entry point
 
-#include "CardBoardApp.h"
 #include "Game.h"
 #include "logmanager.h"
 

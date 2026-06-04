@@ -144,7 +144,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedSprite.cpp" />
-    <ClCompile Include="CardBoardApp.cpp" />
     <ClCompile Include="Collision2D_1.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputSystem.cpp" />
@@ -163,6 +162,7 @@
     <ClCompile Include="MouseCursor.cpp" />
     <ClCompile Include="Player_1.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneCardBoard.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -177,10 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.h" />
-    <ClInclude Include="BasicMapLayout.h" />
     <ClInclude Include="BasicMapLayout_1.h" />
-    <ClInclude Include="CardBoardApp.h" />
-    <ClInclude Include="Collision2D.h" />
     <ClInclude Include="Collision2D_1.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputSystem.h" />
@@ -195,15 +192,13 @@
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
     <ClInclude Include="lib\SDL_ttf-x86\include\SDL_ttf.h" />
     <ClInclude Include="logmanager.h" />
-    <ClInclude Include="Map.h" />
     <ClInclude Include="Map_1.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="MouseCursor.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerConfig.h" />
     <ClInclude Include="PlayerConfig_1.h" />
     <ClInclude Include="Player_1.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneCardBoard.h" />
     <ClInclude Include="Shader.h" />
@@ -214,6 +209,7 @@
     <ClInclude Include="UI.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="VertexArray.h" />
+    <ClInclude Include="WallSegment.h" />
     <ClInclude Include="XboxController.h" />
   </ItemGroup>
   <ItemGroup>

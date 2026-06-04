@@ -1,50 +1,47 @@
+// Room.cpp
 #include "Room.h"
-#include "Map_1.h"
 
-#include "BasicMapLayout_1.h"
-#include "Collision2D_1.h"
-
-#include "renderer.h"
-
-#include <algorithm>
-#include <cmath>
-#include <array>
-
-Room::Room(uint8_t doorways) : mDoorways(doorways)
+Room::Room(uint8_t doorways)
+    : mDoorways(doorways)
 {
-
+    makeWalls();
 }
 
-Room::~Room()
+void Room::addHor(float y, float xa, float xb)
 {
-
+    mWalls.push_back({ xa, y, xb, y });
 }
 
-bool Room::Initialise(Renderer& renderer)
+void Room::addVer(float x, float ya, float yb)
 {
-    return true;
+    mWalls.push_back({ x, ya, x, yb });
 }
 
-void Room::Process(float deltaTime)
+void Room::makeWalls()
 {
+    const float S = kRoomSize;
+    const float d0 = S * 0.5f - kDoorWidth * 0.5f;   // 270 — gap start
+    const float d1 = S * 0.5f + kDoorWidth * 0.5f;   // 370 — gap end
 
+    // North wall  (y = 0)
+    if (mDoorways & DOOR_NORTH) { addHor(0.f, 0.f, d0);  addHor(0.f, d1, S); }
+    else { addHor(0.f, 0.f, S); }
+
+    // South wall  (y = S)
+    if (mDoorways & DOOR_SOUTH) { addHor(S, 0.f, d0);  addHor(S, d1, S); }
+    else { addHor(S, 0.f, S); }
+
+    // West wall   (x = 0)
+    if (mDoorways & DOOR_WEST) { addVer(0.f, 0.f, d0);  addVer(0.f, d1, S); }
+    else { addVer(0.f, 0.f, S); }
+
+    // East wall   (x = S)
+    if (mDoorways & DOOR_EAST) { addVer(S, 0.f, d0);  addVer(S, d1, S); }
+    else { addVer(S, 0.f, S); }
 }
 
-void Room::Draw(Renderer& renderer)
-{
-
-}
-
-template <std::size_t N>
-void Room::setWallsFromLayout(const std::array<WallSegment, N>& walls)
-{
-	mWalls.assign(walls.begin(), walls.end());
-}
-
-void Room::appendWallsToBuffer(
-    std::vector<float>& outBuffer,
-    float offsetX,
-    float offsetY) const
+void Room::appendWallsToBuffer(std::vector<float>& outBuffer,
+    float offsetX, float offsetY) const
 {
     for (const WallSegment& w : mWalls)
     {

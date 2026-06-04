@@ -120,9 +120,6 @@
     <ClCompile Include="lib\imgui\imgui_widgets.cpp">
       <Filter>Source Files\IMGUI</Filter>
     </ClCompile>
-    <ClCompile Include="CardBoardApp.cpp">
-      <Filter>Source Files\CardBoardApp\Legacy</Filter>
-    </ClCompile>
     <ClCompile Include="Collision2D_1.cpp">
       <Filter>Source Files\CardBoardApp\New</Filter>
     </ClCompile>
@@ -142,6 +139,9 @@
       <Filter>Source Files\CardBoardApp\New</Filter>
     </ClCompile>
     <ClCompile Include="MouseCursor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -218,24 +218,6 @@
     <ClInclude Include="lib\imgui\imstb_textedit.h">
       <Filter>Header Files\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="BasicMapLayout.h">
-      <Filter>Header Files\CardboardApp\Legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="CardBoardApp.h">
-      <Filter>Header Files\CardboardApp\Legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision2D.h">
-      <Filter>Header Files\CardboardApp\Legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Header Files\CardboardApp\Legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files\CardboardApp\Legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerConfig.h">
-      <Filter>Header Files\CardboardApp\Legacy</Filter>
-    </ClInclude>
     <ClInclude Include="Collision2D_1.h">
       <Filter>Header Files\CardboardApp\New</Filter>
     </ClInclude>
@@ -261,6 +243,12 @@
       <Filter>Header Files\CardboardApp\New</Filter>
     </ClInclude>
     <ClInclude Include="MouseCursor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WallSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

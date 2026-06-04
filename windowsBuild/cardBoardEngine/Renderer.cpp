@@ -491,7 +491,7 @@ bool Renderer::setupLineDebugGraphics()
 		return false;
 	}
 
-	const int kMaxLineVerts = 64;
+	const int kMaxLineVerts = 1024;
 	glGenVertexArrays(1, &mLineVao);
 	glGenBuffers(1, &mLineVbo);
 	glBindVertexArray(mLineVao);
@@ -558,7 +558,9 @@ void Renderer::drawWorldLineSegments(const float* xyEndpoints, int segmentCount,
 		return;
 	}
 
-	const int capVerts = 128;
+	const int capVerts = 1024;        // was 128
+	float interleaved[1024 * 3];      // was [128 * 3]
+
 	int seg = segmentCount;
 	int vertCount = seg * 2;
 	if (vertCount > capVerts)
@@ -567,7 +569,6 @@ void Renderer::drawWorldLineSegments(const float* xyEndpoints, int segmentCount,
 		vertCount = seg * 2;
 	}
 
-	float interleaved[128 * 3];
 	for (int s = 0; s < seg; ++s)
 	{
 		const int o = s * 4;

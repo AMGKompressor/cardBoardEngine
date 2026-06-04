@@ -23,11 +23,8 @@
 
 #include "Map_1.h"
 
-#include "BasicMapLayout_1.h"
 #include "Collision2D_1.h"
 #include "renderer.h"
-
-#include "RoomLayout_Corridor.h"
 
 #include <algorithm>
 #include <cmath>
@@ -41,38 +38,6 @@ Map::Map()
 Map::~Map()
 {
 
-}
-
-// -----------------------------------------------------------------------------
-// setWallsFromLayout — copy level wall list into the runtime "wire" buffer
-// -----------------------------------------------------------------------------
-// Input:  array of WallSegment { x0, y0, x1, y1 } from a layout header.
-// Output: mWireFlat[] packed as [x0,y0,x1,y1, x0,y0,x1,y1, ...] per segment.
-//         mSegmentCount = number of walls.
-//
-// Every system that cares about walls reads mWireFlat:
-//   - constrainPlayerCenter() / enemies — solid collision
-//   - pollNewWallContact() — footstep noise when you bump a wall
-//   - Renderer flashlight mask — light blocked by same segments
-//   - drawWalls() — red debug/outline lines
-// -----------------------------------------------------------------------------
-template <std::size_t N>
-void Map::setWallsFromLayout(const std::array<WallSegment, N>& walls)
-{
-	static_assert(N * 4u <= 256u, "wire buffer too small"); // max 64 segments
-
-	mSegmentCount = static_cast<int>(N);
-	for (std::size_t i = 0; i < N; ++i)
-	{
-		mWireFlat[i * 4u + 0u] = walls[i].x0;
-		mWireFlat[i * 4u + 1u] = walls[i].y0;
-		mWireFlat[i * 4u + 2u] = walls[i].x1;
-		mWireFlat[i * 4u + 3u] = walls[i].y1;
-	}
-
-	// One flag per segment: was the player touching it last frame?
-	// Used by pollNewWallContact() to detect NEW bumps (not continuous slide).
-	mPrevWallTouch.assign(static_cast<std::size_t>(mSegmentCount), false);
 }
 
 // -----------------------------------------------------------------------------
@@ -90,15 +55,15 @@ void Map::generate()
 	mRooms.clear();
 	mRooms.reserve(kGridRows * kGridCols);
 
-	for (int row = 0; row < kGridRows; row++)
+	for (int row = 0; row < kGridRows; ++row)
 	{
-		for (int col = 0; col < kGridCols; col++)
+		for (int col = 0; col < kGridCols; ++col)
 		{
-			Room room(Room::DOOR_NONE);
-			room.setWallsFromLayout(RoomLayout_Corridor::kWalls);
-			mRooms.push_back(std::move(room));
+			// Every room open East + West = horizontal corridor grid
+			mRooms.emplace_back(Room::DOOR_EAST | Room::DOOR_WEST);
 		}
 	}
+
 	bake();
 }
 
@@ -106,22 +71,20 @@ void Map::bake()
 {
 	mWireFlat.clear();
 
-	for (int row = 0; row < kGridRows; row++)
+	for (int row = 0; row < kGridRows; ++row)
 	{
-		for (int col = 0; col < kGridCols; col++)
+		for (int col = 0; col < kGridCols; ++col)
 		{
 			const float offsetX = col * Room::kRoomSize;
 			const float offsetY = row * Room::kRoomSize;
-
-			mRooms[static_cast<std::size_t>(row * kGridCols + col)].appendWallsToBuffer(mWireFlat, offsetX, offsetY);
+			mRooms[row * kGridCols + col].appendWallsToBuffer(mWireFlat, offsetX, offsetY);
 		}
 	}
 
 	mSegmentCount = static_cast<int>(mWireFlat.size()) / 4;
-
-	mPrevWallTouch.assign(static_cast<std::size_t>(mSegmentCount), false);
-
+	mPrevWallTouch.assign(mSegmentCount, false);
 }
+
 
 // -----------------------------------------------------------------------------
 // constrainPlayerCenter — keep a moving entity inside the map and outside walls
@@ -248,7 +211,7 @@ void Map::drawFloor(Renderer& renderer) const
 		mHeight * 0.5f,
 		mWidth * 0.5f,
 		mHeight * 0.5f,
-		0.34f, 0.34f, 0.38f, 1.0f);
+		0.34f, 0.34f, 0.38f, 1.0f);   // dark grey
 }
 
 // -----------------------------------------------------------------------------
@@ -259,5 +222,8 @@ void Map::drawFloor(Renderer& renderer) const
 // -----------------------------------------------------------------------------
 void Map::drawWalls(Renderer& renderer) const
 {
-	renderer.drawWorldLineSegments(mWireFlat.data(), mSegmentCount, 1.0f, 0.0f, 0.0f, 1.0f);
+	renderer.drawWorldLineSegments(
+		mWireFlat.data(),
+		mSegmentCount,
+		1.0f, 0.0f, 0.0f, 1.0f);   // red, fully opaque
 }

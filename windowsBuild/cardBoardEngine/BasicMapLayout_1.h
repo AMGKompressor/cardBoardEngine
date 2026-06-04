@@ -6,20 +6,20 @@
 
 struct WallSegment
 {
-	float x0 = 0.0f;
-	float y0 = 0.0f;
-	float x1 = 0.0f;
-	float y1 = 0.0f;
+	float x0{};
+	float y0{};
+	float x1{};
+	float y1{};
 };
 
 struct WallSpec
 {
-	float x0 = 0.0f;
-	float y0 = 0.0f;
-	float x1 = 0.0f;
-	float y1 = 0.0f;
-	float shiftX = 0.0f;
-	float shiftY = 0.0f;
+	float x0{};
+	float y0{};
+	float x1{};
+	float y1{};
+	float shiftX{};
+	float shiftY{};
 };
 
 namespace BasicMapLayout
