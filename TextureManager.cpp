@@ -6,12 +6,31 @@
 #include "logmanager.h"
 
 #include <SDL.h>
+#include <SDL_filesystem.h>
 
 #include <cstdio>
 #include <string>
+#include <vector>
 
 namespace
 {
+	std::string gExeDirectory;
+
+	void ensureExeDirectoryCached()
+	{
+		if (!gExeDirectory.empty())
+		{
+			return;
+		}
+
+		char* basePath = SDL_GetBasePath();
+		if (basePath != nullptr)
+		{
+			gExeDirectory = basePath;
+			SDL_free(basePath);
+		}
+	}
+
 	bool fileReadable(const char* path)
 	{
 		if (path == nullptr || path[0] == '\0')
@@ -42,27 +61,61 @@ namespace
 		return p.substr(slash + 1);
 	}
 
-	// VS runs the exe from game/; CMake copies assets → build/textures/.
-	// Try several roots so teammates are not broken by mixed path styles in code.
+	std::string joinPath(const std::string& root, const std::string& relative)
+	{
+		if (root.empty())
+		{
+			return relative;
+		}
+		if (relative.empty())
+		{
+			return root;
+		}
+		return root + relative;
+	}
+
+	void pushCandidate(std::vector<std::string>& candidates, const std::string& path)
+	{
+		if (path.empty())
+		{
+			return;
+		}
+		for (const std::string& existing : candidates)
+		{
+			if (existing == path)
+			{
+				return;
+			}
+		}
+		candidates.push_back(path);
+	}
+
 	std::string resolveTexturePath(const char* path)
 	{
-		if (fileReadable(path))
-		{
-			return path;
-		}
+		ensureExeDirectoryCached();
 
 		const std::string name = fileNameFromPath(path);
-		if (name.empty())
-		{
-			return path;
-		}
+		std::vector<std::string> candidates;
+		pushCandidate(candidates, path);
 
-		const std::string candidates[] = {
-			"textures/" + name,
-			"assets/textures/" + name,
-			"../assets/textures/" + name,
-			"game/textures/" + name,
-		};
+		if (!name.empty())
+		{
+			const std::string relativePaths[] = {
+				"textures/" + name,
+				"assets/textures/" + name,
+				"../assets/textures/" + name,
+				"game/textures/" + name,
+			};
+
+			for (const std::string& relative : relativePaths)
+			{
+				pushCandidate(candidates, relative);
+				if (!gExeDirectory.empty())
+				{
+					pushCandidate(candidates, joinPath(gExeDirectory, relative));
+				}
+			}
+		}
 
 		for (const std::string& candidate : candidates)
 		{
@@ -98,6 +151,17 @@ TextureManager::~TextureManager()
 
 bool TextureManager::initialize()
 {
+	ensureExeDirectoryCached();
+	if (!gExeDirectory.empty())
+	{
+		LogManager::getInstance().log(
+			("TextureManager exe dir: " + gExeDirectory).c_str());
+	}
+	else
+	{
+		LogManager::getInstance().log("TextureManager: SDL_GetBasePath unavailable.");
+	}
+
 	LogManager::getInstance().log("TextureManager starting...");
 
 	return true;

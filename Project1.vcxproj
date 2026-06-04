@@ -75,10 +75,12 @@
     <OutDir>$(SolutionDir)game\</OutDir>
     <IntDir>$(SolutionDir)temp\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_debug</TargetName>
+    <LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)game\</OutDir>
     <IntDir>$(SolutionDir)temp\$(Configuration)\</IntDir>
+    <LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -96,11 +98,8 @@
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;glew32.lib;opengl32.lib;SDL2_ttf.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if not exist "$(OutDir)textures\" mkdir "$(OutDir)textures\"
-xcopy /Y /D "$(ProjectDir)assets\textures\*" "$(OutDir)textures\" &gt;nul
-if not exist "$(OutDir)shaders\" mkdir "$(OutDir)shaders\"
-xcopy /Y /D "$(ProjectDir)game\shaders\*" "$(OutDir)shaders\" &gt;nul</Command>
-      <Message>Copy textures and shaders next to the executable (game\)</Message>
+      <Command>"$(ProjectDir)scripts\win32_deploy_game_assets.cmd" "$(OutDir)" "$(ProjectDir)"</Command>
+      <Message>Deploy textures, shaders, and SDL DLLs into game\</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -121,11 +120,8 @@ xcopy /Y /D "$(ProjectDir)game\shaders\*" "$(OutDir)shaders\" &gt;nul</Command>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if not exist "$(OutDir)textures\" mkdir "$(OutDir)textures\"
-xcopy /Y /D "$(ProjectDir)assets\textures\*" "$(OutDir)textures\" &gt;nul
-if not exist "$(OutDir)shaders\" mkdir "$(OutDir)shaders\"
-xcopy /Y /D "$(ProjectDir)game\shaders\*" "$(OutDir)shaders\" &gt;nul</Command>
-      <Message>Copy textures and shaders next to the executable (game\)</Message>
+      <Command>"$(ProjectDir)scripts\win32_deploy_game_assets.cmd" "$(OutDir)" "$(ProjectDir)"</Command>
+      <Message>Deploy textures, shaders, and SDL DLLs into game\</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -255,6 +251,9 @@ xcopy /Y /D "$(ProjectDir)game\shaders\*" "$(OutDir)shaders\" &gt;nul</Command>
     <Image Include="assets\textures\board8x8.png" />
     <Image Include="assets\textures\cursor.png" />
     <Image Include="assets\textures\item.png" />
+    <Image Include="game\textures\board8x8.png" />
+    <Image Include="game\textures\cursor.png" />
+    <Image Include="game\textures\item.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="assets\textures\README.txt" />

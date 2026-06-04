@@ -105,6 +105,15 @@ bool Renderer::initialize(bool windowed, int width, int height)
 		return false;
 	}
 
+	const int imgFlags = IMG_INIT_PNG;
+	if ((IMG_Init(imgFlags) & imgFlags) != imgFlags)
+	{
+		logSdlError();
+		LogManager::getInstance().log(
+			"SDL_image init failed — ensure SDL2_image.dll is next to the .exe.");
+		return false;
+	}
+
 	// Load textures/shaders relative to the executable, not the shell cwd.
 	{
 		char* appDir = SDL_GetBasePath();

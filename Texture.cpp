@@ -35,7 +35,13 @@ bool Texture::initialize(const char* filename)
 	if (loaded == nullptr)
 	{
 		LogManager::getInstance().log(filename);
-		LogManager::getInstance().log("Texture failed to load!");
+		const char* sdlErr = SDL_GetError();
+		if (sdlErr != nullptr && sdlErr[0] != '\0')
+		{
+			LogManager::getInstance().log(sdlErr);
+		}
+		LogManager::getInstance().log(
+			"Texture failed to load! (missing file, or SDL2_image.dll not beside the .exe)");
 		return false;
 	}
 

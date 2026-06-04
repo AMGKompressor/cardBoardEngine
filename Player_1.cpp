@@ -64,7 +64,10 @@
 		}
 
 		cursor = new MouseCursor();
-		cursor->Initialise(renderer);
+		if (!cursor->Initialise(renderer))
+		{
+			return false;
+		}
 
 		const float sunekuScale =
 			mConfig->desiredSpriteBoxSize / static_cast<float>(mSprite->getWidth());
