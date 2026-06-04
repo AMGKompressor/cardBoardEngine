@@ -1,6 +1,6 @@
 #pragma once
 
-// Minimap — small HUD map in the corner of the screen.
+// Minimap — zoomed radar (follows player) or full-map overview. See MinimapConfig.h.
 //
 // Owned by SceneCardBoard (m_pMinimap). Settings live in MinimapConfig.h.
 // Draw is called from SceneCardBoard::Draw after the UI meters.

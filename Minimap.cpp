@@ -1,16 +1,12 @@
 // =============================================================================
-// Minimap.cpp — corner HUD that shows the full level layout.
+// Minimap.cpp — corner HUD map (zoomed radar or full-level overview).
 //
-// DRAW ORDER (back to front):
-//   1. Dark background rectangle
-//   2. Wall line segments (optional)
-//   3. Enemy dots (only if near player)
-//   4. Player dot (on top so you can find yourself)
-//   5. Green border frame
+// ZOOMED MODE (centerOnPlayer = true):
+//   Player at panel center; walls/enemies use offset from player * scaleX/scaleY.
+//   Zoom finetune: MinimapConfig::viewRadiusWorld (lower = zoom in, higher = out).
+//   ImGui ` window → "view radius (zoom)" slider tests values without rebuild.
 //
-// INTEGRATION:
-//   SceneCardBoard::Draw → m_pMinimap->draw(..., m_pMap, m_pPlayer, m_pEnemies)
-//   Enemy positions come from EnemyManager::enemyAt(i).
+// DRAW ORDER: background → walls → enemies → player dot → border
 // =============================================================================
 
 #include "Minimap.h"
@@ -30,14 +26,24 @@
 
 namespace
 {
-	// Pixel position of the panel on screen + scale from world → minimap.
 	struct PanelLayout
 	{
 		float panelLeft = 0.0f;
 		float panelTop = 0.0f;
-		float mapOriginX = 0.0f; // world (0,0) maps here after letterboxing
+		float viewCenterX = 0.0f;
+		float viewCenterY = 0.0f;
+		float mapOriginX = 0.0f;
 		float mapOriginY = 0.0f;
-		float scale = 1.0f;      // world pixels per minimap pixel
+		float scaleX = 1.0f;
+		float scaleY = 1.0f;
+		float clipLeft = 0.0f;
+		float clipTop = 0.0f;
+		float clipRight = 0.0f;
+		float clipBottom = 0.0f;
+		float playerWorldX = 0.0f;
+		float playerWorldY = 0.0f;
+		bool centerOnPlayer = true;
+		float viewRadiusWorld = 400.0f;
 	};
 
 	float distSq(float ax, float ay, float bx, float by)
@@ -47,19 +53,121 @@ namespace
 		return dx * dx + dy * dy;
 	}
 
-	// Place the panel on screen and compute uniform scale so the whole map fits.
+	// Skip wall segments that cannot intersect the zoomed view (performance).
+	bool segmentNearView(
+		float x0,
+		float y0,
+		float x1,
+		float y1,
+		float playerX,
+		float playerY,
+		float viewRadius)
+	{
+		const float minX = std::min(x0, x1) - viewRadius;
+		const float maxX = std::max(x0, x1) + viewRadius;
+		const float minY = std::min(y0, y1) - viewRadius;
+		const float maxY = std::max(y0, y1) + viewRadius;
+		return playerX >= minX && playerX <= maxX && playerY >= minY && playerY <= maxY;
+	}
+
+	// Liang-Barsky: trim a HUD line segment to the inner panel (stays inside green border).
+	bool clipSegmentToRect(
+		float& x0,
+		float& y0,
+		float& x1,
+		float& y1,
+		float left,
+		float top,
+		float right,
+		float bottom)
+	{
+		const float dx = x1 - x0;
+		const float dy = y1 - y0;
+		float t0 = 0.0f;
+		float t1 = 1.0f;
+
+		auto clipEdge = [&](float p, float q) -> bool {
+			if (std::fabs(p) < 1e-6f)
+			{
+				return q >= 0.0f;
+			}
+			const float r = q / p;
+			if (p < 0.0f)
+			{
+				if (r > t1)
+				{
+					return false;
+				}
+				if (r > t0)
+				{
+					t0 = r;
+				}
+			}
+			else
+			{
+				if (r < t0)
+				{
+					return false;
+				}
+				if (r < t1)
+				{
+					t1 = r;
+				}
+			}
+			return true;
+		};
+
+		if (!clipEdge(-dx, x0 - left))
+		{
+			return false;
+		}
+		if (!clipEdge(dx, right - x0))
+		{
+			return false;
+		}
+		if (!clipEdge(-dy, y0 - top))
+		{
+			return false;
+		}
+		if (!clipEdge(dy, bottom - y0))
+		{
+			return false;
+		}
+
+		const float nx0 = x0 + t0 * dx;
+		const float ny0 = y0 + t0 * dy;
+		const float nx1 = x0 + t1 * dx;
+		const float ny1 = y0 + t1 * dy;
+		x0 = nx0;
+		y0 = ny0;
+		x1 = nx1;
+		y1 = ny1;
+		return t1 > t0 + 1e-5f;
+	}
+
+	bool pointInsideClip(const PanelLayout& layout, float x, float y)
+	{
+		return x >= layout.clipLeft && x <= layout.clipRight
+			&& y >= layout.clipTop && y <= layout.clipBottom;
+	}
+
 	PanelLayout buildLayout(
 		const MinimapConfig& config,
 		float mapWidth,
 		float mapHeight,
+		float playerX,
+		float playerY,
 		float cameraX,
 		float cameraY,
 		float viewWidth,
 		float viewHeight)
 	{
 		PanelLayout layout;
+		layout.centerOnPlayer = config.centerOnPlayer;
+		layout.viewRadiusWorld = std::max(80.0f, config.viewRadiusWorld);
+		layout.playerWorldX = playerX;
+		layout.playerWorldY = playerY;
 
-		// HUD: add camera so the panel stays in the same screen corner when the view moves.
 		if (config.anchorTopRight)
 		{
 			layout.panelLeft =
@@ -74,23 +182,36 @@ namespace
 
 		const float innerW = std::max(8.0f, config.panelWidth - config.innerPadding * 2.0f);
 		const float innerH = std::max(8.0f, config.panelHeight - config.innerPadding * 2.0f);
-		if (mapWidth > 1.0f && mapHeight > 1.0f)
-		{
-			// Uniform scale: entire level visible, may letterbox inside the panel.
-			layout.scale = std::min(innerW / mapWidth, innerH / mapHeight);
-		}
+		const float innerLeft = layout.panelLeft + config.innerPadding;
+		const float innerTop = layout.panelTop + config.innerPadding;
 
-		const float usedW = mapWidth * layout.scale;
-		const float usedH = mapHeight * layout.scale;
-		layout.mapOriginX =
-			layout.panelLeft + config.innerPadding + (innerW - usedW) * 0.5f;
-		layout.mapOriginY =
-			layout.panelTop + config.innerPadding + (innerH - usedH) * 0.5f;
+		layout.viewCenterX = innerLeft + innerW * 0.5f;
+		layout.viewCenterY = innerTop + innerH * 0.5f;
+		layout.clipLeft = innerLeft;
+		layout.clipTop = innerTop;
+		layout.clipRight = innerLeft + innerW;
+		layout.clipBottom = innerTop + innerH;
+
+		if (config.centerOnPlayer)
+		{
+			// viewRadiusWorld (world px) → inner panel edge; separate X/Y avoids border spill.
+			layout.scaleX = (innerW * 0.5f) / layout.viewRadiusWorld;
+			layout.scaleY = (innerH * 0.5f) / layout.viewRadiusWorld;
+		}
+		else if (mapWidth > 1.0f && mapHeight > 1.0f)
+		{
+			const float uniformScale = std::min(innerW / mapWidth, innerH / mapHeight);
+			layout.scaleX = uniformScale;
+			layout.scaleY = uniformScale;
+			const float usedW = mapWidth * uniformScale;
+			const float usedH = mapHeight * uniformScale;
+			layout.mapOriginX = innerLeft + (innerW - usedW) * 0.5f;
+			layout.mapOriginY = innerTop + (innerH - usedH) * 0.5f;
+		}
 
 		return layout;
 	}
 
-	// Convert level coordinates (e.g. player at 700,900) to HUD draw coordinates.
 	void worldToPanel(
 		float worldX,
 		float worldY,
@@ -98,11 +219,18 @@ namespace
 		float& outX,
 		float& outY)
 	{
-		outX = layout.mapOriginX + worldX * layout.scale;
-		outY = layout.mapOriginY + worldY * layout.scale;
+		if (layout.centerOnPlayer)
+		{
+			outX = layout.viewCenterX + (worldX - layout.playerWorldX) * layout.scaleX;
+			outY = layout.viewCenterY + (worldY - layout.playerWorldY) * layout.scaleY;
+		}
+		else
+		{
+			outX = layout.mapOriginX + worldX * layout.scaleX;
+			outY = layout.mapOriginY + worldY * layout.scaleY;
+		}
 	}
 
-	// Simple square blip (Renderer has no circle API).
 	void drawDot(
 		Renderer& renderer,
 		float centerX,
@@ -162,12 +290,15 @@ void Minimap::draw(
 		return;
 	}
 
-	const float mapW = map.width();
-	const float mapH = map.height();
+	const float playerX = player.x();
+	const float playerY = player.y();
+
 	const PanelLayout layout = buildLayout(
 		mConfig,
-		mapW,
-		mapH,
+		map.width(),
+		map.height(),
+		playerX,
+		playerY,
 		cameraX,
 		cameraY,
 		viewWidth,
@@ -176,7 +307,6 @@ void Minimap::draw(
 	const float panelCenterX = layout.panelLeft + mConfig.panelWidth * 0.5f;
 	const float panelCenterY = layout.panelTop + mConfig.panelHeight * 0.5f;
 
-	// --- Layer 1: background ---
 	renderer.drawWorldAxisAlignedQuad(
 		panelCenterX,
 		panelCenterY,
@@ -187,8 +317,6 @@ void Minimap::draw(
 		mConfig.backgroundB,
 		mConfig.backgroundA);
 
-	// --- Layer 2: walls (same data as Map collision / flashlight) ---
-	// wireFlat layout per segment: [x0, y0, x1, y1, x0, y0, x1, y1, ...]
 	if (mConfig.drawWalls)
 	{
 		const float* wire = map.wireFlat();
@@ -198,36 +326,65 @@ void Minimap::draw(
 			std::vector<float> lineVerts;
 			lineVerts.reserve(static_cast<std::size_t>(segmentCount) * 4);
 
+			const float wallCullRadius = layout.centerOnPlayer
+				? layout.viewRadiusWorld * 1.15f
+				: 1.0e9f;
+
 			for (int s = 0; s < segmentCount; ++s)
 			{
 				const int o = s * 4;
+				const float wx0 = wire[o + 0];
+				const float wy0 = wire[o + 1];
+				const float wx1 = wire[o + 2];
+				const float wy1 = wire[o + 3];
+
+				if (layout.centerOnPlayer
+					&& !segmentNearView(wx0, wy0, wx1, wy1, playerX, playerY, wallCullRadius))
+				{
+					continue;
+				}
+
 				float x0 = 0.0f;
 				float y0 = 0.0f;
 				float x1 = 0.0f;
 				float y1 = 0.0f;
-				worldToPanel(wire[o + 0], wire[o + 1], layout, x0, y0);
-				worldToPanel(wire[o + 2], wire[o + 3], layout, x1, y1);
+				worldToPanel(wx0, wy0, layout, x0, y0);
+				worldToPanel(wx1, wy1, layout, x1, y1);
+
+				if (!clipSegmentToRect(
+						x0,
+						y0,
+						x1,
+						y1,
+						layout.clipLeft,
+						layout.clipTop,
+						layout.clipRight,
+						layout.clipBottom))
+				{
+					continue;
+				}
+
 				lineVerts.push_back(x0);
 				lineVerts.push_back(y0);
 				lineVerts.push_back(x1);
 				lineVerts.push_back(y1);
 			}
 
-			renderer.drawWorldLineSegments(
-				lineVerts.data(),
-				segmentCount,
-				mConfig.wallR,
-				mConfig.wallG,
-				mConfig.wallB,
-				mConfig.wallA);
+			if (!lineVerts.empty())
+			{
+				renderer.drawWorldLineSegments(
+					lineVerts.data(),
+					static_cast<int>(lineVerts.size() / 4),
+					mConfig.wallR,
+					mConfig.wallG,
+					mConfig.wallB,
+					mConfig.wallA);
+			}
 		}
 	}
 
-	// --- Layer 3: enemies within reveal radius ---
 	const float revealSq =
 		mConfig.enemyRevealRadius * mConfig.enemyRevealRadius;
-	const float playerX = player.x();
-	const float playerY = player.y();
 
 	const int count = enemies.enemyCount();
 	for (int i = 0; i < count; ++i)
@@ -238,7 +395,6 @@ void Minimap::draw(
 			continue;
 		}
 
-		// Skip far enemies — change enemyRevealRadius in MinimapConfig.h to tune.
 		if (distSq(playerX, playerY, enemy->x(), enemy->y()) > revealSq)
 		{
 			continue;
@@ -252,6 +408,10 @@ void Minimap::draw(
 		float dotX = 0.0f;
 		float dotY = 0.0f;
 		worldToPanel(enemy->x(), enemy->y(), layout, dotX, dotY);
+		if (!pointInsideClip(layout, dotX, dotY))
+		{
+			continue;
+		}
 		drawDot(
 			renderer,
 			dotX,
@@ -263,21 +423,37 @@ void Minimap::draw(
 			mConfig.enemyA);
 	}
 
-	// --- Layer 4: player (always shown at real map position) ---
-	float playerDotX = 0.0f;
-	float playerDotY = 0.0f;
-	worldToPanel(playerX, playerY, layout, playerDotX, playerDotY);
-	drawDot(
-		renderer,
-		playerDotX,
-		playerDotY,
-		mConfig.playerDotRadius,
-		mConfig.playerR,
-		mConfig.playerG,
-		mConfig.playerB,
-		mConfig.playerA);
+	// Player at panel center in zoom mode; mapped position in full-map mode.
+	const float playerDotX = layout.centerOnPlayer ? layout.viewCenterX : 0.0f;
+	const float playerDotY = layout.centerOnPlayer ? layout.viewCenterY : 0.0f;
+	if (!layout.centerOnPlayer)
+	{
+		float px = 0.0f;
+		float py = 0.0f;
+		worldToPanel(playerX, playerY, layout, px, py);
+		drawDot(
+			renderer,
+			px,
+			py,
+			mConfig.playerDotRadius,
+			mConfig.playerR,
+			mConfig.playerG,
+			mConfig.playerB,
+			mConfig.playerA);
+	}
+	else
+	{
+		drawDot(
+			renderer,
+			playerDotX,
+			playerDotY,
+			mConfig.playerDotRadius,
+			mConfig.playerR,
+			mConfig.playerG,
+			mConfig.playerB,
+			mConfig.playerA);
+	}
 
-	// --- Layer 5: border outline ---
 	const float borderVerts[8] = {
 		layout.panelLeft,
 		layout.panelTop,
@@ -300,9 +476,14 @@ void Minimap::draw(
 
 void Minimap::debugDraw()
 {
-	// Shown in SceneCardBoard::DebugDraw when the ` ImGui window is open.
 	ImGui::Text("Minimap");
 	ImGui::Checkbox("enabled", &mConfig.enabled);
+	ImGui::Checkbox("center on player (zoom)", &mConfig.centerOnPlayer);
+	if (mConfig.centerOnPlayer)
+	{
+		// Same as MinimapConfig::viewRadiusWorld — lower = zoom in, higher = zoom out.
+		ImGui::SliderFloat("view radius (zoom)", &mConfig.viewRadiusWorld, 120.0f, 900.0f);
+	}
 	ImGui::SliderFloat("enemy reveal radius", &mConfig.enemyRevealRadius, 80.0f, 1200.0f);
 	ImGui::Checkbox("draw walls", &mConfig.drawWalls);
 }
