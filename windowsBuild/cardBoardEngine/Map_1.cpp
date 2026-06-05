@@ -29,10 +29,12 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <random>
+#include <iostream>
 
 Map::Map()
 {
-
+	std::srand(std::time(nullptr));
 }
 
 Map::~Map()
@@ -50,15 +52,32 @@ Map::~Map()
 //       setWallsFromLayout(WarehouseLayout::kWalls);
 //   }
 // -----------------------------------------------------------------------------
-const int Map::kLayout[kGridRows][kGridCols] =
+
+// Change matrix 
+void Map::setNewMap(int(&layout)[kGridRows][kGridCols])
 {
-	{ 1, 1, 2, 1, 5 },
-	{ 3, 4, 1, 2, 3 },
-	{ 5, 2, 4, 3, 5 },
-};
+	for (int i = 0; i < kGridRows; ++i) {
+		for (int j = 0; j < kGridCols; ++j) {
+			int randNum = std::rand() % (6 - 1 + 1) + 1;
+			layout[i][j] = randNum;
+		}
+	}
+	layout[1][2] = 1;
+}
 
 void Map::generate()
 {
+	int defaultLayout[kGridRows][kGridCols] =
+	{
+		{ 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0 },
+	};
+
+	setNewMap(defaultLayout);
+
+	std::memcpy(mLayout, defaultLayout, sizeof(mLayout));
+	
 	mRooms.clear();
 	mRooms.reserve(kGridRows * kGridCols);
 
@@ -66,7 +85,7 @@ void Map::generate()
 	{
 		for (int col = 0; col < kGridCols; ++col)
 		{
-			mRooms.emplace_back(static_cast<uint8_t>(kLayout[row][col]));
+			mRooms.emplace_back(static_cast<uint8_t>(mLayout[row][col]));
 		}
 	}
 

@@ -65,8 +65,8 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 
 	m_pPlayer = new Player();
 	m_pPlayerConfig = new PlayerConfig;
-	const float spawnX = Room::kRoomSize * 0.5f;
-	const float spawnY = Room::kRoomSize * 0.5f;
+	const float spawnX = (Map::kGridCols * Room::kRoomSize) * 0.5f;
+	const float spawnY = (Map::kGridRows * Room::kRoomSize) * 0.5f;
 
 	if (!m_pPlayer->initialize(*m_pRenderer, m_pPlayerConfig, spawnX, spawnY))
 	{
@@ -76,6 +76,8 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 
 	m_pUI = new UI();
 	m_pUI->initialise(*m_pRenderer, m_pPlayer, m_pPlayerConfig);
+
+	m_pMinimap = new Minimap();
 
 	m_pEnemies = new EnemyManager();
 	m_pEnemies->syncHearingFromPlayerConfig(*m_pPlayerConfig);
@@ -224,6 +226,27 @@ void SceneCardBoard::Draw(Renderer& renderer) {
 	if (navDebug && m_pEnemies != nullptr && m_pRenderer != nullptr)
 	{
 		m_pEnemies->drawPathDebug(*m_pRenderer);
+	}
+
+	if (m_pMinimap != nullptr && m_pMap != nullptr && m_pPlayer != nullptr && m_pEnemies != nullptr)
+	{
+		m_pMinimap->draw(
+			*m_pRenderer,
+			mCameraX,
+			mCameraY,
+			static_cast<float>(m_pRenderer->getWidth()),
+			static_cast<float>(m_pRenderer->getHeight()),
+			*m_pMap,
+			*m_pPlayer,
+			*m_pEnemies);
+	}
+
+	for (Item* battery : m_batteries)
+	{
+		if (battery != nullptr)
+		{
+			battery->Draw(renderer);
+		}
 	}
 
 	//Didnt need this for renderering, adding it lead to flickering.

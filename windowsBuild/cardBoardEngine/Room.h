@@ -16,11 +16,12 @@ public:
     // Room type constants — used as index in Map::kLayout matrix
     enum RoomType : uint8_t
     {
-        ROOM_1 = 1,   // horizontal stub from West wall
-        ROOM_2 = 2,   // four inward stubs — pinwheel layout
-        ROOM_3 = 3,   // long vertical divider + West stub
-        ROOM_4 = 4,   // staggered horizontal chicane
-        ROOM_CLOSED = 5,   // fully sealed, no openings, no internal walls
+        ROOM_0 = 1, // OPEN ROOM
+        ROOM_1 = 2,   // horizontal stub from West wall
+        ROOM_2 = 3,   // four inward stubs — pinwheel layout
+        ROOM_3 = 4,   // long vertical divider + West stub
+        ROOM_4 = 5,   // staggered horizontal chicane
+        ROOM_CLOSED = 6,   // fully sealed, no openings, no internal walls
     };
 
     static constexpr float kRoomSize = 640.0f;

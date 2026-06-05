@@ -74,6 +74,8 @@ void Room::makeWalls()
     // ------------------------------------------------------------------
     switch (mType)
     {
+    case ROOM_0:
+        break;
     case ROOM_1:
         // One horizontal wall stub from the West outer wall, upper area.
         // Runs from x=0 to x=200, sitting at y=180.

@@ -15,8 +15,15 @@ public:
 
     static constexpr int kGridCols = 5;
     static constexpr int kGridRows = 3;
-    static const int kLayout[kGridRows][kGridCols];
+    int mLayout[kGridRows][kGridCols];
 
+    void setNewMap(int(&layout)[kGridRows][kGridCols]);
+
+    void setLayout(const int layout[kGridRows][kGridCols])
+    {
+        std::memcpy(mLayout, layout, sizeof(mLayout));
+    }
+    const int* getLayout() const { return &mLayout[0][0]; }
 
     static constexpr float kDefaultWidth = Room::kRoomSize * kGridCols;   // 2560
     static constexpr float kDefaultHeight = Room::kRoomSize * kGridRows;   // 2560
