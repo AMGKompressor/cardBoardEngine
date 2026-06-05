@@ -54,8 +54,8 @@ inline LootTierInfo lootTierInfo(LootTier tier)
 
 // --- Sprite toggle (flip when PNGs are in assets/textures/) -----------------
 
-inline constexpr bool kLootUseSprites = false;
-inline constexpr bool kInventoryLootUseSprites = false;
+inline constexpr bool kLootUseSprites = true;
+inline constexpr bool kInventoryLootUseSprites = true;
 
 // World pickup texture paths (loaded by Item::loadLootSprite).
 inline const char* lootWorldSpritePath(LootTier tier)
@@ -63,15 +63,15 @@ inline const char* lootWorldSpritePath(LootTier tier)
 	switch (tier)
 	{
 	case LootTier::Grey:
-		return "/assets/textures/loot_scrap.png";
+		return "/assets/textures/item_common.png";
 	case LootTier::Orange:
-		return "/assets/textures/loot_bronze.png";
+		return "/assets/textures/item_uncommon.png";
 	case LootTier::Blue:
-		return "/assets/textures/loot_sapphire.png";
+		return "/assets/textures/item_rare.png";
 	case LootTier::Purple:
-		return "/assets/textures/loot_relic.png";
+		return "/assets/textures/item_exotic.png";
 	default:
-		return "/assets/textures/loot_scrap.png";
+		return "/assets/textures/cursor.png";
 	}
 }
 
@@ -81,15 +81,15 @@ inline const char* lootInventorySpritePath(LootTier tier)
 	switch (tier)
 	{
 	case LootTier::Grey:
-		return "/assets/textures/loot_scrap_inv.png";
+		return "/assets/textures/item_common.png";
 	case LootTier::Orange:
-		return "/assets/textures/loot_bronze_inv.png";
+		return "/assets/textures/item_uncommon.png";
 	case LootTier::Blue:
-		return "/assets/textures/loot_sapphire_inv.png";
+		return "/assets/textures/item_rare.png";
 	case LootTier::Purple:
-		return "/assets/textures/loot_relic_inv.png";
+		return "/assets/textures/item_exotic.png";
 	default:
-		return "/assets/textures/loot_scrap_inv.png";
+		return "/assets/textures/cursor.png";
 	}
 }
 
@@ -97,13 +97,13 @@ inline const char* lootInventorySpritePath(LootTier tier)
 inline float lootWorldSpriteScale(LootTier tier)
 {
 	(void)tier;
-	return 4.0f;
+	return 0.5f;
 }
 
 inline float lootInventorySpriteScale(LootTier tier)
 {
 	(void)tier;
-	return 2.2f;
+	return 0.5f;
 }
 
 // Procedural placeholder size on floor (only used when kLootUseSprites is false).

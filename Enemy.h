@@ -108,6 +108,8 @@ private:
 	float mHitboxHalfH = 40.0f;
 
 	Sprite* mSprite = nullptr;
+	Sprite* mSprite_right = nullptr;
+	Sprite* mSprite_left = nullptr;
 
 	// Spirit
 	float mWanderDirX = 1.0f;

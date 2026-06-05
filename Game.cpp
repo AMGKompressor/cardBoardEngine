@@ -108,6 +108,23 @@ bool Game::initialise()
 		LogManager::getInstance().log(
 			"SoundSystem failed to initialise — playing without audio.");
 	}
+	else
+	{
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/ambience.wav", "ambience");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/attack1.wav", "attack");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/flashlight_stun.wav", "stun");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/flashlight_toggle.wav", "flashlight");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/footstep.wav", "footstep");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/item_drop.wav", "drop");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/item_pickup.wav", "pickup");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/low_battery.wav", "low_battery");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/low_sanity_reminder.wav", "low_sanity");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/lowsanity_throw_in1.wav", "throw_in1");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/lowsanity_throw_in2.wav", "throw_in2");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/lowsanity_throw_in3.wav", "throw_in3");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/minecraft_sound.wav", "throw_in4");
+		SoundSystem::GetInstance().LoadSound("/assets/sounds/recharge_battery.wav", "battery_replenish");
+	}
 	SoundSystem::GetInstance().SetMasterVolume(0.9f);
 
 

@@ -165,7 +165,7 @@ bool Enemy::initialize(
 	pickWanderDirection(mWanderDirX, mWanderDirY);
 	mWanderTimer = 0.0f;
 
-	mSprite = renderer.createSprite("/assets/textures/board8x8.png");
+	mSprite = renderer.createSprite("/assets/textures/ghost.png");
 	if (mSprite == nullptr)
 	{
 		return false;
@@ -199,7 +199,7 @@ bool Enemy::initialize(
 
 	mSprite->setX(static_cast<int>(mX));
 	mSprite->setY(static_cast<int>(mY));
-	mSprite->setAngle(mFacingDeg);
+	//mSprite->setAngle(mFacingDeg);
 	return true;
 }
 
@@ -568,21 +568,10 @@ void Enemy::moveWithCollision(
 	dirX *= invLen;
 	dirY *= invLen;
 
-	if (faceMovement && turnRateDegPerSec > 0.0f)
-	{
-		const float targetDeg = -std::atan2(dirY, dirX) * 57.2957795f;
-		const float maxStep = turnRateDegPerSec * deltaTime;
-		const float delta = shortestAngleDeltaDegrees(mFacingDeg, targetDeg);
-		if (std::fabs(delta) <= maxStep)
-		{
-			mFacingDeg = targetDeg;
-		}
-		else
-		{
-			mFacingDeg += (delta >= 0.0f) ? maxStep : -maxStep;
-		}
-		mFacingDeg = wrap360(mFacingDeg);
-	}
+	if (dirX > 0.0f)
+		mFacingDeg = 0.0f;    // facing right
+	else if (dirX < 0.0f)
+		mFacingDeg = 180.0f;  // facing left
 
 	const float nextX = mX + dirX * speed * deltaTime;
 	const float nextY = mY + dirY * speed * deltaTime;

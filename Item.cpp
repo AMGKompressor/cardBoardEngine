@@ -204,7 +204,7 @@ bool Item::Initialise(Renderer& renderer, ItemType type) {
 	if (m_type == ItemType::Basic)
 	{
 		// Generic pickup sprite — replace path here or add ItemType-specific paths.
-		m_pSprite = renderer.createSprite("/assets/textures/item.png");
+		m_pSprite = renderer.createSprite("/assets/textures/battery.png");
 		if (m_pSprite == nullptr)
 		{
 			return false;
@@ -217,8 +217,14 @@ bool Item::Initialise(Renderer& renderer, ItemType type) {
 		return true;
 	}
 
-	// Battery: procedural drawBattery() — no sprite yet.
-	(void)renderer;
+	m_pSprite = renderer.createSprite("/assets/textures/battery.png");
+	if (m_pSprite == nullptr)
+	{
+		return false;
+	}
+	m_pSprite->setScale(0.8f);
+	m_pSprite->setX(m_posX);
+	m_pSprite->setY(m_posY);
 	m_hitboxHalfW = 32.0f;
 	m_hitboxHalfH = 18.0f;
 	return true;
@@ -256,7 +262,12 @@ void Item::drawBattery(Renderer& renderer) const
 	// Battery uses procedural art. To use a sprite instead:
 	//   m_pSprite = renderer.createSprite("/assets/textures/battery.png");
 	//   then draw m_pSprite in Draw() and skip drawBattery().
-
+	if (m_pSprite != nullptr)
+	{
+		m_pSprite->setX(m_posX);
+		m_pSprite->setY(m_posY);
+		m_pSprite->draw(renderer);
+	}/*
 	const float bodyHalfW = 26.0f;
 	const float bodyHalfH = 12.0f;
 	const float blackHalfW = bodyHalfW * 0.75f;
@@ -336,7 +347,7 @@ void Item::drawBattery(Renderer& renderer) const
 		0.32f,
 		0.36f,
 		1.0f,
-		0.98f);
+		0.98f);*/
 }
 
 void Item::Draw(Renderer& renderer) {

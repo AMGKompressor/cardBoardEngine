@@ -95,7 +95,8 @@
 		staminaPercentage = mConfig->staminaMeter.maxStamina;
 		isRunning = false;
 
-		mSprite = renderer.createSprite("/assets/textures/board8x8.png");
+		mSprite = renderer.createSprite("/assets/textures/player.png");
+		mSprite->setScale(0.8f);
 		if (mSprite == nullptr)
 		{
 			return false;
@@ -110,9 +111,9 @@
 		const float sunekuScale =
 			mConfig->desiredSpriteBoxSize / static_cast<float>(mSprite->getWidth());
 		mSprite->setScale(sunekuScale);
-		mSprite->setRedTint(mConfig->bodyTintR);
+		/*mSprite->setRedTint(mConfig->bodyTintR);
 		mSprite->setGreenTint(mConfig->bodyTintG);
-		mSprite->setBlueTint(mConfig->bodyTintB);
+		mSprite->setBlueTint(mConfig->bodyTintB);*/
 
 		mSprite->setX(static_cast<int>(mX));
 		mSprite->setY(static_cast<int>(mY));
