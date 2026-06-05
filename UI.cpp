@@ -15,7 +15,7 @@
 #include "Inventory.h"
 #include "LootConfig.h"
 #include "Sprite.h"
-
+#include "SoundSystem.h"
 #include "renderer.h"
 
 #include "imgui.h"
@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <random>
 
 namespace
 {
@@ -165,6 +166,7 @@ void UI::clearInventoryLootSprites()
 
 bool UI::initialise(Renderer& renderer, Player* player, PlayerConfig* config)
 {
+	std::srand(std::time(NULL));
 	mConfig = config;
 	ui_player = player;
 	loadInventoryLootSprites(renderer);
@@ -319,6 +321,8 @@ bool UI::noSanity(float deltaTime)
 {
 	if (ui_player->sanityPercentage <= 0.1f)
 	{
+		SoundSystem::GetInstance().PlaySound("low_sanity");
+		playRandomThrowIn();
 		adjustHealth(deltaTime);
 		return true;
 	}
@@ -608,4 +612,31 @@ void UI::drawExtractionHud(
 			0.95f);
 	}
 
+}
+
+void UI::playRandomThrowIn()
+{
+	int randSound = (rand() % 4) + 1;
+	int chance = (rand() % 10000) + 1;
+
+	if (chance <= 5)
+	{
+		if (randSound == 1)
+		{
+			SoundSystem::GetInstance().PlaySound("throw_in1");
+		} else if (randSound == 2)
+		{
+			SoundSystem::GetInstance().PlaySound("throw_in2");
+		}
+		else if (randSound == 3)
+		{
+			SoundSystem::GetInstance().PlaySound("throw_in3");
+		}
+		else if (randSound == 4)
+		{
+			SoundSystem::GetInstance().PlaySound("throw_in4");
+		}
+		printf("sound\n");
+
+	}
 }

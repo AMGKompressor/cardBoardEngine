@@ -76,7 +76,7 @@ protected:
     bool mLooping;
     std::int64_t mLastTime;
     float mLowFlashlightSoundTimer = 0.0f;
-    bool mLowFlashlightSoundLoaded = false;
+    bool mLowFlashlightSoundLoaded = true;
 
 private:
 

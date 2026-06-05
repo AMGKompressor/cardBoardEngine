@@ -16,6 +16,7 @@
 #include "Player_1.h"
 #include "Sprite.h"
 #include "logmanager.h"
+#include "SoundSystem.h"
 
 #include <SDL.h>
 
@@ -403,10 +404,11 @@ bool Item::applyPickupEffect(Player& player)
 	if (m_type == ItemType::Battery)
 	{
 		player.refillFlashlightCharge();
+		SoundSystem::GetInstance().PlaySound("battery_replenish");
 		LogManager::getInstance().log("Picked up battery — flashlight charge restored to 100%.");
 		return true;
 	}
-
+	
 	return true;
 }
 
@@ -419,6 +421,7 @@ bool Item::tryPickup(Player& player) {
 	mCollected = true;
 	isPickedUp = true;
 	applyPickupEffect(player);
+	
 	return true;
 }
 

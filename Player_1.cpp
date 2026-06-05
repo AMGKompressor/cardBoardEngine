@@ -2,7 +2,7 @@
 
 #include "Collision2D_1.h"
 #include "Map_1.h"
-
+#include "SoundSystem.h"
 #include "renderer.h"
 #include "sprite.h"
 #include "MouseCursor.h"
@@ -143,7 +143,7 @@
 
 	void Player::toggleFlashlight()
 	{
-
+		SoundSystem::GetInstance().PlaySound("flashlight");
 		if (mFlashlightOn)
 		{
 			mFlashlightOn = false;
@@ -174,6 +174,7 @@
 		{
 			return;
 		}
+		SoundSystem::GetInstance().PlaySound("flashlight_replenish");
 		mFlashlightChargeSeconds = mConfig->flashlightMeter.maxChargeSeconds;
 	}
 
@@ -347,6 +348,7 @@
 
 		if (moveInput)
 		{
+			
 			if (mWalkPulseCooldown > 0.0f)
 			{
 				mWalkPulseCooldown = std::max(0.0f, mWalkPulseCooldown - deltaTime);
@@ -361,6 +363,7 @@
 			mFootstepCooldown -= deltaTime;
 			if (mFootstepCooldown <= 0.0f)
 			{
+				
 				if (sprintHeld)
 				{
 					if (mSprintPulseCooldown <= 0.0f)
@@ -379,6 +382,7 @@
 					mSprintPulseCooldown = 0.0f;
 				}
 				mFootstepCooldown = stepInterval;
+				SoundSystem::GetInstance().PlaySound("footstep");
 			}
 		}
 		else
@@ -407,8 +411,13 @@
 			mFlashlightChargeSeconds = std::max(
 				0.0f,
 				mFlashlightChargeSeconds - drainPerSecond * deltaTime);
+			if (mFlashlightChargeSeconds < 0.02f && deltaTime < 1.0f)
+			{
+				SoundSystem::GetInstance().PlaySound("low_battery");
+			}
 			if (mFlashlightChargeSeconds <= 0.0f)
 			{
+				
 				mFlashlightOn = false;
 				mFlashlightStunActive = false;
 				inDark = true;
@@ -496,6 +505,7 @@
 			* mConfig->flashlightStun.beamHalfAngleMultiplier;
 		query.range = mConfig->flashlight.beamRange
 			* mConfig->flashlightStun.beamRangeMultiplier;
+		
 		return query;
 	}
 

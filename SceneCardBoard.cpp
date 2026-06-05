@@ -296,6 +296,7 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 	mLastTime = SDL_GetPerformanceCounter();
 	updateCamera();
 	m_pRenderer->setCamera(mCameraX, mCameraY);
+	SoundSystem::GetInstance().PlaySound("ambience");
 
 	LogManager::getInstance().log(
 		"cardBoard — random map; spawn room = extraction zone. Collect $1000 loot, return home, press F to extract.");
@@ -499,6 +500,7 @@ bool SceneCardBoard::tryPickupNearbyLoot()
 	LogManager::getInstance().log(msg);
 
 	closest->tryPickup(*m_pPlayer);
+	SoundSystem::GetInstance().PlaySound("pickup");
 	return true;
 }
 
@@ -558,6 +560,7 @@ bool SceneCardBoard::tryDropSelectedLoot()
 	m_worldLoot.push_back(loot);
 
 	LogManager::getInstance().log("Dropped loot from inventory (Q).");
+	SoundSystem::GetInstance().PlaySound("drop");
 	return true;
 }
 
@@ -572,15 +575,17 @@ void SceneCardBoard::updateLowFlashlightSound(float deltaTime)
 	if (batteryRatio >= kLowFlashlightThreshold)
 	{
 		mLowFlashlightSoundTimer = 0.0f;
+		
 		return;
 	}
-
+	
 	mLowFlashlightSoundTimer += deltaTime;
 	while (mLowFlashlightSoundTimer >= kLowFlashlightSoundInterval)
 	{
-		SoundSystem::GetInstance().PlaySound(kHiddenLowFlashlightSoundKey);
+		
 		mLowFlashlightSoundTimer -= kLowFlashlightSoundInterval;
 	}
+	
 }
 
 void SceneCardBoard::updateCamera() {
@@ -697,8 +702,12 @@ void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 	m_pUI->adjustStamina(deltaTime);
 	updateLowFlashlightSound(deltaTime);
 
+	
+
 	updateCamera();
 	m_pRenderer->setCamera(mCameraX, mCameraY);
+
+	
 }
 
 void SceneCardBoard::drawExtractionZone() const

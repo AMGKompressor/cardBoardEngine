@@ -8,7 +8,7 @@
 #include "logmanager.h"
 #include "renderer.h"
 #include "sprite.h"
-
+#include "SoundSystem.h"
 #include "imgui.h"
 
 #include <algorithm>
@@ -326,7 +326,7 @@ bool Enemy::isWithinStunReactRange(const Player& player, const EnemyConfig& conf
 	{
 		return false;
 	}
-
+	SoundSystem::GetInstance().PlaySound("stun");
 	const float maxDist = std::min(config.stunReactMaxDistance, query.range);
 	return distSq(mX, mY, player.x(), player.y()) <= maxDist * maxDist;
 }

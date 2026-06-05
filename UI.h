@@ -57,6 +57,8 @@ public:
 	void adjustSanity(float deltaTime);
 	float sanityRatio();
 
+	void playRandomThrowIn();
+
 	// HEALTH
 	void drawHealthMeter(Renderer& renderer, float cameraX, float cameraY);
 	void adjustHealth(float deltaTime);
