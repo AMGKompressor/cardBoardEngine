@@ -71,7 +71,7 @@ public:
 		float camY,
 		const float* wallSegsFlat,
 		int wallSegmentCount);
-
+	void CreateStaticText(const char* pText, int pointsize);
 protected:
 	bool initializeOpenGL(int screenWidth, int screenHeight);
 	void destroyWindowAndContext();

@@ -12,6 +12,9 @@
 #include "SoundSystem.h"
 
 #include "SceneCardBoard.h"
+#include "SceneMainMenu.h"
+#include "ScenePause.h"
+#include "SceneSplashScreen.h"
 
 #include <iostream>
 
@@ -82,6 +85,7 @@ bool Game::initialise()
 		LogManager::getInstance().log("Renderer failed to initialise!");
 		return false;
 	}
+	PreloadSprites(*m_pRenderer);
 
 	ImGui_ImplSDL2_InitForOpenGL(
 		m_pRenderer->sdlWindow(),
@@ -102,6 +106,8 @@ bool Game::initialise()
 		LogManager::getInstance().log("InputSystem failed to initialise!");
 		return false;
 	}
+
+	
 	
 	if (!SoundSystem::GetInstance().Initialise())
 	{
@@ -124,20 +130,31 @@ bool Game::initialise()
 		SoundSystem::GetInstance().LoadSound("../assets/sounds/lowsanity_throw_in3.wav", "throw_in3");
 		SoundSystem::GetInstance().LoadSound("../assets/sounds/minecraft_sound.wav", "throw_in4");
 		SoundSystem::GetInstance().LoadSound("../assets/sounds/recharge_battery.wav", "battery_replenish"); //
+
+		SoundSystem::GetInstance().LoadSound("../assets/sounds/move_select.wav", "menu_select");
+		SoundSystem::GetInstance().LoadSound("../assets/sounds/select.wav", "menu_confirm");
+
 	}
 	SoundSystem::GetInstance().SetMasterVolume(0.9f);
+	Scene* pScene;
 
+	pScene = new SceneSplashScreen();
+	pScene->Initialise(*m_pRenderer);
+	m_scenes.push_back(pScene);
 
+	pScene = new SceneMainMenu();
+	m_scenes.push_back(pScene);
 
-	Scene* pCardBoardScene = new SceneCardBoard();
-	if (!pCardBoardScene->Initialise(*m_pRenderer)) {
-		LogManager::getInstance().log("Failed to init CardBoard Scene");
-		return false;
-	}
-	m_scenes.push_back(pCardBoardScene);
+	pScene = new ScenePause();
+	m_scenes.push_back(pScene);
+
+	pScene = new SceneCardBoard();
+	m_scenes.push_back(pScene);
+
+	// 0 splashscreens	2 pause
+	// 1 main menu		3 in game
 
 	m_iCurrentScene = 0;
-
 
 	return true;
 }
@@ -187,6 +204,7 @@ void Game::Process(float deltaTime)
 	SoundSystem::GetInstance().Update();
 
 	m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
+
 }
 
 void Game::Draw(Renderer& renderer)
@@ -283,4 +301,22 @@ void Game::InitialiseScene(int scene, Renderer& renderer)
 		m_scenes[scene]->Initialise(renderer);
 		m_iCurrentScene = scene;
 	}
+}
+
+void Game::PreloadSprites(Renderer& renderer)
+{
+	// Load every sprite the game will ever use
+	// TextureManager caches them — subsequent CreateSprite calls
+	// return the cached version without touching GL state
+
+	renderer.createSprite("../assets/splashscreens/aut_logo.png");
+	renderer.createSprite("../assets/splashscreens/FMOD_Logo.png");
+	renderer.createSprite("../assets/splashscreens/openGL_splashscreen.png");
+	renderer.createSprite("../assets/splashscreens/DearImGui_splashscreen.png");
+
+	renderer.createSprite("../assets/phantom_raiders_logo.png");
+	renderer.createSprite("../assets/arrow.png");
+	renderer.createSprite("../assets/start.png");
+	renderer.createSprite("../assets/quit.png");
+
 }

@@ -39,6 +39,7 @@ protected:
 	void Draw(Renderer& renderer);
 
 	void ProcessFrameCounting(float deltaTime);
+	void PreloadSprites(Renderer& renderer);
 
 	//void PreloadSprites(Renderer& renderer);
 

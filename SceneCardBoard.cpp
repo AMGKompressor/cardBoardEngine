@@ -613,8 +613,11 @@ void SceneCardBoard::updateCamera() {
 
 void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 
-	if (inputSystem.GetKeyState(SDL_SCANCODE_ESCAPE) == BS_PRESSED) {
-		Game::GetInstance().Quit();
+	if (inputSystem.GetKeyState(SDL_SCANCODE_ESCAPE) == BS_PRESSED)
+	{
+		//SoundSystem::GetInstance().PauseMusic();
+
+		Game::GetInstance().InitialiseScene(2, *m_pRenderer);
 		return;
 	}
 
@@ -784,7 +787,7 @@ bool SceneCardBoard::tryExtract()
 		"Extracted with $%d — mission complete!",
 		m_moneyCollected);
 	LogManager::getInstance().log(msg);
-	Game::GetInstance().Quit();
+	Game::GetInstance().setScene(1);
 	return true;
 }
 

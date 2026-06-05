@@ -16,7 +16,7 @@ public:
 	bool initialize();
 
 	Texture* getTexture(const char* filename);
-
+	void AddTexture(const char* key, Texture* pTexture);
 private:
 	TextureManager(const TextureManager& textureManager);
 	TextureManager& operator=(const TextureManager& textureManager);

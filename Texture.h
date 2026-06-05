@@ -2,6 +2,9 @@
 #ifndef __TEXTURE_H_
 #define __TEXTURE_H_
 
+#include <SDL_ttf.h>
+#include <SDL.h>
+
 class Texture
 {
 public:
@@ -16,13 +19,18 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 
+	void LoadTextTexture(const char* text, const char* fontname, int pointsize);
+
+protected:
+	void LoadSurfaceIntoTexture(SDL_Surface* pSurface);
+	unsigned int mTextureId;
+	int mWidth;
+	int mHeight;
 private:
 	Texture(const Texture& texture);
 	Texture& operator=(const Texture& texture);
 
-	unsigned int mTextureId;
-	int mWidth;
-	int mHeight;
+	
 };
 
 #endif // __TEXTURE_H_

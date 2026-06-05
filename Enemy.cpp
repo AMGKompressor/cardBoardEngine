@@ -10,6 +10,7 @@
 #include "sprite.h"
 #include "SoundSystem.h"
 #include "imgui.h"
+#include "Game.h"
 
 #include <algorithm>
 #include <vector>
@@ -72,9 +73,14 @@ namespace
 	{
 		if (amount <= 0.0f)
 		{
+			
 			return;
 		}
 		player.playerHealth = std::max(0.0f, player.playerHealth - amount);
+		if (player.playerHealth <= 0.0f)
+		{
+			Game::GetInstance().setScene(1);
+		}
 	}
 
 	FootstepHearing queryFootstepHearing(

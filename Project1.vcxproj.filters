@@ -165,6 +165,15 @@
     <ClCompile Include="Minimap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SceneMainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScenePause.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSplashScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -302,6 +311,15 @@
     <ClInclude Include="MinimapConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SceneMainMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScenePause.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSplashScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\line.frag" />
@@ -316,6 +334,15 @@
     <None Include="game\shaders\sprite.vert" />
     <None Include="game\shaders\vision_mask.frag" />
     <None Include="game\shaders\vision_mask.vert" />
+    <None Include="game\fmod.dll" />
+    <None Include="game\fmodL.dll" />
+    <None Include="game\glew32.dll" />
+    <None Include="game\imgui.ini" />
+    <None Include="game\SDL2.dll" />
+    <None Include="game\SDL2_image.dll" />
+    <None Include="game\SDL2_ttf.dll" />
+    <None Include="game\TGP_debug.exe" />
+    <None Include="game\TGP_debug.pdb" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\board8x8.png">
@@ -339,5 +366,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="assets\textures\README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="game\Snowbell-Wp4g9.ttf" />
   </ItemGroup>
 </Project>

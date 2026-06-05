@@ -636,7 +636,6 @@ void UI::playRandomThrowIn()
 		{
 			SoundSystem::GetInstance().PlaySound("throw_in4");
 		}
-		printf("sound\n");
 
 	}
 }

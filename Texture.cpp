@@ -11,6 +11,13 @@
 #include <vector>
 #include <GL/glew.h>
 
+#include "glew.h"
+
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_opengl3.h"
+
+#include <SDL_ttf.h>
+
 
 Texture::Texture()
 	: mTextureId(0)
@@ -131,4 +138,54 @@ int Texture::getHeight() const
 {
 	assert(mHeight);
 	return (mHeight);
+}
+void
+Texture::LoadTextTexture(const char* text, const char* fontname, int pointsize)
+{
+	TTF_Font* pFont = 0;
+	TTF_Init();
+	if (pFont == 0)
+	{
+		pFont = TTF_OpenFont(fontname, pointsize);
+	}
+	SDL_Color color;
+	color.r = 255;
+	color.g = 255;
+	color.b = 255;
+	color.a = 100;
+	SDL_Surface* pSurface = TTF_RenderText_Blended(pFont, text, color);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	LoadSurfaceIntoTexture(pSurface);
+	TTF_CloseFont(pFont);
+	pFont = 0;
+}
+
+void Texture::LoadSurfaceIntoTexture(SDL_Surface* pSurface)
+{
+	if (pSurface)
+	{
+		mWidth = pSurface->w;
+		mHeight = pSurface->h;
+
+		int bytesPerPixel = pSurface->format->BytesPerPixel;
+		unsigned int format = (bytesPerPixel == 4) ? GL_RGBA : GL_RGB;
+
+		// DELETE old texture before generating a new one
+		if (mTextureId != 0)
+		{
+			glDeleteTextures(1, &mTextureId);
+			mTextureId = 0;
+		}
+
+		glGenTextures(1, &mTextureId);
+		glBindTexture(GL_TEXTURE_2D, mTextureId);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, mWidth, mHeight, 0,
+			format, GL_UNSIGNED_BYTE, pSurface->pixels);
+
+		SDL_FreeSurface(pSurface);
+		pSurface = nullptr;
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
 }
