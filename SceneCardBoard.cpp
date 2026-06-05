@@ -33,8 +33,8 @@
 namespace
 {
 	constexpr const char* kHiddenLowFlashlightSoundKey = "hidden_low_flashlight";
-	constexpr float kLowFlashlightSoundInterval = 0.5f;
-	constexpr float kLowFlashlightThreshold = 0.50f;
+	constexpr float kLowFlashlightSoundInterval = -0.0f;
+	constexpr float kLowFlashlightThreshold = -0.50f;
 
 	bool loadHiddenLowFlashlightSound()
 	{

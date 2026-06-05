@@ -147,6 +147,24 @@
     <ClCompile Include="MouseCursor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Collision2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NavGrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Inventory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Minimap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -257,6 +275,33 @@
     <ClInclude Include="MouseCursor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Collision2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NavGrid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LootConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Minimap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinimapConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\line.frag" />
@@ -265,12 +310,30 @@
     <None Include="assets\shaders\sprite.vert" />
     <None Include="assets\shaders\vision_mask.frag" />
     <None Include="assets\shaders\vision_mask.vert" />
+    <None Include="game\shaders\line.frag" />
+    <None Include="game\shaders\line.vert" />
+    <None Include="game\shaders\sprite.frag" />
+    <None Include="game\shaders\sprite.vert" />
+    <None Include="game\shaders\vision_mask.frag" />
+    <None Include="game\shaders\vision_mask.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\board8x8.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\textures\cursor.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\item.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="game\textures\board8x8.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="game\textures\cursor.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="game\textures\item.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

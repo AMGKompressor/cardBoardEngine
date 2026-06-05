@@ -37,7 +37,8 @@ namespace
 		{
 			return false;
 		}
-		FILE* file = std::fopen(path, "rb");
+		FILE* file = nullptr;
+		errno_t err = fopen_s(&file, path, "rb");
 		if (file == nullptr)
 		{
 			return false;

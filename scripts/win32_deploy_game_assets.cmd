@@ -20,11 +20,11 @@ if exist "%ROOT%assets\sounds\" (
   xcopy /Y /I "%ROOT%assets\sounds\*.*" "%OUT%sounds\"
 )
 
-if not exist "%OUT%shaders\" mkdir "%OUT%shaders\"
-xcopy /Y /I "%ROOT%game\shaders\*.*" "%OUT%shaders\"
-if errorlevel 1 (
-  echo Post-build ERROR: could not copy game\shaders to "%OUT%shaders\"
-  exit /b 1
+if not exist "%OUT%shaders\" (
+  if not "%OUT%shaders\"=="%ROOT%game\shaders\" (
+    mkdir "%OUT%shaders\"
+    xcopy /Y /I "%ROOT%game\shaders\*.*" "%OUT%shaders\"
+  )
 )
 
 if exist "%ROOT%lib\SDL2-2.0.22\lib\x86\SDL2.dll" (
