@@ -1,7 +1,7 @@
 #include "SceneCardBoard.h"
 
 #include "Map_1.h"
-#include "BasicMapLayout_1.h"
+#include "ProceduralSpawns.h"
 #include "Player_1.h"
 #include "PlayerConfig_1.h"
 
@@ -23,6 +23,7 @@
 #include <SDL.h>
 
 #include "NavGrid.h"
+#include "SoundSystem.h"
 
 #include <algorithm>
 #include <cmath>
@@ -31,6 +32,29 @@
 
 namespace
 {
+	constexpr const char* kHiddenLowFlashlightSoundKey = "hidden_low_flashlight";
+	constexpr float kLowFlashlightSoundInterval = 0.5f;
+	constexpr float kLowFlashlightThreshold = 0.50f;
+
+	bool loadHiddenLowFlashlightSound()
+	{
+		const char* paths[] = {
+			"sounds/hiddenSound.mp3",
+			"assets/sounds/hiddenSound.mp3",
+			"../assets/sounds/hiddenSound.mp3",
+		};
+
+		for (const char* path : paths)
+		{
+			if (SoundSystem::GetInstance().LoadSound(path, kHiddenLowFlashlightSoundKey))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	bool clampInsideMap(float& x, float& y, const Map& map, float margin)
 	{
 		const float maxX = map.width() - margin;
@@ -213,11 +237,12 @@ SceneCardBoard::~SceneCardBoard() {
 bool SceneCardBoard::Initialise(Renderer& renderer) {
 	m_pRenderer = &renderer;
 	
-	const float spawnX = (BasicMapLayout::kEntryWest + BasicMapLayout::kEntryEast) * 0.5f;
-	const float spawnY = 900.0f;
-
 	m_pMap = new Map();
-	m_pMap->loadBasicTutorial();
+	m_pMap->generate();
+
+	const float spawnX = ProceduralGridLayout::spawnExtractionRoomCenterX();
+	const float spawnY = ProceduralGridLayout::spawnExtractionRoomCenterY();
+	m_extractionGoal = kExtractionGoalDollars;
 
 	m_pPlayer = new Player();
 	m_pPlayerConfig = new PlayerConfig;
@@ -236,12 +261,16 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 
 	m_pEnemies = new EnemyManager();
 	m_pEnemies->syncHearingFromPlayerConfig(*m_pPlayerConfig);
-	if (!m_pEnemies->initialize(*m_pRenderer))
+	if (!m_pEnemies->buildNavigation(*m_pMap))
+	{
+		LogManager::getInstance().log("EnemyManager: nav grid build failed.");
+		return false;
+	}
+	if (!m_pEnemies->initialize(*m_pRenderer, spawnX, spawnY))
 	{
 		LogManager::getInstance().log("EnemyManager failed to init.");
 		return false;
 	}
-	m_pEnemies->buildNavigation(*m_pMap);
 
 	if (!spawnBatteries(renderer))
 	{
@@ -257,12 +286,19 @@ bool SceneCardBoard::Initialise(Renderer& renderer) {
 
 	m_pPlayer->toggleFlashlight();
 
+	mLowFlashlightSoundLoaded = loadHiddenLowFlashlightSound();
+	if (!mLowFlashlightSoundLoaded)
+	{
+		LogManager::getInstance().log(
+			"Low-flashlight warning sound not found (expected sounds/hiddenSound.mp3).");
+	}
+
 	mLastTime = SDL_GetPerformanceCounter();
 	updateCamera();
 	m_pRenderer->setCamera(mCameraX, mCameraY);
 
 	LogManager::getInstance().log(
-		"cardBoard — E pickup, Q drop, 1-3 select slots. Extract at $1000.");
+		"cardBoard — random map; spawn room = extraction zone. Collect $1000 loot, return home, press F to extract.");
 	return true;
 }
 
@@ -284,10 +320,8 @@ bool SceneCardBoard::spawnBatteries(Renderer& renderer)
 		? &m_pEnemies->navGrid()
 		: nullptr;
 
-	for (const BasicMapLayout::BatterySpawns::Point& spawn : BasicMapLayout::BatterySpawns::kList)
+	auto spawnBatteryAt = [&](float spawnX, float spawnY) -> bool
 	{
-		float spawnX = spawn.x;
-		float spawnY = spawn.y;
 		if (m_pMap != nullptr && nav != nullptr)
 		{
 			resolveWalkableSpawn(spawnX, spawnY, *m_pMap, *nav);
@@ -297,11 +331,21 @@ bool SceneCardBoard::spawnBatteries(Renderer& renderer)
 		if (!battery->Initialise(renderer, ItemType::Battery))
 		{
 			delete battery;
-			clearBatteries();
 			return false;
 		}
 		battery->setWorldPosition(spawnX, spawnY);
 		m_batteries.push_back(battery);
+		return true;
+	};
+
+	for (const ProceduralGridLayout::BatterySpawns::Point& spawn
+		: ProceduralGridLayout::BatterySpawns::kList)
+	{
+		if (!spawnBatteryAt(spawn.x, spawn.y))
+		{
+			clearBatteries();
+			return false;
+		}
 	}
 
 	return true;
@@ -342,15 +386,16 @@ bool SceneCardBoard::spawnWorldLoot(Renderer& renderer)
 
 	const NavGrid& nav = m_pEnemies->navGrid();
 	int index = 0;
-	for (const BasicMapLayout::LootSpawns::Point& spawn : BasicMapLayout::LootSpawns::kList)
+
+	auto trySpawnOneLoot = [&](float spawnXIn, float spawnYIn) -> bool
 	{
-		float spawnX = spawn.x;
-		float spawnY = spawn.y;
+		float spawnX = spawnXIn;
+		float spawnY = spawnYIn;
 		if (!resolveWalkableSpawn(spawnX, spawnY, *m_pMap, nav))
 		{
 			LogManager::getInstance().log("Loot spawn skipped (no walkable cell).");
 			++index;
-			continue;
+			return true;
 		}
 
 		Item* loot = new Item();
@@ -363,6 +408,16 @@ bool SceneCardBoard::spawnWorldLoot(Renderer& renderer)
 		loot->setWorldPosition(spawnX, spawnY);
 		m_worldLoot.push_back(loot);
 		++index;
+		return true;
+	};
+
+	for (const ProceduralGridLayout::LootSpawns::Point& spawn
+		: ProceduralGridLayout::LootSpawns::kList)
+	{
+		if (!trySpawnOneLoot(spawn.x, spawn.y))
+		{
+			return false;
+		}
 	}
 
 	return !m_worldLoot.empty();
@@ -506,6 +561,28 @@ bool SceneCardBoard::tryDropSelectedLoot()
 	return true;
 }
 
+void SceneCardBoard::updateLowFlashlightSound(float deltaTime)
+{
+	if (!mLowFlashlightSoundLoaded || m_pPlayer == nullptr)
+	{
+		return;
+	}
+
+	const float batteryRatio = m_pPlayer->flashlightChargeRatio();
+	if (batteryRatio >= kLowFlashlightThreshold)
+	{
+		mLowFlashlightSoundTimer = 0.0f;
+		return;
+	}
+
+	mLowFlashlightSoundTimer += deltaTime;
+	while (mLowFlashlightSoundTimer >= kLowFlashlightSoundInterval)
+	{
+		SoundSystem::GetInstance().PlaySound(kHiddenLowFlashlightSoundKey);
+		mLowFlashlightSoundTimer -= kLowFlashlightSoundInterval;
+	}
+}
+
 void SceneCardBoard::updateCamera() {
 	if (m_pRenderer == nullptr || m_pPlayer == nullptr || m_pMap == nullptr)
 	{
@@ -590,6 +667,11 @@ void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 		tryDropSelectedLoot();
 	}
 
+	if (inputSystem.GetKeyState(SDL_SCANCODE_F) == BS_PRESSED)
+	{
+		tryExtract();
+	}
+
 	if (inputSystem.GetKeyState(SDL_SCANCODE_H) == BS_PRESSED)
 	{
 		m_pPlayer->setShowHitboxDebug(!m_pPlayer->showHitboxDebug());
@@ -613,14 +695,93 @@ void SceneCardBoard::Process(float deltaTime, InputSystem& inputSystem) {
 
 	m_pUI->adjustSanity(deltaTime);
 	m_pUI->adjustStamina(deltaTime);
+	updateLowFlashlightSound(deltaTime);
 
 	updateCamera();
 	m_pRenderer->setCamera(mCameraX, mCameraY);
 }
 
+void SceneCardBoard::drawExtractionZone() const
+{
+	if (m_pRenderer == nullptr)
+	{
+		return;
+	}
+
+	const ProceduralGridLayout::RoomBounds room =
+		ProceduralGridLayout::spawnExtractionRoomBounds();
+	const float cx = (room.left + room.right) * 0.5f;
+	const float cy = (room.top + room.bottom) * 0.5f;
+	const float inset = 72.0f;
+	const float halfW = (room.right - room.left) * 0.5f - inset;
+	const float halfH = (room.bottom - room.top) * 0.5f - inset;
+
+	const bool fundsReady = m_moneyCollected >= m_extractionGoal;
+	const bool playerInside = m_pPlayer != nullptr
+		&& ProceduralGridLayout::isInsideSpawnExtractionRoom(
+			m_pPlayer->x(),
+			m_pPlayer->y());
+
+	const float baseR = fundsReady ? 0.18f : 0.10f;
+	const float baseG = fundsReady ? 0.72f : 0.28f;
+	const float baseB = fundsReady ? 0.30f : 0.14f;
+	const float alpha = playerInside && fundsReady ? 0.42f : 0.24f;
+
+	m_pRenderer->drawWorldAxisAlignedQuad(
+		cx,
+		cy,
+		halfW,
+		halfH,
+		baseR,
+		baseG,
+		baseB,
+		alpha);
+}
+
+bool SceneCardBoard::tryExtract()
+{
+	if (m_pPlayer == nullptr)
+	{
+		return false;
+	}
+
+	if (m_moneyCollected < m_extractionGoal)
+	{
+		char msg[128];
+		std::snprintf(
+			msg,
+			sizeof(msg),
+			"Need $%d to extract (collected $%d / $%d).",
+			m_extractionGoal - m_moneyCollected,
+			m_moneyCollected,
+			m_extractionGoal);
+		LogManager::getInstance().log(msg);
+		return false;
+	}
+
+	if (!ProceduralGridLayout::isInsideSpawnExtractionRoom(
+			m_pPlayer->x(),
+			m_pPlayer->y()))
+	{
+		LogManager::getInstance().log(
+			"Return to the extraction room (where you spawned) to extract.");
+		return false;
+	}
+
+	char msg[96];
+	std::snprintf(
+		msg,
+		sizeof(msg),
+		"Extracted with $%d — mission complete!",
+		m_moneyCollected);
+	LogManager::getInstance().log(msg);
+	Game::GetInstance().Quit();
+	return true;
+}
+
 void SceneCardBoard::Draw(Renderer& renderer) {
 	m_pMap->drawFloor(*m_pRenderer);
-	m_pMap->drawWalls(*m_pRenderer);
+	drawExtractionZone();
 
 	const bool navDebug = m_pPlayer != nullptr && m_pPlayer->showHitboxDebug();
 	if (navDebug && m_pEnemies != nullptr && m_pRenderer != nullptr)
@@ -644,6 +805,9 @@ void SceneCardBoard::Draw(Renderer& renderer) {
 	}
 
 	m_pPlayer->drawFlashlightMask(*m_pRenderer, *m_pMap, mCameraX, mCameraY);
+
+	// Draw walls after the vision mask so every collision segment is visible in the lit view.
+	m_pMap->drawWalls(*m_pRenderer);
 
 	m_pPlayer->drawNoisePulses(*m_pRenderer);
 	m_pPlayer->drawSprite(*m_pRenderer);
@@ -774,8 +938,8 @@ void SceneCardBoard::DrawHudOverlay()
 	float blue = 0.12f;
 	extractionMoneyColor(progress, red, green, blue);
 
-	ImGui::SetNextWindowPos(ImVec2(viewW - 248.0f, viewH - 88.0f), ImGuiCond_Always);
-	ImGui::SetNextWindowSize(ImVec2(228.0f, 72.0f), ImGuiCond_Always);
+	ImGui::SetNextWindowPos(ImVec2(viewW - 248.0f, viewH - 108.0f), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(228.0f, 96.0f), ImGuiCond_Always);
 	ImGui::Begin(
 		"Extract",
 		nullptr,
@@ -789,9 +953,23 @@ void SceneCardBoard::DrawHudOverlay()
 	ImGui::TextColored(ImVec4(red, green, blue, 1.0f), "%s", moneyLine);
 	ImGui::Text("Goal: $%d  (E pick up, Q drop)", m_extractionGoal);
 
-	if (m_moneyCollected >= m_extractionGoal)
+	const bool fundsReady = m_moneyCollected >= m_extractionGoal;
+	const bool inExtractRoom = m_pPlayer != nullptr
+		&& ProceduralGridLayout::isInsideSpawnExtractionRoom(
+			m_pPlayer->x(),
+			m_pPlayer->y());
+
+	if (fundsReady && inExtractRoom)
 	{
-		ImGui::TextColored(ImVec4(0.2f, 0.95f, 0.35f, 1.0f), "READY TO EXTRACT");
+		ImGui::TextColored(ImVec4(0.2f, 0.95f, 0.35f, 1.0f), "Press F to extract");
+	}
+	else if (fundsReady)
+	{
+		ImGui::TextColored(ImVec4(0.95f, 0.85f, 0.25f, 1.0f), "Return to spawn room");
+	}
+	else
+	{
+		ImGui::Text("Extract at spawn room when funded");
 	}
 
 	ImGui::End();

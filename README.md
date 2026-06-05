@@ -38,13 +38,7 @@ cmake --build build
 ./build/tgp
 ```
 
-Optional: build only the slimmer modular engine demo (`cardboard`):
-
-```bash
-cmake -B build -DCARDBOARD_BUILD_FULL_GAME=OFF
-cmake --build build
-./build/cardboard
-```
+The full game is **`tgp`** only. The old slim `cardboard` demo (tutorial map) is disabled by default.
 
 Shaders and textures are copied next to the executable automatically. Audio on Mac requires the FMOD library; without it the game still runs (no sound).
 
@@ -92,5 +86,6 @@ If you still see `Texture failed to load!`:
 
 ## Tuning
 
-- `src/Player/PlayerConfig.h` — speeds, flashlight beam, footsteps  
-- `src/Map/BasicMapLayout.h` — wall segments  
+- `PlayerConfig_1.h` — speeds, flashlight beam, footsteps  
+- `ProceduralSpawns.h` — enemy / loot / battery spawn points  
+- `Room.cpp` / `Map_1.cpp` — procedural 5×3 room grid walls  

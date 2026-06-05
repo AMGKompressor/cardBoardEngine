@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <fstream>
 
 SoundSystem* SoundSystem::sm_pInstance = nullptr;
 
@@ -20,6 +23,42 @@ void SoundSystem::DestroyInstance()
 	sm_pInstance = nullptr;
 }
 
+namespace
+{
+	bool fileExists(const char* path)
+	{
+		if (path == nullptr || path[0] == '\0')
+		{
+			return false;
+		}
+
+		std::ifstream file(path, std::ios::binary);
+		return file.good();
+	}
+
+	void playFallbackSound(const std::string& path)
+	{
+#if defined(__APPLE__)
+		std::string cmd = "afplay -v 1 \"";
+		for (char c : path)
+		{
+			if (c == '"')
+			{
+				cmd += "\\\"";
+			}
+			else
+			{
+				cmd += c;
+			}
+		}
+		cmd += "\" >/dev/null 2>&1 &";
+		std::system(cmd.c_str());
+#else
+		(void)path;
+#endif
+	}
+}
+
 #if defined(CARDBOARD_NO_FMOD)
 
 SoundSystem::SoundSystem() = default;
@@ -31,6 +70,9 @@ SoundSystem::~SoundSystem()
 
 bool SoundSystem::Initialise()
 {
+#if defined(__APPLE__)
+	std::cout << "SoundSystem: using macOS afplay fallback (FMOD not linked).\n";
+#endif
 	return true;
 }
 
@@ -41,19 +83,41 @@ void SoundSystem::Update()
 void SoundSystem::Shutdown()
 {
 	m_isMusicTrack.clear();
+	m_fallbackPaths.clear();
 }
 
 bool SoundSystem::LoadSound(const char* filename, const char* key, bool loop, bool isMusic)
 {
-	(void)filename;
 	(void)loop;
-	m_isMusicTrack[key] = isMusic;
-	return true;
+
+	const char* paths[] = {
+		filename,
+	};
+
+	for (const char* path : paths)
+	{
+		if (fileExists(path))
+		{
+			m_fallbackPaths[key] = path;
+			m_isMusicTrack[key] = isMusic;
+			std::cout << "SoundSystem: loaded '" << key << "' from " << path << "\n";
+			return true;
+		}
+	}
+
+	std::cout << "SoundSystem: Failed to load " << filename << "\n";
+	return false;
 }
 
 void SoundSystem::PlaySound(const char* key)
 {
-	(void)key;
+	const auto it = m_fallbackPaths.find(key);
+	if (it == m_fallbackPaths.end())
+	{
+		return;
+	}
+
+	playFallbackSound(it->second);
 }
 
 void SoundSystem::SetMasterVolume(float volume)
@@ -116,6 +180,7 @@ void SoundSystem::Shutdown()
 		pair.second->release();
 	}
 	m_sounds.clear();
+	m_fallbackPaths.clear();
 
 	if (m_pSystem)
 	{
@@ -140,6 +205,7 @@ bool SoundSystem::LoadSound(const char* filename, const char* key, bool loop, bo
 	}
 
 	m_sounds[key] = pSound;
+	m_fallbackPaths[key] = filename;
 
 	m_isMusicTrack[key] = isMusic;
 

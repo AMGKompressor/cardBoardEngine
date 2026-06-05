@@ -51,6 +51,8 @@ private:
 #endif
 
 	std::map<std::string, bool> m_isMusicTrack;
+	// Used when FMOD is unavailable (e.g. Mac dev builds).
+	std::map<std::string, std::string> m_fallbackPaths;
 };
 
 #endif // __SOUNDSYSTEM_H_

@@ -2,6 +2,24 @@
 
 #include <cmath>
 
+namespace
+{
+	// Match vision_mask.frag / mouse aim: facingDeg 90 = look right (+X), 0 = look down (+Y).
+	void facingDegToLookAndRight(
+		float facingDeg,
+		float& lookX,
+		float& lookY,
+		float& rightX,
+		float& rightY)
+	{
+		const float lookRad = (90.0f - facingDeg) * 3.14159265f / 180.0f;
+		lookX = std::cos(lookRad);
+		lookY = std::sin(lookRad);
+		rightX = -lookY;
+		rightY = lookX;
+	}
+}
+
 void orientedRectWorldAabbHalfExtents(
 	float halfW,
 	float halfH,
@@ -9,11 +27,14 @@ void orientedRectWorldAabbHalfExtents(
 	float& outHalfX,
 	float& outHalfY)
 {
-	const float rad = angleDeg * 3.14159265f / 180.0f;
-	const float c = std::fabs(std::cos(rad));
-	const float s = std::fabs(std::sin(rad));
-	outHalfX = c * halfW + s * halfH;
-	outHalfY = s * halfW + c * halfH;
+	float lookX = 0.0f;
+	float lookY = 0.0f;
+	float rightX = 0.0f;
+	float rightY = 0.0f;
+	facingDegToLookAndRight(angleDeg, lookX, lookY, rightX, rightY);
+
+	outHalfX = halfW * std::fabs(rightX) + halfH * std::fabs(lookX);
+	outHalfY = halfW * std::fabs(rightY) + halfH * std::fabs(lookY);
 }
 
 float obbExtentAlongInwardNormal(
@@ -23,11 +44,14 @@ float obbExtentAlongInwardNormal(
 	float localHalfH,
 	float angleDeg)
 {
-	const float rad = angleDeg * 3.14159265f / 180.0f;
-	const float c = std::cos(rad);
-	const float s = std::sin(rad);
-	const float dotW = c * nx - s * ny;
-	const float dotH = s * nx + c * ny;
+	float lookX = 0.0f;
+	float lookY = 0.0f;
+	float rightX = 0.0f;
+	float rightY = 0.0f;
+	facingDegToLookAndRight(angleDeg, lookX, lookY, rightX, rightY);
+
+	const float dotW = nx * rightX + ny * rightY;
+	const float dotH = nx * lookX + ny * lookY;
 	return localHalfW * std::fabs(dotW) + localHalfH * std::fabs(dotH);
 }
 

@@ -103,6 +103,11 @@ bool Game::initialise()
 		return false;
 	}
 	
+	if (!SoundSystem::GetInstance().Initialise())
+	{
+		LogManager::getInstance().log(
+			"SoundSystem failed to initialise — playing without audio.");
+	}
 	SoundSystem::GetInstance().SetMasterVolume(0.9f);
 
 
@@ -162,7 +167,7 @@ void Game::Process(float deltaTime)
 {
 	ProcessFrameCounting(deltaTime);
 
-	// TODO: Add game eobjects to process here!
+	SoundSystem::GetInstance().Update();
 
 	m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
 }

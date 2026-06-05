@@ -56,16 +56,18 @@ struct EnemyConfig
 	float hiddenApproachSpeed = 95.0f;
 	float hiddenShimmerAlpha = 0.35f;
 	float hiddenSanityOnSteal = 8.0f;
-	float hiddenHealthDamageOnSteal = 14.0f;   // health, not sanity
+	float hiddenHealthDamageOnSteal = 14.0f;
 	float hiddenContactHealthPerSecond = 10.0f;
+	float hiddenSanityDrainPerSecond = 5.0f;
 
-	// Revenant — charges on sprint footsteps, investigates walk; contact hurts health
+	// Revenant — charges on sprint footsteps, investigates walk; contact hurts health + sanity
 	float revenantPatrolSpeed = 70.0f;
 	float revenantInvestigateSpeed = 120.0f;
 	float revenantChargeSpeed = 320.0f;
 	float revenantTurnRateDegPerSec = 48.0f;
 	float revenantContactRadius = 70.0f;
 	float revenantHealthDamagePerSecond = 18.0f;
+	float revenantSanityDrainPerSecond = 7.0f;
 	float revenantContactBurstDamage = 12.0f;
 	float revenantContactBurstCooldown = 1.2f;
 	float revenantStunDuration = 1.5f;

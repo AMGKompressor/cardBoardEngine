@@ -1,12 +1,15 @@
 #include "EnemyManager.h"
 
-#include "BasicMapLayout_1.h"
+#include "ProceduralSpawns.h"
 #include "Enemy.h"
+#include "Player_1.h"
 #include "PlayerConfig_1.h"
 #include "logmanager.h"
 #include "renderer.h"
 
 #include "imgui.h"
+
+#include <cstdio>
 
 EnemyManager::EnemyManager() = default;
 
@@ -23,16 +26,21 @@ void EnemyManager::syncHearingFromPlayerConfig(const PlayerConfig& playerConfig)
 	mConfig.hiddenStealRadius = playerConfig.footstep.walkNoiseRadius;
 }
 
-bool EnemyManager::initialize(Renderer& renderer)
+bool EnemyManager::initialize(Renderer& renderer, float playerSpawnX, float playerSpawnY)
 {
 	shutdown();
 
-	// Absolute map positions (not around player spawn).
-	mSpawns.assign(
-		std::begin(BasicMapLayout::EnemySpawns::kList),
-		std::end(BasicMapLayout::EnemySpawns::kList));
+	mSpawns = ProceduralGridLayout::generateRandomEnemySpawns(
+		mNavGrid,
+		playerSpawnX,
+		playerSpawnY);
 
 	mEnemyCount = static_cast<int>(mSpawns.size());
+	if (mEnemyCount < 1)
+	{
+		LogManager::getInstance().log("EnemyManager: no random spawn points found.");
+		return false;
+	}
 	mEnemies = new Enemy[mEnemyCount];
 
 	for (int i = 0; i < mEnemyCount; ++i)
@@ -46,9 +54,13 @@ bool EnemyManager::initialize(Renderer& renderer)
 		}
 	}
 
-	LogManager::getInstance().log(
-		"Enemies placed in map zones (see BasicMapLayout::EnemySpawns). "
-		"Revenant/Hidden deal health damage when they reach you.");
+	char buf[96];
+	std::snprintf(
+		buf,
+		sizeof(buf),
+		"%d enemies placed at random walkable map positions.",
+		mEnemyCount);
+	LogManager::getInstance().log(buf);
 	return true;
 }
 
@@ -94,6 +106,8 @@ void EnemyManager::update(
 	{
 		return;
 	}
+
+	player.resetEnemySanityDrain();
 
 	const NavGrid* nav = mNavGrid.isBuilt() ? &mNavGrid : nullptr;
 	for (int i = 0; i < mEnemyCount; ++i)

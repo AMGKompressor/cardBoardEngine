@@ -1,9 +1,8 @@
-// cardBoard ó world bounds, wall segments, collision, and wall drawing
+// Map_1.h ù procedural 5x3 room grid (CBE)
 #pragma once
 
-#include "BasicMapLayout_1.h"
+#include "Room.h"
 
-#include <array>
 #include <vector>
 
 class Renderer;
@@ -11,10 +10,21 @@ class Renderer;
 class Map
 {
 public:
-	static constexpr float kDefaultWidth = 2560.0f;
-	static constexpr float kDefaultHeight = 1920.0f;
+	Map();
+	~Map();
 
-	void loadBasicTutorial();
+	static constexpr int kGridCols = 5;
+	static constexpr int kGridRows = 3;
+
+	// Player spawn and extraction zone (center cell of the 5x3 grid).
+	static constexpr int kSpawnRoomCol = 2;
+	static constexpr int kSpawnRoomRow = 1;
+
+	void generate();
+	int mLayout[kGridRows][kGridCols] = {};
+
+	static constexpr float kWidth = Room::kRoomSize * kGridCols;
+	static constexpr float kHeight = Room::kRoomSize * kGridRows;
 
 	float width() const { return mWidth; }
 	float height() const { return mHeight; }
@@ -42,12 +52,13 @@ public:
 	void drawFloor(Renderer& renderer) const;
 
 private:
-	template <std::size_t N>
-	void setWallsFromLayout(const std::array<WallSegment, N>& walls);
+	void setNewMap(int(&layout)[kGridRows][kGridCols]);
+	void bake();
 
-	float mWidth = kDefaultWidth;
-	float mHeight = kDefaultHeight;
-	std::array<float, 256> mWireFlat{};
+	float mWidth = kWidth;
+	float mHeight = kHeight;
+	std::vector<float> mWireFlat;
 	int mSegmentCount = 0;
 	mutable std::vector<bool> mPrevWallTouch;
+	std::vector<Room> mRooms;
 };

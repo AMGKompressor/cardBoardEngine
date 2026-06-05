@@ -88,8 +88,9 @@ struct PlayerConfig
 	float speedRampUpPerSec = 260.0f;
 	float speedRampDownPerSec = 320.0f;
 
-	float hitboxHalfW = 48.0f;
-	float hitboxHalfH = 48.0f;
+	// Collision box (smaller than sprite — room doorways are 100px wide).
+	float hitboxHalfW = 30.0f;
+	float hitboxHalfH = 30.0f;
 	float turnRateDegPerSec = 220.0f;
 	float spriteFacingOffsetDeg = 90.0f;
 	float aimSnapDegrees = 1.25f;

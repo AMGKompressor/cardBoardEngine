@@ -120,22 +120,16 @@
     <ClCompile Include="lib\imgui\imgui_widgets.cpp">
       <Filter>Source Files\IMGUI</Filter>
     </ClCompile>
-    <ClCompile Include="CardBoardApp.cpp">
-      <Filter>Source Files\CardBoardApp\Legacy</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision2D.cpp">
-      <Filter>Source Files\CardBoardApp\Legacy</Filter>
-    </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Source Files\CardBoardApp\Legacy</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files\CardBoardApp\Legacy</Filter>
-    </ClCompile>
     <ClCompile Include="Collision2D_1.cpp">
       <Filter>Source Files\CardBoardApp\New</Filter>
     </ClCompile>
     <ClCompile Include="Map_1.cpp">
+      <Filter>Source Files\CardBoardApp\New</Filter>
+    </ClCompile>
+    <ClCompile Include="ProceduralSpawns.cpp">
+      <Filter>Source Files\CardBoardApp\New</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
       <Filter>Source Files\CardBoardApp\New</Filter>
     </ClCompile>
     <ClCompile Include="Player_1.cpp">
@@ -227,21 +221,6 @@
     <ClInclude Include="lib\imgui\imstb_textedit.h">
       <Filter>Header Files\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="BasicMapLayout.h">
-      <Filter>Header Files\CardboardApp\Legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="CardBoardApp.h">
-      <Filter>Header Files\CardboardApp\Legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision2D.h">
-      <Filter>Header Files\CardboardApp\Legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Header Files\CardboardApp\Legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files\CardboardApp\Legacy</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerConfig.h">
       <Filter>Header Files\CardboardApp\Legacy</Filter>
     </ClInclude>
@@ -251,13 +230,19 @@
     <ClInclude Include="Map_1.h">
       <Filter>Header Files\CardboardApp\New</Filter>
     </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
+    <ClInclude Include="WallSegment.h">
+      <Filter>Header Files\CardboardApp\New</Filter>
+    </ClInclude>
     <ClInclude Include="Player_1.h">
       <Filter>Header Files\CardboardApp\New</Filter>
     </ClInclude>
     <ClInclude Include="PlayerConfig_1.h">
       <Filter>Header Files\CardboardApp\New</Filter>
     </ClInclude>
-    <ClInclude Include="BasicMapLayout_1.h">
+    <ClInclude Include="ProceduralSpawns.h">
       <Filter>Header Files\CardboardApp\New</Filter>
     </ClInclude>
     <ClInclude Include="SceneCardBoard.h">

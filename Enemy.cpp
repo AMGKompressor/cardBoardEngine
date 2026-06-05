@@ -67,7 +67,7 @@ namespace
 		outY = std::sin(angle);
 	}
 
-	// Hidden / Revenant health damage (Spirit uses sanity only).
+	// Hidden / Revenant deal health damage; all enemy types add sanity drain rate when harming.
 	void damagePlayerHealth(Player& player, float amount)
 	{
 		if (amount <= 0.0f)
@@ -682,9 +682,7 @@ void Enemy::updateSpirit(
 	{
 		const float t = 1.0f - (dist / config.spiritAuraRadius);
 		Player& mutablePlayer = const_cast<Player&>(player);
-		mutablePlayer.sanityPercentage = std::max(
-			0.0f,
-			mutablePlayer.sanityPercentage - config.spiritSanityDrainPerSecond * t * deltaTime);
+		mutablePlayer.addEnemySanityDrain(config.spiritSanityDrainPerSecond * t);
 
 		if (mSprite != nullptr)
 		{
@@ -763,6 +761,7 @@ void Enemy::updateHidden(
 			damagePlayerHealth(
 				mutablePlayer,
 				config.hiddenContactHealthPerSecond * deltaTime);
+			mutablePlayer.addEnemySanityDrain(config.hiddenSanityDrainPerSecond);
 		}
 	}
 
@@ -850,6 +849,7 @@ void Enemy::updateRevenant(
 			damagePlayerHealth(
 				mutablePlayer,
 				config.revenantHealthDamagePerSecond * deltaTime);
+			mutablePlayer.addEnemySanityDrain(config.revenantSanityDrainPerSecond);
 			if (mHealthDamageCooldown <= 0.0f)
 			{
 				damagePlayerHealth(mutablePlayer, config.revenantContactBurstDamage);
@@ -1025,8 +1025,8 @@ void Enemy::debugDraw() const
 	switch (mType)
 	{
 	case EnemyType::Spirit: harmLabel = "sanity (aura)"; break;
-	case EnemyType::Hidden: harmLabel = "health (close / steal)"; break;
-	case EnemyType::Revenant: harmLabel = "health (contact)"; break;
+	case EnemyType::Hidden: harmLabel = "health + sanity drain (close / steal)"; break;
+	case EnemyType::Revenant: harmLabel = "health + sanity drain (contact)"; break;
 	}
 
 	const char* stunState = "idle";

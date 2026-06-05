@@ -491,7 +491,7 @@ bool Renderer::setupLineDebugGraphics()
 		return false;
 	}
 
-	const int kMaxLineVerts = 64;
+	const int kMaxLineVerts = 512;
 	glGenVertexArrays(1, &mLineVao);
 	glGenBuffers(1, &mLineVbo);
 	glBindVertexArray(mLineVao);
@@ -558,31 +558,12 @@ void Renderer::drawWorldLineSegments(const float* xyEndpoints, int segmentCount,
 		return;
 	}
 
-	const int capVerts = 128;
-	int seg = segmentCount;
-	int vertCount = seg * 2;
-	if (vertCount > capVerts)
-	{
-		seg = capVerts / 2;
-		vertCount = seg * 2;
-	}
-
-	float interleaved[128 * 3];
-	for (int s = 0; s < seg; ++s)
-	{
-		const int o = s * 4;
-		interleaved[s * 6 + 0] = xyEndpoints[o + 0];
-		interleaved[s * 6 + 1] = xyEndpoints[o + 1];
-		interleaved[s * 6 + 2] = 0.0f;
-		interleaved[s * 6 + 3] = xyEndpoints[o + 2];
-		interleaved[s * 6 + 4] = xyEndpoints[o + 3];
-		interleaved[s * 6 + 5] = 0.0f;
-	}
+	const int kMaxLineVerts = 512;
+	const int maxSegPerDraw = kMaxLineVerts / 2;
 
 	mLineShader->setActive();
 	glBindVertexArray(mLineVao);
 	glBindBuffer(GL_ARRAY_BUFFER, mLineVbo);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 3 * vertCount, interleaved);
 
 	Matrix4 ortho;
 	createOrthoProjection(ortho, static_cast<float>(mWidth), static_cast<float>(mHeight));
@@ -601,7 +582,27 @@ void Renderer::drawWorldLineSegments(const float* xyEndpoints, int segmentCount,
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glLineWidth(2.0f);
 
-	glDrawArrays(GL_LINES, 0, vertCount);
+	float interleaved[kMaxLineVerts * 3];
+	for (int batchStart = 0; batchStart < segmentCount; batchStart += maxSegPerDraw)
+	{
+		const int seg = std::min(maxSegPerDraw, segmentCount - batchStart);
+		const int vertCount = seg * 2;
+		const float* batch = xyEndpoints + static_cast<std::size_t>(batchStart * 4);
+
+		for (int s = 0; s < seg; ++s)
+		{
+			const int o = s * 4;
+			interleaved[s * 6 + 0] = batch[o + 0];
+			interleaved[s * 6 + 1] = batch[o + 1];
+			interleaved[s * 6 + 2] = 0.0f;
+			interleaved[s * 6 + 3] = batch[o + 2];
+			interleaved[s * 6 + 4] = batch[o + 3];
+			interleaved[s * 6 + 5] = 0.0f;
+		}
+
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 3 * vertCount, interleaved);
+		glDrawArrays(GL_LINES, 0, vertCount);
+	}
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

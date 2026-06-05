@@ -38,6 +38,43 @@
 			renderer.drawWorldLineLoop(xy, segments, cr, cg, cb, ca);
 		}
 
+		void drawOrientedHitboxOutline(
+			Renderer& renderer,
+			float cx,
+			float cy,
+			float halfW,
+			float halfH,
+			float facingDeg)
+		{
+			const float lookRad = (90.0f - facingDeg) * 3.14159265f / 180.0f;
+			const float lookX = std::cos(lookRad);
+			const float lookY = std::sin(lookRad);
+			const float rightX = -lookY;
+			const float rightY = lookX;
+
+			auto corner = [&](float lx, float ly, float& wx, float& wy)
+			{
+				wx = cx + rightX * lx + lookX * ly;
+				wy = cy + rightY * lx + lookY * ly;
+			};
+
+			float x0 = 0.0f;
+			float y0 = 0.0f;
+			float x1 = 0.0f;
+			float y1 = 0.0f;
+			float x2 = 0.0f;
+			float y2 = 0.0f;
+			float x3 = 0.0f;
+			float y3 = 0.0f;
+			corner(-halfW, -halfH, x0, y0);
+			corner(halfW, -halfH, x1, y1);
+			corner(halfW, halfH, x2, y2);
+			corner(-halfW, halfH, x3, y3);
+
+			const float verts[8] = { x0, y0, x1, y1, x2, y2, x3, y3 };
+			renderer.drawWorldLineLoop(verts, 4, 0.2f, 1.0f, 0.35f, 0.95f);
+		}
+
 	bool Player::initialize(Renderer& renderer, PlayerConfig* config, float spawnX, float spawnY)
 	{
 		shutdown();
@@ -53,6 +90,7 @@
 		mFlashlightChargeSeconds = mConfig->flashlightMeter.maxChargeSeconds;
 
 		sanityPercentage = mConfig->sanityMeter.maxCharge;
+		enemySanityDrainPerSecond = 0.0f;
 		playerHealth = mConfig->healthMeter.maxCharge;
 		staminaPercentage = mConfig->staminaMeter.maxStamina;
 		isRunning = false;
@@ -75,37 +113,31 @@
 		mSprite->setRedTint(mConfig->bodyTintR);
 		mSprite->setGreenTint(mConfig->bodyTintG);
 		mSprite->setBlueTint(mConfig->bodyTintB);
-		mHitboxHalfW = static_cast<float>(mSprite->getWidth()) * 0.5f;
-		mHitboxHalfH = static_cast<float>(mSprite->getHeight()) * 0.5f;
-
-		mHitboxDebugSprite = renderer.createSprite("/assets/textures/board8x8.png");
-		if (mHitboxDebugSprite != nullptr)
-		{
-			mHitboxDebugSprite->setScale(sunekuScale);
-			mHitboxDebugSprite->setRedTint(1.0f);
-			mHitboxDebugSprite->setGreenTint(0.0f);
-			mHitboxDebugSprite->setBlueTint(0.0f);
-			mHitboxDebugSprite->setAlpha(0.3f);
-		}
 
 		mSprite->setX(static_cast<int>(mX));
 		mSprite->setY(static_cast<int>(mY));
-		if (mHitboxDebugSprite != nullptr)
-		{
-			mHitboxDebugSprite->setX(static_cast<int>(mX));
-			mHitboxDebugSprite->setY(static_cast<int>(mY));
-		}
 		return true;
 	}
 
 	void Player::shutdown()
 	{
-		delete mHitboxDebugSprite;
-		mHitboxDebugSprite = nullptr;
 		delete mSprite;
 		mSprite = nullptr;
 		mWalkNoisePulses.clear();
 		mSprintNoisePulses.clear();
+	}
+
+	void Player::resetEnemySanityDrain()
+	{
+		enemySanityDrainPerSecond = 0.0f;
+	}
+
+	void Player::addEnemySanityDrain(float drainPerSecond)
+	{
+		if (drainPerSecond > 0.0f)
+		{
+			enemySanityDrainPerSecond += drainPerSecond;
+		}
 	}
 
 	void Player::toggleFlashlight()
@@ -226,11 +258,6 @@
 		{
 			mSprite->setAngle(mFacingDeg);
 		}
-		if (mHitboxDebugSprite != nullptr)
-		{
-			mHitboxDebugSprite->setAngle(mFacingDeg);
-		}
-
 		cursor->Process(deltaTime, worldMouseX, worldMouseY);
 	}
 
@@ -368,12 +395,6 @@
 			mSprite->setX(static_cast<int>(mX));
 			mSprite->setY(static_cast<int>(mY));
 		}
-		if (mHitboxDebugSprite != nullptr)
-		{
-			mHitboxDebugSprite->setX(static_cast<int>(mX));
-			mHitboxDebugSprite->setY(static_cast<int>(mY));
-		}
-
 		mFlashlightStunActive = (mFlashlightOn && stunHeld);
 
 		const FlashlightMeterConfig& meter = mConfig->flashlightMeter;
@@ -412,10 +433,18 @@
 
 	void Player::drawHitboxDebug(Renderer& renderer) const
 	{
-		if (mShowHitboxDebug && mHitboxDebugSprite != nullptr)
+		if (!mShowHitboxDebug)
 		{
-			mHitboxDebugSprite->draw(renderer);
+			return;
 		}
+
+		drawOrientedHitboxOutline(
+			renderer,
+			mX,
+			mY,
+			mHitboxHalfW,
+			mHitboxHalfH,
+			mFacingDeg);
 	}
 
 	void Player::drawFlashlightMask(Renderer& renderer, const Map& map, float cameraX, float cameraY) const

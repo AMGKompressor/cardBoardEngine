@@ -20,7 +20,7 @@ public:
 	EnemyManager();
 	~EnemyManager();
 
-	bool initialize(Renderer& renderer);
+	bool initialize(Renderer& renderer, float playerSpawnX, float playerSpawnY);
 	void syncHearingFromPlayerConfig(const struct PlayerConfig& playerConfig);
 	bool buildNavigation(const Map& map);
 	void shutdown();

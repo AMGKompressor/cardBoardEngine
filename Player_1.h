@@ -1,4 +1,4 @@
-// cardBoard ó player movement, hitbox, flashlight, and footstep noise pulses
+// cardBoard ù player movement, hitbox, flashlight, and footstep noise pulses
 #pragma once
 
 #include "PlayerConfig_1.h"
@@ -80,13 +80,15 @@ class MouseCursor;
 		const std::vector<NoisePulse>& walkNoisePulses() const { return mWalkNoisePulses; }
 		const std::vector<NoisePulse>& sprintNoisePulses() const { return mSprintNoisePulses; }
 
+		void resetEnemySanityDrain();
+		void addEnemySanityDrain(float drainPerSecond);
+
 	private:
 		void emitNoisePulse(float x, float y, bool loud);
 		void advanceNoisePulses(float deltaTime);
 
 		PlayerConfig* mConfig;
 		Sprite* mSprite = nullptr;
-		Sprite* mHitboxDebugSprite = nullptr;
 
 		float mFacingDeg = 0.0f;
 		float mMoveSpeed = 0.0f;
@@ -117,6 +119,7 @@ class MouseCursor;
 		float playerHealth;
 		bool inDark = false;
 		float sanityPercentage;
+		float enemySanityDrainPerSecond = 0.0f;
 
 		float staminaPercentage;
 		bool isRunning;

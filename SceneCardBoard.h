@@ -39,6 +39,7 @@ private:
     SceneCardBoard& operator=(const SceneCardBoard& sceneSplashAut);
 
     void updateCamera();
+    void updateLowFlashlightSound(float deltaTime);
     bool spawnBatteries(Renderer& renderer);
     void clearBatteries();
     bool spawnWorldLoot(Renderer& renderer);
@@ -47,6 +48,8 @@ private:
     bool tryPickupNearbyLoot();
     bool tryPickupNearbyBattery();
     bool tryDropSelectedLoot();
+    bool tryExtract();
+    void drawExtractionZone() const;
     LootTier lootTierForSpawnIndex(int index) const;
 
 public:
@@ -72,6 +75,8 @@ protected:
     float mCameraY;
     bool mLooping;
     std::int64_t mLastTime;
+    float mLowFlashlightSoundTimer = 0.0f;
+    bool mLowFlashlightSoundLoaded = false;
 
 private:
 

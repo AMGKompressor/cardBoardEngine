@@ -15,6 +15,11 @@ REM Optional mirror beside the exe (fallback if ../assets is unreachable)
 if not exist "%OUT%textures\" mkdir "%OUT%textures\"
 xcopy /Y /I "%ROOT%assets\textures\*.png" "%OUT%textures\"
 
+if exist "%ROOT%assets\sounds\" (
+  if not exist "%OUT%sounds\" mkdir "%OUT%sounds\"
+  xcopy /Y /I "%ROOT%assets\sounds\*.*" "%OUT%sounds\"
+)
+
 if not exist "%OUT%shaders\" mkdir "%OUT%shaders\"
 xcopy /Y /I "%ROOT%game\shaders\*.*" "%OUT%shaders\"
 if errorlevel 1 (
@@ -36,6 +41,12 @@ if exist "%ROOT%lib\SDL2_image-2.6.1\lib\x86\SDL2_image.dll" (
 
 if exist "%ROOT%lib\glew-2.1.0\lib\x86\glew32.dll" (
   xcopy /Y "%ROOT%lib\glew-2.1.0\lib\x86\glew32.dll" "%OUT%"
+)
+
+if exist "%ROOT%lib\FMOD\lib\x86\fmod.dll" (
+  xcopy /Y "%ROOT%lib\FMOD\lib\x86\fmod.dll" "%OUT%"
+) else (
+  echo Post-build WARNING: lib\FMOD\lib\x86\fmod.dll missing — copy it from the FMOD SDK next to the exe.
 )
 
 exit /b 0

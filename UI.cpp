@@ -11,7 +11,6 @@
 
 #include "UI.h"
 #include "Player_1.h"
-#include "Player.h"
 #include "PlayerConfig_1.h"
 #include "Inventory.h"
 #include "LootConfig.h"
@@ -328,14 +327,17 @@ bool UI::noSanity(float deltaTime)
 
 void UI::adjustSanity(float deltaTime)
 {
-	if (ui_player->inDark)
+	const float enemyDrain = ui_player->enemySanityDrainPerSecond;
+	const float darkDrain = ui_player->inDark ? mConfig->sanityMeter.drainPerSecond : 0.0f;
+	const float totalDrain = enemyDrain + darkDrain;
+
+	if (totalDrain > 0.0f)
 	{
 		ui_player->sanityPercentage = std::max(
 			0.0f,
-			ui_player->sanityPercentage -
-			mConfig->sanityMeter.drainPerSecond * deltaTime);
+			ui_player->sanityPercentage - totalDrain * deltaTime);
 	}
-	else
+	else if (!ui_player->inDark)
 	{
 		ui_player->sanityPercentage = std::min(
 			mConfig->sanityMeter.maxCharge,
